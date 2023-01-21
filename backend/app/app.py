@@ -29,3 +29,8 @@ def log_response_info(response):
 def handle_exceptions(e):
     tb = traceback.format_exc()
     logger.error("INTERNAL SERVER ERROR", request.remote_addr, request.method, request.scheme, request.full_path, tb)
+
+@app.errorhandler(404)
+def handle_no_endpoint(e):
+    logger.error("Route does not exist", request.remote_addr, request.method, request.scheme, request.full_path)
+    return "Route not found", 404

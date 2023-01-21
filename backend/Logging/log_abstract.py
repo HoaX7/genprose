@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 class LogAbstract(ABC):
-    @abstractmethod
     def __init__(self) -> None:
         raise Exception("Unimplemented")
 
