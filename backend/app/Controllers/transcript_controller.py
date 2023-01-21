@@ -4,6 +4,10 @@
     into transcripts
 
 """
+from app.Modules.Transcription.transcribe import Transcribe
+from Logging.logger import logger
+
+transcribe = Transcribe()
 
 """
     @parameters: url -> valid youtube url link
@@ -11,4 +15,4 @@
     @returns audio transcript
 """
 def get_yt_video_from_url(url: str) -> str:
-    pass
+    return transcribe.get_transcription(url)

@@ -1,5 +1,6 @@
 from Logging.log_abstract import LogAbstract
 import logging
+import sys
 # import google.cloud.logging
 # from google.cloud.logging_v2.handlers import CloudLoggingHandler
 # from google.cloud.logging_v2.resource import Resource
@@ -10,7 +11,7 @@ import logging
     using abstract methods.
 """
 # Create a stream handler to log messages to the console.
-stream_handler = logging.StreamHandler()
+stream_handler = logging.StreamHandler(sys.stdout)
 
 # service_key_path = "cloud-logging.json"
 
@@ -24,6 +25,7 @@ stream_handler = logging.StreamHandler()
 # )
 # gcloud_logging_client.setup_logging()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 # logger.addHandler(gcloud_logging_handler)
 logger.addHandler(stream_handler)
 
