@@ -1,0 +1,48 @@
+.font-10 {
+  font-size: var(--font-10);
+}
+.font-12 {
+  font-size: var(--font-12);
+}
+.font-14 {
+  font-size: var(--font-14);
+}
+.font-16 {
+  font-size: var(--font-16);
+}
+.font-18 {
+  font-size: var(--font-18);
+}
+.font-20 {
+  font-size: var(--font-20);
+}
+.font-24 {
+  font-size: var(--font-24);
+}
+.font-30 {
+  font-size: var(--font-30);
+}
+.font-32 {
+  font-size: var(--font-32);
+}
+.font-36 {
+  font-size: var(--font-36);
+}
+.bold {
+  font-family: var(--bold);
+}
+.semi-bold {
+  font-family: var(--semi-bold);
+}
+.regular {
+  font-family: var(--regular);
+}
+.thin {
+  font-family: var(--thin);
+}
+.light {
+  font-family: var(--light);
+}
+.medium {
+  font-family: var(--medium);
+}
