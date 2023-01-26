@@ -14,3 +14,4 @@ build/
 *.egg-info/
 
 cloud-logging.json
+downloads

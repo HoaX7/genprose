@@ -1,0 +1,16 @@
+.input, .textarea {
+    background: inherit;
+    padding: 5px 10px;
+    font-size: .9rem;
+    font-weight: 500;
+}
+.input:focus {
+    background: transparent;
+}
+.input::placeholder, .textarea::placeholder {
+    font-weight: bold;
+    font-size: .9rem;
+}
+.textarea {
+    resize: none;
+}
