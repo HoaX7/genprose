@@ -64,7 +64,7 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 		responseType: "json",
 		withCredentials: true,
 	} as AxiosRequestConfig;
-
+	axios.defaults.timeout = timeout;
 	const Requester = axios.create(request);
 
 	request.url = url;
@@ -88,7 +88,6 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 	// ('POST', 'DELETE', 'PUT', 'PATCH')
 	Requester.interceptors.response.use(
 		(response) => {
-			console.log(response, "response from url", response.headers);
 			if (response.headers["set-cookie"]) {
 				response.headers.cookie = response.headers["set-cookie"][0];
 			}

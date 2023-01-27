@@ -3,9 +3,9 @@ import os
 def make_dir_if_not_exist(dirpath: str):
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
-        print(f"Directory {dirpath} has been created")
+        print(f"'{dirpath}' directory has been created")
     else:
-        print(f"Directory {dirpath} already exists")
+        print(f"'{dirpath}' directory already exists")
 
 def divide_chunks(l, n):
     # looping till length l

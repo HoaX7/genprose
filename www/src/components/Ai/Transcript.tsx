@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { GeneratedContentProps, TranscriptKeywordProps } from "../../@customTypes/Ai";
 import Typography from "../Commons/Typography/Typography";
-import Extractor from "./Extractor";
-import GeneratedContent from "./GeneratedContent";
+import Extractors from "./Extractors";
+import GeneratedContents from "./GeneratedContents";
+import GeneratedKeywords from "./GeneratedKeywords";
 
 export default function Transcript() {
 	const [ transcript, setTranscript ] = useState<TranscriptKeywordProps | null>(null);
@@ -19,7 +20,7 @@ export default function Transcript() {
 				>
           Extractor
 				</Typography>
-				<Extractor onExtraction={(data) => setTranscript(data)} />
+				<Extractors onExtraction={(data) => setTranscript(data)} />
 			</div>
 			<div className="col-span-3 md:col-span-1 p-3">
 				<Typography
@@ -30,22 +31,13 @@ export default function Transcript() {
 				>
           Keywords
 				</Typography>
-				{(transcript && (transcript.keywords || []).length > 0) &&
-        transcript.keywords.map((item, i) => (
-        	<div key={"keyword_" + i} className="bg-gray-200 p-3">
-        		{item.join(", ")}
-        	</div>
-        ))}
-				{(!transcript || (transcript.keywords || []).length <= 0) && (
-					<Typography
-						variant="div"
-						font={16}
-						weight="regular"
-						className="italic"
-					>
-            No data available
-					</Typography>
-				)}
+				<GeneratedKeywords keywords={transcript?.keywords || []} 
+					onResult={(data) => {
+						const resp = structuredClone(result);
+						resp.push(data);
+						setResult(resp);
+					}}
+				/>
 			</div>
 			<div className="col-span-3 md:col-span-1 p-3">
 				<Typography
@@ -56,7 +48,7 @@ export default function Transcript() {
 				>
           Content Generated
 				</Typography>
-				<GeneratedContent data={{ choices: [ { text: "Helloworld" } ] } as GeneratedContentProps} />
+				<GeneratedContents data={result} />
 			</div>
 		</div>
 	);
