@@ -8,14 +8,15 @@ export const getTranscriptionAndKeywordsFromURL = (params: {
 		url: "/ai/get_transcript",
 		data: params,
 		method: "POST",
+		timeout: 120000
 	});
 };
 
 export const getContentFromKeywords = (params: {
-  keywords: string[];
+  prompt: string;
 }): Promise<ApiResponse<GeneratedContentProps>> => {
 	return requester({
-		url: "/ai/get_content",
+		url: "/ai/generate_content",
 		data: params,
 		method: "POST",
 	});

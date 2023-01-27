@@ -38,6 +38,10 @@ def extract_keywords():
         logger.error("lib.routes.ai.extract_keywords: ERROR", e)
         return "Invalid JSON body", 400 
 
+"""
+    This route is currently being used to
+    generate transcript from video & generate keywords.
+"""
 @ai_service.route("/get_transcript", methods=["POST"])
 @login_required
 def get_transcript_and_keywords():
