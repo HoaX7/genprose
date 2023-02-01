@@ -1,12 +1,11 @@
 from lib.logging.logger import logger
 from lib.Whisper.model import WhisperModel
 from lib.Extractor.AudioExtractor.youtube import extract_audio_from_url
-from lib.Extractor.KeywordExtractor.tfidf import TFIdfModel
+from lib.Extractor.KeywordExtractor.model import KeywordExtractorModel
 from lib.Openai.model import ChatGPTModel
 import os
 
 model = WhisperModel()
-keyword_extractor_model = TFIdfModel()
 content_model = ChatGPTModel()
 
 class Transcribe:
@@ -40,17 +39,18 @@ class Transcribe:
         except:
             return "Unable to transcribe this video."
 
-    def extract_keywords(self, text: str) -> str:
+    def extract_keywords(self, text: str, use_chatgpt_for_keywords: bool = False) -> str:
         try:
+            keyword_extractor_model = KeywordExtractorModel(use_chatgpt_for_keywords=use_chatgpt_for_keywords)
             return keyword_extractor_model.extract_keywords(text)
         except Exception as e:
             print(e)
             return "Unable to extract keywords"
 
-    def get_content_from_keywords(self, prompt: str) -> str:
+    def get_content_from_keywords(self, prompt: str, **kwargs) -> str:
         try:
             logger.info("lib.Transcription.transcribe.get_content_from_keywords: generating content from prompt - ", prompt)
-            return content_model.generate_content(prompt)
+            return content_model.generate_content(prompt, kwargs["engine"])
         except Exception as e:
             print(e)
             return "Unable to generate content"

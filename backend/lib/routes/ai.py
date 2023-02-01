@@ -30,7 +30,11 @@ def extract_keywords():
         if not data["text"]:
             return "Expected 'text' property in JSON body", 422
 
-        result = Transcription.extract_keywords(data["text"])
+        use_chatgpt_for_keywords = False
+        if data.get('use_chatgpt_for_keywords', '') == True:
+            use_chatgpt_for_keywords = True 
+
+        result = Transcription.extract_keywords(data["text"], use_chatgpt_for_keywords)
         logger.info("lib.routes.ai.extract_keywords: result", result)
         return result, 200
     except Exception as e:
@@ -50,9 +54,13 @@ def get_transcript_and_keywords():
         if not data["url"]:
             return "Expected 'url' property in JSON body", 422
 
+        use_chatgpt_for_keywords = False
+        if data.get('use_chatgpt_for_keywords', '') == True:
+            use_chatgpt_for_keywords = True
+
         result = Transcription.get_yt_video_from_url(data["url"]) 
         text = result["text"]
-        keywords = Transcription.extract_keywords(text)
+        keywords = Transcription.extract_keywords(text, use_chatgpt_for_keywords)
 
         resp = {
             "keywords": keywords,
@@ -74,10 +82,12 @@ def get_content_from_keywords():
         if not data["prompt"]:
             return "Expected 'prompt' property in json body", 422
 
-        result = Transcription.get_content_from_keywords(data["prompt"])
+        model_engine = data.get('engine', '')
+        result = Transcription.get_content_from_keywords(data["prompt"], engine=model_engine)
         return {
             "data": result
         }, 200
     except Exception as e:
+        print(e)
         logger.error("lib.routes.ai.get_content_from_keywords: ERROR", e)
         return "Unable to generate content", 500

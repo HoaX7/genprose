@@ -8,8 +8,9 @@ import FullpageLoader from "../Commons/Loaders/FullpageLoader";
 interface P {
     onExtraction: (data: TranscriptKeywordProps) => void;
     className?: string;
+	useChatGpt?: boolean;
 }
-export default function Extractor({ onExtraction, className }: P) {
+export default function Extractor({ onExtraction, className, useChatGpt = false }: P) {
 	const [ url, setUrl ] = useState("");
 	const [ saving, setSaving ] = useState(false);
 
@@ -18,7 +19,10 @@ export default function Extractor({ onExtraction, className }: P) {
 		try {
 			if (!url) return;
 			setSaving(true);
-			const result = await getTranscriptionAndKeywordsFromURL({ url });
+			const result = await getTranscriptionAndKeywordsFromURL({
+				url,
+				use_chatgpt_for_keywords: useChatGpt 
+			});
 			if (result.error) throw result;
 			if (result.data) onExtraction(result.data);
 		} catch (err) {

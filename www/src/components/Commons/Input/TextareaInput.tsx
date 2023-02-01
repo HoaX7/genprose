@@ -9,7 +9,8 @@ const Index = (props: TextareaProps) => {
 			<textarea 
 				{...props} 
 				className={clsx(props.className, styles.textarea, "focus:outline-none",
-					"disabled:opacity-75 disabled:pointer-events-none disabled:cursor-not-allowed")}
+					"disabled:opacity-75 disabled:pointer-events-none disabled:cursor-not-allowed",
+					"border rounded")}
 			/>
 		</>
 	);
