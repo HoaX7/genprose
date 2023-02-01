@@ -18,8 +18,8 @@ transcribe = Transcribe()
 def get_yt_video_from_url(url: str) -> str:
     return transcribe.get_transcription(url)
 
-def extract_keywords(text: str) -> str:
-    return transcribe.extract_keywords(text)
+def extract_keywords(text: str, use_chatgpt_for_keywords: bool) -> str:
+    return transcribe.extract_keywords(text, use_chatgpt_for_keywords)
 
-def get_content_from_keywords(prompt: str) -> str:
-    return transcribe.get_content_from_keywords(prompt)
+def get_content_from_keywords(prompt: str, **kwargs) -> str:
+    return transcribe.get_content_from_keywords(prompt, **kwargs)

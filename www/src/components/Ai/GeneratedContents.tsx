@@ -1,12 +1,11 @@
 import React from "react";
 import { GeneratedContentProps } from "../../@customTypes/Ai";
+import CollapsibleContent from "../Commons/CollapsibleContent";
 import Typography from "../Commons/Typography/Typography";
 
 const Content = ({ choices }: P["data"][1]) => {
 	return (
-		<div className="bg-gray-200 rounded p-3 mb-3">
-			{choices[0].text}
-		</div>
+		<CollapsibleContent content={(choices[0] || "").text || "<i>No Content available<i>"} />
 	);
 };
 
@@ -25,10 +24,12 @@ export default function GeneratedContents({ data = [] }: P) {
 		</Typography>;
 	}
 	return (
-		<>
+		<div className="grid grid-cols-3 gap-4">
 			{data.map((item) => (
-				<Content key={item.id} {...item} />
+				<div key={item.id} className="col-3 md:col-1">
+					<Content {...item} />
+				</div>
 			))}
-		</>
+		</div>
 	);
 }
