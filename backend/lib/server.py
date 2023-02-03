@@ -49,3 +49,9 @@ def handle_no_endpoint(e):
     logger.error("Route does not exist", request.remote_addr, request.method, request.scheme, request.full_path)
     return "Route not found", 404
 
+# main driver function
+if __name__ == '__main__':
+ 
+    # run() method of Flask class runs the application
+    # on the local development server.
+    app.run()

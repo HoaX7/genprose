@@ -15,3 +15,9 @@ build/
 
 cloud-logging.json
 downloads
+
+*.serverless
+credentials
+*.zip
+*.gz
+zappa_settings.json
