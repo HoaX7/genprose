@@ -1,0 +1,6 @@
+.DS_Store
+tokenizers
+
+node_modules/
+
+*.env*
