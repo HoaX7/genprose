@@ -12,6 +12,9 @@ class ChatGPTModel:
     def generate_content(self, prompt: str, model_engine: str) -> str:
         if not model_engine or model_engine not in accepted_models:
             model_engine = accepted_models[0]
+        
+        if len(prompt) > 4010:
+            prompt = prompt[:4010]
         logger.info("Openai.model.generate_content: generating content using model engine: ", model_engine)
         logger.info("with prompt: ", prompt)
         return openai.Completion.create(

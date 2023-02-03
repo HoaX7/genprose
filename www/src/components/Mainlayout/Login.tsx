@@ -17,7 +17,7 @@ export default function Login() {
 				setSaving(true);
 				try {
 					await login({ secret_code: code });
-					// window.location.reload();
+					window.location.reload();
 				} catch (err) {
 					console.error(err);
 					AlertErrorMessage({ text: "Unable to login" });
