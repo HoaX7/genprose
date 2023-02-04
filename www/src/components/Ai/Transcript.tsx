@@ -16,6 +16,7 @@ import CollapsibleContent from "../Commons/CollapsibleContent";
 import Dropdown from "../Commons/Dropdown";
 import { AI_MODEL_ENGINES } from "../../helpers/constants";
 import Input from "../Commons/Input/TextInput";
+import { clone } from "../../helpers";
 
 export default function Transcript() {
 	const [ transcript, setTranscript ] = useState<TranscriptKeywordProps | null>();
@@ -92,7 +93,7 @@ export default function Transcript() {
 										const resp = await getContentFromKeywords({ prompt: text }, selectedModel.name);
 										if (resp.error) throw resp;
 										if (resp.data) {
-											const res = structuredClone(result);
+											const res = clone(result);
 											res.push(resp.data);
 											setResult(res);
 										}
@@ -134,7 +135,7 @@ export default function Transcript() {
 					<GeneratedKeywords
 						keywords={transcript?.keywords || []}
 						onResult={(data) => {
-							const resp = structuredClone(result);
+							const resp = clone(result);
 							resp.push(data);
 							setResult(resp);
 						}}

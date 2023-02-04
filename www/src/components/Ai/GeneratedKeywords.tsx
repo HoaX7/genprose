@@ -8,6 +8,7 @@ import { getContentFromKeywords } from "../../api/ai";
 import Spinner from "../Commons/Loaders/Spinner";
 import clsx from "clsx";
 import { AI_MODEL_ENGINES, MAX_ALLOWED_KEYWORDS } from "../../helpers/constants";
+import { clone } from "../../helpers";
 
 interface K {
     item: string[];
@@ -72,7 +73,7 @@ export default function GeneratedKeywords({ keywords = [], onResult, selectedMod
 			{keywords.map((item, i) => (
 				<Keyword item={item} key={"keyword_" + i} idx={i + 1} handleClick={(val) => {
 					if (!selectedkeywords.includes(val)) {
-						const res = structuredClone(selectedkeywords);
+						const res = clone(selectedkeywords);
 						res.push(val);
 						setSelectedKeywords(res);
 					}
@@ -86,7 +87,7 @@ export default function GeneratedKeywords({ keywords = [], onResult, selectedMod
 						<div className="bg-blue-100 px-2 py-1 rounded" key={"keyword_selected_" + i}>
 							{keyword} <span className="text-red-600 cursor-pointer"
 								onClick={() => {
-									const res = structuredClone(selectedkeywords);
+									const res = clone(selectedkeywords);
 									res.splice(i, 1);
 									setSelectedKeywords(res);
 								}}
