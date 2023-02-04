@@ -6,13 +6,9 @@ from lib.Auth.index import login_required
 
 backend_service = Blueprint("backend_service", __name__)
 
-# @backend_service.route("/", methods=["GET"])
-# def main() -> str:
-#     return "Backend service", 200
-
-@backend_service.route('/', methods=['GET', 'POST'])
-def lambda_handler(event=None, context=None):
-    return 'hello from Flask!'
+@backend_service.route("/", methods=["GET"])
+def main() -> str:
+    return "Backend service", 200
 
 @backend_service.route("/login", methods=["POST"])
 def login():
