@@ -32,11 +32,19 @@ class Transcribe:
         try:
             # extract audio and fetch filename
             # to transcribe
+            audio_timer = logger.start_timer()
             filename = extract_audio_from_url(link)
+            logger.end_timer("extract_audio_from_url", audio_timer)
+
+            transcript_timer = logger.start_timer()
             result = model.get_transcription(filename)
+            logger.end_timer("get_transcription", transcript_timer)
             self.unlinkFile(filename)
             return result
         except:
+            logger.error("transcribe.get_transcription: ERROR", {
+                "error": e
+            })
             return "Unable to transcribe this video."
 
     def extract_keywords(self, text: str, use_chatgpt_for_keywords: bool = False) -> str:
@@ -44,13 +52,20 @@ class Transcribe:
             keyword_extractor_model = KeywordExtractorModel(use_chatgpt_for_keywords=use_chatgpt_for_keywords)
             return keyword_extractor_model.extract_keywords(text)
         except Exception as e:
-            print(e)
+            logger.error("transcribe.extract_keywords: ERROR", {
+                "error": e
+            })
             return "Unable to extract keywords"
 
     def get_content_from_keywords(self, prompt: str, **kwargs) -> str:
         try:
             logger.info("lib.Transcription.transcribe.get_content_from_keywords: generating content from prompt - ", prompt)
-            return content_model.generate_content(prompt, kwargs["engine"])
+            content_timer = logger.start_timer()
+            result = content_model.generate_content(prompt, kwargs["engine"])
+            logger.end_timer("get_content_from_keywords", content_timer)
+            return result
         except Exception as e:
-            print(e)
+            logger.error("transcribe.get_content_from_keywords: ERROR", {
+                "error": e
+            })
             return "Unable to generate content"

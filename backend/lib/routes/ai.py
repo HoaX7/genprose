@@ -60,10 +60,10 @@ def get_transcript_and_keywords():
 
         result = Transcription.get_yt_video_from_url(data["url"]) 
         text = result["text"]
-        keywords = Transcription.extract_keywords(text, use_chatgpt_for_keywords)
+        # keywords = Transcription.extract_keywords(text, use_chatgpt_for_keywords)
 
         resp = {
-            "keywords": keywords,
+            "keywords": ["ok"],
             "transcript": text
         }
         logger.info("lib.routes.ai.get_transcript_and_keywords: result", resp)
@@ -71,6 +71,7 @@ def get_transcript_and_keywords():
             "data": resp
         }, 200
     except Exception as e:
+        print(e)
         logger.error("lib.routes.ai.get_transcript_and_keywords: ERROR", e)
         return "Unable to generate transcript", 500
 

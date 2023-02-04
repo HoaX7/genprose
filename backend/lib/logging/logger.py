@@ -1,4 +1,5 @@
 from lib.logging.gcp import GCPLogger
+import time
 
 logger_instance = GCPLogger
 
@@ -21,5 +22,11 @@ class Logger:
 
     def error(self, *params):
         self.logger.error(self.prepare_log_dict(*params))
+
+    def start_timer(self):
+        return time.time()
+
+    def end_timer(self, func_name: str, start_time: int):
+        self.logger.info(f"function_name {func_name} took {time.time() - start_time} seconds")
 
 logger = Logger()
