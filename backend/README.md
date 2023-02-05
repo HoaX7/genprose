@@ -13,3 +13,11 @@ https://github.com/openai/whisper/discussions/10
 
 # Example
 https://medium.com/nlplanet/transcribing-youtube-videos-with-whisper-in-a-few-lines-of-code-f57f27596a55
+
+# Common Errors
+- "Whisper moddel not able to open audio file"
+the fix is to install ffmpeg using ``apt install ffmpeg``
+
+- If there are problems installing google-cloud-logging
+error message - "moduleNotFound - google"
+this can be fixed by installing ``pip install google-cloud``
