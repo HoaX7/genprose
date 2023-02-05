@@ -60,10 +60,10 @@ def get_transcript_and_keywords():
 
         result = Transcription.get_yt_video_from_url(data["url"]) 
         text = result["text"]
-        # keywords = Transcription.extract_keywords(text, use_chatgpt_for_keywords)
+        keywords = Transcription.extract_keywords(text, use_chatgpt_for_keywords)
 
         resp = {
-            "keywords": ["ok"],
+            "keywords": keywords,
             "transcript": text
         }
         logger.info("lib.routes.ai.get_transcript_and_keywords: result", resp)

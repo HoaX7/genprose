@@ -1,6 +1,7 @@
 import whisper
 from lib.logging.logger import logger
 from lib.Transcription.abstract import Transcription
+import os
 
 model = whisper.load_model("base")
 
@@ -10,7 +11,10 @@ class WhisperModel(Transcription):
 
     def get_transcription(self, audio_file: str) -> str:
         try:
+            cwd = os.getcwd()
+            path = os.path.join(os.getcwd(), audio_file)
             logger.info("lib.Whisper.model.get_transcription: transcription started for file: ", audio_file)
+            logger.info(f"transcribing audio from path {path}")
             result = model.transcribe(audio_file)
             logger.info("lib.Whisper.model.get_transcription: transcription finished for file: ", audio_file) 
             return result

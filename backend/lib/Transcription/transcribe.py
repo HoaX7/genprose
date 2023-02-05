@@ -35,7 +35,7 @@ class Transcribe:
             audio_timer = logger.start_timer()
             filename = extract_audio_from_url(link)
             logger.end_timer("extract_audio_from_url", audio_timer)
-
+            logger.info(f"fetching transcription from filename: {filename}")
             transcript_timer = logger.start_timer()
             result = model.get_transcription(filename)
             logger.end_timer("get_transcription", transcript_timer)

@@ -20,7 +20,7 @@ def extract_audio_from_url(url: str) -> str:
         filename = "audio.mp3"
         path = f"{dir_path}/{filename}"
         stream.download(filename=path)
-
+        logger.info(f"lib.Extractor.AudioExtractor.youtube: downloading audio file complete: -> {path}")
         return path
     except Exception as e:
         logger.error("lib.Extractor.AudioExtractor.youtube: ERROR", e)
