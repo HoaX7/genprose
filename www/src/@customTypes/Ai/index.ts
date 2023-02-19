@@ -18,3 +18,14 @@ export type GeneratedContentProps = {
     total_tokens: number;
   };
 };
+
+export type ContentProps<T = string> = {
+  unique_id: string;
+  content: T;
+  content_type: string;
+  status: "INPROGRESS" | "COMPLETED"
+}
+
+export type PollParams = {
+  unique_id: string;
+}

@@ -23,3 +23,9 @@ def extract_keywords(text: str, use_chatgpt_for_keywords: bool) -> str:
 
 def get_content_from_keywords(prompt: str, **kwargs) -> str:
     return transcribe.get_content_from_keywords(prompt, **kwargs)
+
+def retrieve_transcript(unique_id: str):
+    return transcribe.retrieve_transcript(unique_id)
+
+def remove_transcript(unique_id: str):
+    return transcribe.remove_transcript(unique_id)

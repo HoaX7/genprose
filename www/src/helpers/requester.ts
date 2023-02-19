@@ -24,10 +24,12 @@ export type ApiResponse<T> = {
     };
 };
 
+export type RequestMethodParams = "GET" | "PUT" | "POST" | "DELETE" | "OPTIONS" | "PATCH";
+
 type ResponseType = "RAW" | "API_RESPONSE";
 export interface RequestParams<D, RT> {
     url: string;
-    method: "GET" | "PUT" | "POST" | "DELETE" | "OPTIONS" | "PATCH";
+    method: RequestMethodParams;
     data: D;
     service?: "ums" | "ams";
     version?: "v1" | "v2";

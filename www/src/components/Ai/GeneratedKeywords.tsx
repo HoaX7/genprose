@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { GeneratedContentProps, TranscriptKeywordProps } from "../../@customTypes/Ai";
+import { ContentProps, GeneratedContentProps, PollParams, TranscriptKeywordProps } from "../../@customTypes/Ai";
 import Typography from "../Commons/Typography/Typography";
 import TextareaInput from "../Commons/Input/TextareaInput";
 import Button from "../Commons/ Button/Button";
 import { AlertErrorMessage } from "../Commons/Alerts";
-import { getContentFromKeywords } from "../../api/ai";
+import { executeFuncAndGetUniqueId, getContentFromKeywords, prepareContentParams } from "../../api/ai";
 import Spinner from "../Commons/Loaders/Spinner";
 import clsx from "clsx";
 import { AI_MODEL_ENGINES, MAX_ALLOWED_KEYWORDS } from "../../helpers/constants";
 import { clone } from "../../helpers";
+import { pollRequest } from "../../helpers/pollRequest";
 
 interface K {
     item: string[];
@@ -34,10 +35,15 @@ const Keyword = ({ item, idx, handleClick, selectedKeywords }: K) => {
 
 interface P {
     keywords: TranscriptKeywordProps["keywords"];
-    onResult: (data: GeneratedContentProps) => void;
+    onResult: (data: ContentProps["content"]) => void;
     selectedModel: typeof AI_MODEL_ENGINES[""];
+	loading: boolean;
+	setPolling: (bool: boolean) => void;
+	polling: boolean;
 }
-export default function GeneratedKeywords({ keywords = [], onResult, selectedModel }: P) {
+export default function GeneratedKeywords({
+	keywords = [], onResult, selectedModel, loading = false, setPolling, polling
+}: P) {
 	const [ selectedkeywords, setSelectedKeywords ] = useState<string[]>([]);
 	const [ saving, setSaving ] = useState(false);
 	const [ text, setText ] = useState("Generate 100 words using these keywords");
@@ -46,18 +52,49 @@ export default function GeneratedKeywords({ keywords = [], onResult, selectedMod
 		try {
 			e.preventDefault();
 			if (!text) return;
-			setSaving(true);
-			const prompt = text + " using keywords " + selectedkeywords.join(", ");
-			const result = await getContentFromKeywords({ prompt }, selectedModel.name);
-			if (result.error) throw result;
-			if (result.data) onResult(result.data);
+			setPolling(true);
+			let prompt = text + " using keywords " + selectedkeywords.join(", ");
+			prompt = prepareContentParams(prompt, selectedModel.name);
+			const resp = await executeFuncAndGetUniqueId({
+				method: "POST",
+				data: {
+					prompt,
+					engine: selectedModel.name 
+				},
+				url: "/ai/generate_content"
+			});
+			if (resp.error) throw resp;
+			if (!resp.data) throw new Error("No data found");
+			await pollRequest<PollParams, string>({
+				maxAttempts: 20,
+				data: { unique_id: resp.data },
+				method: "POST",
+				url: "/ai/retrieve_transcript",
+				callback: (data) => {
+					setPolling(false);
+					onResult(data.content);
+				},
+				errorCallback: () => {
+					AlertErrorMessage({ text: "Content generation failed, Please try again later" });
+					setPolling(false);
+				}
+			});
 		} catch (err) {
 			console.error(err);
 			AlertErrorMessage({ text: "Unable to generate content" });
+			setPolling(false);
 		}
-		setSaving(false);
+		// setSaving(false);
 	};
 
+	if (loading) {
+		return <div className="flex items-center justify-center">
+			<div className="flex items-center flex-col">
+				<Spinner size="xs" />
+				<span className="mt-2 text-gray-600">Fetching keywords...</span>
+			</div>
+		</div>;
+	}
 	if (!keywords || keywords.length <= 0) {
 		return <Typography
 			variant="div"
@@ -117,7 +154,7 @@ export default function GeneratedKeywords({ keywords = [], onResult, selectedMod
 				<Button
 					type="submit"
 					className="mt-3 flex items-center"
-					disabled={saving || selectedkeywords.length <= 0}
+					disabled={polling || selectedkeywords.length <= 0}
 				>
 					{saving ? "Generating..." : "Generate content"}
 					{saving && <Spinner size="xxs" className="ml-2" />}

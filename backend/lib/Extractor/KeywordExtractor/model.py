@@ -10,7 +10,7 @@ class KeywordExtractorModel:
     def __init__(self, **kwargs):
         self.use_chatgpt_for_keywords = kwargs.get('use_chatgpt_for_keywords', '') or False
 
-    def extract_keywords(self, text: str):
+    def extract_keywords(self, text: str) -> list[list[str]]:
         keyword_timer = logger.start_timer()
         if self.use_chatgpt_for_keywords == True:
             logger.info("Using chat-gpt model to extract keywords")

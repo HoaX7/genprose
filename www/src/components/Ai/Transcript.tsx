@@ -1,31 +1,33 @@
 import React, { Fragment, useState } from "react";
-import {
-	GeneratedContentProps,
-	TranscriptKeywordProps,
-} from "../../@customTypes/Ai";
+import { ContentProps, GeneratedContentProps, PollParams } from "../../@customTypes/Ai";
 import Typography from "../Commons/Typography/Typography";
 import Extractors from "./Extractors";
 import GeneratedContents from "./GeneratedContents";
 import GeneratedKeywords from "./GeneratedKeywords";
 import Textarea from "../Commons/Input/TextareaInput";
 import { AlertErrorMessage } from "../Commons/Alerts";
-import { getContentFromKeywords } from "../../api/ai";
+import { executeFuncAndGetUniqueId, getContentFromKeywords } from "../../api/ai";
 import Button from "../Commons/ Button/Button";
 import FullpageLoader from "../Commons/Loaders/FullpageLoader";
 import CollapsibleContent from "../Commons/CollapsibleContent";
 import Dropdown from "../Commons/Dropdown";
-import { AI_MODEL_ENGINES } from "../../helpers/constants";
+import { AI_MODEL_ENGINES, CONTENT_TYPES } from "../../helpers/constants";
 import Input from "../Commons/Input/TextInput";
 import { clone } from "../../helpers";
+import { pollRequest } from "../../helpers/pollRequest";
+import Spinner from "../Commons/Loaders/Spinner";
 
 export default function Transcript() {
-	const [ transcript, setTranscript ] = useState<TranscriptKeywordProps | null>();
+	const [ transcript, setTranscript ] = useState<ContentProps>();
+	const [ keywords, setKeywords ] = useState<ContentProps<string[][]>>();
 	const [ result, setResult ] = useState<GeneratedContentProps[]>([]);
 	const [ prompt, setPrompt ] = useState(
 		"Generate a 100 word essay using this transcript"
 	);
 	const [ saving, setSaving ] = useState(false);
 	const [ isChecked, setIsChecked ] = useState(true);
+	const [ contentPolling, setContentPolling ] = useState<string[]>([]);
+	const [ pollingKeywords, setPollingKeywords ] = useState(false);
 	const [ selectedModel, setSelectedModel ] = useState(
 		AI_MODEL_ENGINES.TEXT_DAVINCI_003
 	);
@@ -36,7 +38,7 @@ export default function Transcript() {
 	}));
 	return (
 		<Fragment>
-			<div className="px-3 flex flex-col flex-wrap gap-1">
+			{/* <div className="px-3 flex flex-col flex-wrap gap-1">
 				<div className="mr-2">
         Content Model Engine:{" "}
 					<Dropdown
@@ -56,7 +58,7 @@ export default function Transcript() {
 				>
 					{selectedModel.description}
 				</Typography>
-			</div>
+			</div> */}
 			<div className="grid grid-cols-2 md:divide-x divide-y md:divide-y-0">
 				{saving && <FullpageLoader />}
 				<div className="col-span-2 md:col-span-1 p-3">
@@ -68,17 +70,29 @@ export default function Transcript() {
 					>
             Extractor
 					</Typography>
-					<Extractors onExtraction={(data) => setTranscript(data)} useChatGpt={isChecked} />
-					<div className="mt-3">
-						<Input type={"checkbox"} defaultChecked={isChecked} onChange={(e) => {
-							setIsChecked(e.target.checked);
-						}} />
-						<label className="ml-2">Use chatgpt to extract keywords</label>
-					</div>
-					{transcript?.transcript && (
+					<Extractors
+						onExtraction={(data) => setTranscript(data)}
+						useChatGpt={isChecked}
+						onPolling={(bool) => {
+							const res = clone(contentPolling);
+							if (bool && !contentPolling.includes(CONTENT_TYPES.TRANSCRIPT)) {
+								res.push(CONTENT_TYPES.TRANSCRIPT);
+							} else if (
+								!bool &&
+                contentPolling.includes(CONTENT_TYPES.TRANSCRIPT)
+							) {
+								const idx = res.findIndex(
+									(c: string) => c === CONTENT_TYPES.TRANSCRIPT
+								);
+								if (idx >= 0) res.splice(idx, 1);
+							}
+							setContentPolling(res);
+						}}
+					/>
+					{transcript?.content && (
 						<div className="mt-3">
 							<CollapsibleContent
-								content={transcript.transcript || "<i>No content available<i>"}
+								content={transcript.content || "<i>No content available<i>"}
 							/>
 							<form
 								className="mt-3"
@@ -89,8 +103,11 @@ export default function Transcript() {
 										const text =
                       prompt +
                       " generate using this transcript " +
-                      transcript.transcript;
-										const resp = await getContentFromKeywords({ prompt: text }, selectedModel.name);
+                      transcript.content;
+										const resp = await getContentFromKeywords(
+											{ prompt: text },
+											selectedModel.name
+										);
 										if (resp.error) throw resp;
 										if (resp.data) {
 											const res = clone(result);
@@ -131,28 +148,98 @@ export default function Transcript() {
 						className="underline mb-3"
 					>
             Keywords
+						<Button
+							type="button"
+							disabled={!transcript?.content}
+							className="mx-2"
+							onClick={async () => {
+								try {
+									if (!transcript?.content) return;
+									setPollingKeywords(true);
+									const resp = await executeFuncAndGetUniqueId({
+										method: "POST",
+										data: {
+											text: transcript.content,
+											use_chatgpt_for_keywords: isChecked 
+										},
+										url: "/ai/extract_keywords"
+									});
+									if (resp.error) throw resp;
+									if (!resp.data) throw new Error("Unable to load data");
+									await pollRequest<PollParams, string[][]>({
+										method: "POST",
+										data: { unique_id: resp.data },
+										url: "/ai/retrieve_transcript",
+										callback: (data) => {
+											setKeywords(data);
+											setPollingKeywords(false);
+											return;
+										},
+										errorCallback: () => {
+											setPollingKeywords(false);
+										}
+									});
+								} catch (err) {
+									console.log("Unable to get keywords:", err);
+									setPollingKeywords(false);
+								}
+							}}
+						>
+              Get keywords
+						</Button>
 					</Typography>
+					<div className="mt-3">
+						<Input
+							type={"checkbox"}
+							defaultChecked={isChecked}
+							onChange={(e) => {
+								setIsChecked(e.target.checked);
+							}}
+						/>
+						<label className="ml-2">Use chatgpt to extract keywords</label>
+					</div>
 					<GeneratedKeywords
-						keywords={transcript?.keywords || []}
+						keywords={keywords?.content || []}
 						onResult={(data) => {
 							const resp = clone(result);
 							resp.push(data);
 							setResult(resp);
 						}}
 						selectedModel={selectedModel}
+						loading={pollingKeywords}
+						polling={contentPolling.includes(CONTENT_TYPES.CONTENT)}
+						setPolling={(bool) => {
+							const res = clone(contentPolling);
+							if (bool && !contentPolling.includes(CONTENT_TYPES.CONTENT)) {
+								res.push(CONTENT_TYPES.CONTENT);
+							} else if (!bool && contentPolling.includes(CONTENT_TYPES.CONTENT)) {
+								const idx = res.findIndex((c: string) => c === CONTENT_TYPES.CONTENT);
+								if (idx >= 0) {
+									res.splice(idx, 1);
+								}
+							}
+							setContentPolling(res);
+						}}
 					/>
 				</div>
 			</div>
 			<div className="grid grid-cols-2 md:divide-x divide-y md:divide-y-0 mt-3">
 				<div className="col-span-2 md:col-span-2 p-3">
-					<Typography
-						variant="div"
-						font={18}
-						weight="bold"
-						className="underline mb-3"
-					>
+					<div className="flex items-center mb-3">
+						<Typography
+							variant="div"
+							font={18}
+							weight="bold"
+							className="underline"
+						>
             Content Generated
-					</Typography>
+						</Typography>
+						{contentPolling.includes(CONTENT_TYPES.CONTENT) ? (
+							<div className="flex items-center text-gray-600">
+								<Spinner size="xxs" className="mx-2" /> Generating content...
+							</div>
+						) : ""}
+					</div>
 					<GeneratedContents data={result} />
 				</div>
 			</div>

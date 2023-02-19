@@ -40,7 +40,7 @@ class TFIdfModel:
         Logic can be improved for better results
         and keyword list can be shuffled.
     """
-    def extract_keywords(self, text: str) -> str:
+    def extract_keywords(self, text: str) -> list[list[str]]:
         if type(text) != str:
             raise Exception("Invalid text type. Expected type 'str'")
 

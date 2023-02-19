@@ -16,7 +16,7 @@ def load_transcription():
 
         result = Transcription.get_yt_video_from_url(data["url"])
         logger.info("lib.routes.ai.load_transcription: result", result)
-        return result["text"], 200
+        return result, 200
     except Exception as e:
         print(e)
         logger.error("lib.routes.ai.load_transcription: ERROR", e)
@@ -67,9 +67,7 @@ def get_transcript_and_keywords():
             "transcript": text
         }
         logger.info("lib.routes.ai.get_transcript_and_keywords: result", resp)
-        return {
-            "data": resp
-        }, 200
+        return resp, 200
     except Exception as e:
         print(e)
         logger.error("lib.routes.ai.get_transcript_and_keywords: ERROR", e)
@@ -85,10 +83,37 @@ def get_content_from_keywords():
 
         model_engine = data.get('engine', '')
         result = Transcription.get_content_from_keywords(data["prompt"], engine=model_engine)
-        return {
-            "data": result
-        }, 200
+        return result, 200
     except Exception as e:
         print(e)
         logger.error("lib.routes.ai.get_content_from_keywords: ERROR", e)
         return "Unable to generate content", 500
+
+@ai_service.route("/retrieve_transcript", methods=["POST"])
+@login_required
+def retrieve_transcript():
+    try:
+        data = request.json
+        if not data["unique_id"]:
+            return "Expected 'unique_id' property in json body", 422
+
+        result = Transcription.retrieve_transcript(data["unique_id"])
+        return result, 200
+    except Exception as e:
+        print(e)
+        logger.error("lib.routes.ai.get_content_from_keywords: ERROR", e)
+        return "Unable to generate content", 500 
+
+@ai_service.route("/remove_transcript", methods=["POST"])
+@login_required
+def remove_transcript():
+    try:
+        data = request.json
+        if not data["unique_id"]:
+            return "Expected 'unique_id' property in json body", 422
+
+        Transcription.remove_transcript(data["unique_id"])
+        return 
+    except Exception as e:
+        print(e)
+        return "Unable to remove data", 500

@@ -30,3 +30,9 @@ export const AI_MODEL_ENGINES: {
 		description: "Capable of very simple tasks, usually the fastest model in the GPT-3 series, and lowest cost."
 	}
 };
+
+export const CONTENT_TYPES = {
+	TRANSCRIPT: "TRANSCRIPT",
+	KEYWORDS: "KEYWORDS",
+	CONTENT: "CONTENT"
+};

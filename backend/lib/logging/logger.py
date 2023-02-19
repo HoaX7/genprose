@@ -15,18 +15,22 @@ class Logger:
         return {("param" + str(idx + 1)): param for idx,param in enumerate(params)}
 
     def info(self, *params):
-        self.logger.info(self.prepare_log_dict(*params))
+        pass
+        # self.logger.info(self.prepare_log_dict(*params))
     
     def warn(self, *params):
-        self.logger.warn(self.prepare_log_dict(*params))
+        pass
+        # self.logger.warn(self.prepare_log_dict(*params))
 
     def error(self, *params):
-        self.logger.error(self.prepare_log_dict(*params))
+        pass
+        # self.logger.error(self.prepare_log_dict(*params))
 
     def start_timer(self):
         return time.time()
 
     def end_timer(self, func_name: str, start_time: int):
-        self.logger.info(f"function_name {func_name} took {time.time() - start_time} seconds")
+        pass
+        # self.logger.info(f"function_name {func_name} took {time.time() - start_time} seconds")
 
 logger = Logger()

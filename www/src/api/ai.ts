@@ -1,6 +1,6 @@
 import { GeneratedContentProps, TranscriptKeywordProps } from "../@customTypes/Ai";
 import { AI_MODEL_ENGINES } from "../helpers/constants";
-import { requester, ApiResponse } from "../helpers/requester";
+import { requester, ApiResponse, RequestMethodParams } from "../helpers/requester";
 
 export const getTranscriptionAndKeywordsFromURL = (params: {
 	url: string;
@@ -11,6 +11,18 @@ export const getTranscriptionAndKeywordsFromURL = (params: {
 		data: params,
 		method: "POST",
 		timeout: 120000
+	});
+};
+
+export const executeFuncAndGetUniqueId = <T>(params: {
+	method: RequestMethodParams;
+	data: T;
+	url: string;
+}): Promise<ApiResponse<string>> => {
+	return requester({
+		data: params.data,
+		url: params.url,
+		method: params.method
 	});
 };
 
@@ -40,4 +52,23 @@ export const getContentFromKeywords = (params: {
 		},
 		method: "POST",
 	});
+};
+
+export const prepareContentParams = (prompt: string, engine: string) => {
+	let maxChar = AI_MODEL_ENGINES.TEXT_DAVINCI_003.tokens;
+	switch (engine) {
+		case AI_MODEL_ENGINES.TEXT_CURIE_001.name:
+			maxChar = AI_MODEL_ENGINES.TEXT_CURIE_001.tokens;
+			break;
+		case AI_MODEL_ENGINES.TEXT_BABBAGE_001.name:
+			maxChar = AI_MODEL_ENGINES.TEXT_BABBAGE_001.tokens;
+			break;
+		case AI_MODEL_ENGINES.TEXT_ADA_001.name:
+			maxChar = AI_MODEL_ENGINES.TEXT_ADA_001.tokens;
+			break;
+	}
+	if (prompt.length > maxChar) {
+		prompt = prompt.substring(0, maxChar);
+	}
+	return prompt;
 };

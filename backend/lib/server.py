@@ -5,6 +5,7 @@ from lib.logging.logger import logger
 import traceback
 from flask_cors import CORS
 import os
+import json
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -26,17 +27,25 @@ def log_response_info(response):
         response.data seems to be returning 'byte' class,
         need to add response decorators to return appropriate format.
     """
-    # resp_data = str(response.get_data(), 'utf-8')
+
+    resp_data = response.get_data(as_text=True)
+    if response.mimetype == "application/json":
+        resp_data = json.loads(resp_data)
+
+    json_data = dict(success=True, data=resp_data)
+    if response.status_code not in [200, 201]:
+        json_data.update({"error": True, "message": resp_data})
+        json_data.pop("success")
+        json_data.pop("data")
+
+    print(resp_data)
+    response.set_data(json.dumps(json_data))
+
     response.headers["Content-type"] = "application/json"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
 
     # Logging outbound request
     # logger.info("Outbound response", request.remote_addr, request.method, request.scheme, request.full_path,
-    # response.status, { "data": resp_data })
-    # response = make_response({
-    #     "success": True,
-    #     "data": response.get_data()
-    # })
     return response
 
 @app.errorhandler(Exception)
