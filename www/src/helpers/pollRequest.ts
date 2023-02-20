@@ -36,7 +36,7 @@ export const pollRequest = <T, C>({
 			AlertErrorMessage({ text: err.message || "Please try again later" });
 			errorCallback(err.message);
 			// remove init data for unique_id
-			await requester({
+			requester({
 				data,
 				method: "POST",
 				url: "/ai/remove_transcript"
