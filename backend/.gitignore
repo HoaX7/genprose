@@ -21,3 +21,4 @@ credentials
 *.zip
 *.gz
 zappa_settings.json
+database.db

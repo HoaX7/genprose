@@ -113,7 +113,7 @@ def remove_transcript():
             return "Expected 'unique_id' property in json body", 422
 
         Transcription.remove_transcript(data["unique_id"])
-        return 
+        return "Data removed", 200
     except Exception as e:
         print(e)
         return "Unable to remove data", 500

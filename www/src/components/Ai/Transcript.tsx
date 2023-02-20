@@ -6,7 +6,7 @@ import GeneratedContents from "./GeneratedContents";
 import GeneratedKeywords from "./GeneratedKeywords";
 import Textarea from "../Commons/Input/TextareaInput";
 import { AlertErrorMessage } from "../Commons/Alerts";
-import { executeFuncAndGetUniqueId, getContentFromKeywords } from "../../api/ai";
+import { executeFuncAndGetUniqueId, getContentFromKeywords, prepareContentParams } from "../../api/ai";
 import Button from "../Commons/ Button/Button";
 import FullpageLoader from "../Commons/Loaders/FullpageLoader";
 import CollapsibleContent from "../Commons/CollapsibleContent";
@@ -60,7 +60,7 @@ export default function Transcript() {
 				</Typography>
 			</div> */}
 			<div className="grid grid-cols-2 md:divide-x divide-y md:divide-y-0">
-				{saving && <FullpageLoader />}
+				{/* {saving && <FullpageLoader />} */}
 				<div className="col-span-2 md:col-span-1 p-3">
 					<Typography
 						variant="div"
@@ -100,25 +100,40 @@ export default function Transcript() {
 									try {
 										e.preventDefault();
 										setSaving(true);
-										const text =
-                      prompt +
-                      " generate using this transcript " +
-                      transcript.content;
-										const resp = await getContentFromKeywords(
-											{ prompt: text },
-											selectedModel.name
-										);
-										if (resp.error) throw resp;
-										if (resp.data) {
-											const res = clone(result);
-											res.push(resp.data);
-											setResult(res);
-										}
+										let text =
+										prompt +
+										" generate using this transcript " +
+										transcript.content;
+
+										text = prepareContentParams(text, selectedModel.name);
+										const resp = await executeFuncAndGetUniqueId({
+											method: "POST",
+											data: {
+												prompt: text,
+												engine: selectedModel.name 
+											},
+											url: "/ai/generate_content"
+										});
+										if (resp.error || !resp.data) throw resp;
+										await pollRequest<PollParams, GeneratedContentProps>({
+											method: "POST",
+											data: { unique_id: resp.data },
+											url: "/ai/retrieve_transcript",
+											callback: (data) => {
+												const res = clone(result);
+												res.push(data.content);
+												setResult(res);
+												setSaving(false);
+											},
+											errorCallback: () => {
+												setSaving(false);
+											}
+										});
 									} catch (err) {
 										console.log("Transcript error", err);
 										AlertErrorMessage({ text: "Unable to generate content" });
+										setSaving(false);
 									}
-									setSaving(false);
 								}}
 							>
 								<div>
@@ -234,7 +249,7 @@ export default function Transcript() {
 						>
             Content Generated
 						</Typography>
-						{contentPolling.includes(CONTENT_TYPES.CONTENT) ? (
+						{(contentPolling.includes(CONTENT_TYPES.CONTENT) || saving) ? (
 							<div className="flex items-center text-gray-600">
 								<Spinner size="xxs" className="mx-2" /> Generating content...
 							</div>

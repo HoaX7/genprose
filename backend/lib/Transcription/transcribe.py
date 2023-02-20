@@ -114,7 +114,7 @@ class Transcribe:
             })
             return "Unable to fetch data"
 
-    def remove_transcript(unique_id: str):
+    def remove_transcript(self, unique_id: str):
         logger.info(f"remove_transcript: Removing data with unique_id: {unique_id}")
         try:
             Extractor.remove(unique_id)

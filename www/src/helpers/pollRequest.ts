@@ -12,7 +12,7 @@ interface PollRequest<T, C> {
     errorCallback: (message: string) => void;
 }
 export const pollRequest = <T, C>({
-	interval = 10000, maxAttempts = 50, method, data, url, callback, errorCallback
+	interval = 10000, maxAttempts = 1, method, data, url, callback, errorCallback
 }: PollRequest<T, C>) => {
 	let attempts = 0;
 
@@ -35,6 +35,12 @@ export const pollRequest = <T, C>({
 		} catch (err: any) {
 			AlertErrorMessage({ text: err.message || "Please try again later" });
 			errorCallback(err.message);
+			// remove init data for unique_id
+			await requester({
+				data,
+				method: "POST",
+				url: "/ai/remove_transcript"
+			});
 		}
 	};
 
