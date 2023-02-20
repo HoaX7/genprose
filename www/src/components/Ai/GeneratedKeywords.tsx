@@ -66,7 +66,6 @@ export default function GeneratedKeywords({
 			if (resp.error) throw resp;
 			if (!resp.data) throw new Error("No data found");
 			await pollRequest<PollParams, string>({
-				maxAttempts: 20,
 				data: { unique_id: resp.data },
 				method: "POST",
 				url: "/ai/retrieve_transcript",

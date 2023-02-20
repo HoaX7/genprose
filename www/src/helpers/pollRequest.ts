@@ -12,7 +12,7 @@ interface PollRequest<T, C> {
     errorCallback: (message: string) => void;
 }
 export const pollRequest = <T, C>({
-	interval = 5000, maxAttempts = 10, method, data, url, callback, errorCallback
+	interval = 10000, maxAttempts = 50, method, data, url, callback, errorCallback
 }: PollRequest<T, C>) => {
 	let attempts = 0;
 
