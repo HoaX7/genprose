@@ -29,7 +29,9 @@ def extract_audio_from_url(**kwargs) -> str:
         make_dir_if_not_exist(dir_path)
         filename = "audio.mp3"
         path = f"{dir_path}/{filename}"
+        print(f"Downloading audio to path - {path}")
         stream.download(filename=path, skip_existing=False)
+        print("download completed")
         logger.info(f"lib.Extractor.AudioExtractor.youtube: downloading audio file complete: -> {path}")
 
         return path

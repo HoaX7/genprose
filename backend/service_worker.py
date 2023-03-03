@@ -41,8 +41,8 @@ async def start_task():
         except Exception as e:
             print("ERROR: ", e)
         finally:
-            print("Sleeping for 2 second...")
-            await asyncio.sleep(2)
+            print("Sleeping for 5 seconds...")
+            await asyncio.sleep(5)
 
 async def main():
     print("Service worker started...")
