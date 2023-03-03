@@ -1,7 +1,7 @@
 from lib.Extractor.KeywordExtractor.tfidf import TFIdfModel
 from lib.Openai.model import ChatGPTModel
 from lib.utils.index import divide_chunks
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 
 gpt_model = ChatGPTModel()
 tfidf_model = TFIdfModel()

@@ -1,5 +1,5 @@
 from email import utils
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 from lib.Whisper.model import WhisperModel
 from lib.Extractor.AudioExtractor.youtube import extract_audio_from_url
 from lib.Extractor.KeywordExtractor.model import KeywordExtractorModel
@@ -44,9 +44,9 @@ class Transcribe:
     def get_transcription(self, link: str) -> Dict[str, str]:
         try:
             unique_id = uuid4().hex
-            Extractor.create(unique_id, "")
-            thread = Thread(target=self.extract_audio, args=(link, unique_id))
-            thread.start()
+            Extractor.create(unique_id, "", link)
+            # thread = Thread(target=self.extract_audio, args=(link, unique_id))
+            # thread.start()
             return unique_id
         except Exception as e:
             print(e)
@@ -58,9 +58,9 @@ class Transcribe:
     def extract_keywords(self, text: str, use_chatgpt_for_keywords: bool = False) -> str:
         try:
             unique_id = uuid4().hex
-            Extractor.create(unique_id, "[]", "KEYWORDS")
-            thread = Thread(target=self.start_keyword_extraction, args=(text, use_chatgpt_for_keywords, unique_id))
-            thread.start()
+            Extractor.create(unique_id, "[]", f"{text}, {use_chatgpt_for_keywords}, {unique_id}", "KEYWORDS")
+            # thread = Thread(target=self.start_keyword_extraction, args=(text, use_chatgpt_for_keywords, unique_id))
+            # thread.start()
             return unique_id
         except Exception as e:
             print(e)
@@ -84,9 +84,10 @@ class Transcribe:
     def get_content_from_keywords(self, prompt: str, **kwargs) -> str:
         try:
             unique_id = uuid4().hex
-            Extractor.create(unique_id, "{}", "GENERATED_CONTENT")
-            thread = Thread(target=self.start_content_generation, args=(prompt, kwargs["engine"], unique_id))
-            thread.start()
+            engine = kwargs["engine"]
+            Extractor.create(unique_id, "{}", f"{prompt}, {engine}", "GENERATED_CONTENT")
+            # thread = Thread(target=self.start_content_generation, args=(prompt, kwargs["engine"], unique_id))
+            # thread.start()
             return unique_id
         except Exception as e:
             logger.error("transcribe.get_content_from_keywords: ERROR", {

@@ -5,7 +5,7 @@
 
 """
 from lib.Transcription.transcribe import Transcribe
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 from typing import List
 
 transcribe = Transcribe()

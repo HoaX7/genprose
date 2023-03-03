@@ -1,5 +1,5 @@
 import whisper
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 from lib.Transcription.abstract import Transcription
 import os
 import io

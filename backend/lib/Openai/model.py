@@ -1,6 +1,6 @@
 import openai
 import os
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 accepted_models = ["text-davinci-003", "text-curie-001", "text-babbage-001", "text-ada-001"]

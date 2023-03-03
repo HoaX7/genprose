@@ -1,5 +1,5 @@
 from pytube import YouTube
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 from lib.utils.index import make_dir_if_not_exist
 
 """

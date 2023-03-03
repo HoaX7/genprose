@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify, make_response
 from lib.routes.service import backend_service
 from lib.routes.ai import ai_service
-from lib.logging.logger import logger
+from lib.Logging.logger import logger
 import traceback
 from flask_cors import CORS
 import os
 import json
+import asyncio
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -63,4 +64,4 @@ if __name__ == '__main__':
  
     # run() method of Flask class runs the application
     # on the local development server.
-    app.run()
+    asyncio.run(app.run())

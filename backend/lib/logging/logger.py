@@ -1,4 +1,4 @@
-from lib.logging.gcp import GCPLogger
+from lib.Logging.gcp import GCPLogger
 import time
 
 logger_instance = GCPLogger

@@ -1,4 +1,4 @@
-from lib.logging.log_abstract import LogAbstract
+from lib.Logging.log_abstract import LogAbstract
 import logging
 import sys
 import google.cloud.logging
