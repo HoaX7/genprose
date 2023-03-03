@@ -34,7 +34,7 @@ async def start_task():
             queue_list = Extractor.get_by_in_progress_rows()
             tasks = []
             for item in queue_list:
-                tasks.append(async_wrapper(process_tasks, item["unique_id"], item["args"], item["content_type"]))
+                tasks.append(async_wrapper(process_tasks, item["unique_id"], item["args"] or "", item["content_type"]))
 
             print(f"Executing {len(tasks)} Tasks")
             await asyncio.gather(*tasks)
