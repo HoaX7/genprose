@@ -24,16 +24,16 @@ def extract_audio_from_url(**kwargs) -> str:
 
         yt = YouTube(url, on_progress_callback=download_progress, on_complete_callback=download_completed)
         # stream = yt.streams.filter(only_audio=True)[0]
-        all_streams = yt.streams
-        print(all_streams)
-        for stream in all_streams:
-            print("download started")
-            stream.download()
-            print("download completed")
-        # dir_path = "downloads"
-        # make_dir_if_not_exist(dir_path)
-        # filename = "audio.mp3"
-        # path = f"{dir_path}/{filename}"
+        stream = yt.streams[0]
+
+        dir_path = "downloads"
+        make_dir_if_not_exist(dir_path)
+        filename = yt.title
+        path = f"{dir_path}/{filename}"
+        print(stream)
+        print("download started")
+        stream.download(filename=path, skip_existing=False)
+        print("download completed")
         # print(f"Downloading audio to path - {path}")
         # stream.download(filename=path, skip_existing=False)
         # print("download completed")

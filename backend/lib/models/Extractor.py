@@ -1,5 +1,6 @@
 from lib.Database.index import database as db
 from typing import Dict
+from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
 
 """
     @Model
@@ -9,7 +10,7 @@ from typing import Dict
 
 tablename = "contents"
 class Schema:
-    def __init__(self, unique_id, content, args, content_type, status = "INPROGRESS"):
+    def __init__(self, unique_id, content, args, content_type, status = PROGRESSIVE_STATUS.QUEUED):
         self._unique_id = unique_id
         self._content = content
         self._status = status
@@ -41,9 +42,9 @@ class Schema:
     def args(self):
         return self._args
 
-def create(unique_id: str, content, args = "", content_type = "TRANSCRIPT"):
-    data = Schema(unique_id, content, args, content_type, "INPROGRESS")
-    print(data.args)
+def create(unique_id: str, content, args, content_type = CONTENT_TYPES.EXTRACT_AUDIO, status = PROGRESSIVE_STATUS.QUEUED):
+    data = Schema(unique_id, content, args, content_type, status)
+    print("creating data", data)
     with db.conn:
         db.cursor.execute("""
             insert into contents(unique_id, content, args, content_type, status)
@@ -58,11 +59,17 @@ def get_by_id(unique_id: str):
         return dict(zip(column_names, result))
     return
 
-def update(unique_id: str, data: Dict, status = 'STREAMING'):
+def update(unique_id: str, data: Dict, status = PROGRESSIVE_STATUS.INPROGRESS):
+    print("updating: ", data)
     with db.conn:
-        db.cursor.execute("""
-            update contents set content = ?, status = ? where unique_id = ?
-        """, (data["content"], status, unique_id))
+        if data["args"]:
+            db.cursor.execute("""
+                update contents set content = ?, status = ?, args = ? where unique_id = ?
+            """, (data["content"], status, data["args"], unique_id))
+        else:
+            db.cursor.execute("""
+                update contents set content = ?, status = ? where unique_id = ?
+            """, (data["content"], status, unique_id))
 
 def remove(unique_id: str):
     with db.conn:
@@ -71,9 +78,10 @@ def remove(unique_id: str):
             (unique_id,)
         )
 
-def get_by_in_progress_rows():
+def get_rows_by_status(status = PROGRESSIVE_STATUS.QUEUED):
     db.cursor.execute(
-            "select * from contents where status = 'INPROGRESS'"
+            "select * from contents where status = ?",
+            (status,)
         )
     result = db.cursor.fetchall()
     if result:
