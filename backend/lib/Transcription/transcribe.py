@@ -126,9 +126,9 @@ class Transcribe:
 def on_complete(stream, path: str, unique_id: str):
     print(f"Audio download completed - fp: {path}")
     print(unique_id)
-    result = model.get_transcription(path)
+    # result = model.get_transcription(path)
     # Stream transcript data directly from IO
-    Extractor.update(unique_id, {"content": result["text"]}, "COMPLETED")
+    # Extractor.update(unique_id, {"content": result["text"]}, "COMPLETED")
 
 def on_progress(chunk: bytes, file_handler, bytes_remaining: int, unique_id: str):
     print(chunk, bytes_remaining)
