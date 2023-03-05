@@ -26,7 +26,7 @@ export const pollRequest = <T, C>({
 		try {
 			console.log("request to url: " + url + " started polling...");
 			console.log("polling with data: ", data);
-			if (attempts >= maxAttempts) throw new Error("Exceeded max attempts");
+			// if (attempts >= maxAttempts) throw new Error("Exceeded max attempts");
 			attempts++;
 			const result: ApiResponse<ContentProps<C>> = await requester({
 				data,
