@@ -32,8 +32,9 @@ module.exports = {
 				status: PROGRESSIVE_STATUS.INPROGRESS,
 			});
 
+			const filename = new Date().getTime() + ".mp3";
 			//Download video and save as MP3 file
-			YD.download(id);
+			YD.download(id, filename);
     
 			YD.on("finished", function(err, data) {
 				console.log("Download completed: ", data);

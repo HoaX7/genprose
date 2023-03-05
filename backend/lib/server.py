@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.config['SESSION_COOKIE_SAMESITE'] = "None"
+app.config['SESSION_COOKIE_SECURE'] = True
 
 cors_whitelist = os.getenv("CORS_WHITELIST")
 CORS(app, supports_credentials=True, origins="*", expose_headers=["Set-Cookie", "Authorization"])
@@ -43,7 +45,7 @@ def log_response_info(response):
     response.set_data(json.dumps(json_data))
 
     response.headers["Content-type"] = "application/json"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, Cookie"
 
     # Logging outbound request
     # logger.info("Outbound response", request.remote_addr, request.method, request.scheme, request.full_path,

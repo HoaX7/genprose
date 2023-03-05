@@ -19,5 +19,5 @@ def set_session(value) -> None:
     resp = make_response("Session authorized")
     # JWT token generated for 'value'
     resp.set_cookie("token", "==" + value, max_age=None, expires=None, path='/', 
-    domain=None, secure=None, httponly=True)
+    domain=None, secure=False, httponly=True)
     return resp

@@ -18,7 +18,7 @@ export default function Login() {
 				try {
 					await login({ secret_code: code });
 					localStorage.setItem("is-logged-in", "true");
-					window.location.reload();
+					// window.location.reload();
 				} catch (err) {
 					console.error(err);
 					AlertErrorMessage({ text: "Unable to login" });
