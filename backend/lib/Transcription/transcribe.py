@@ -144,8 +144,8 @@ class Transcribe:
             if not result:
                 return {} 
 
-            if result and result["status"] == PROGRESSIVE_STATUS.COMPLETED:
-                Extractor.remove(unique_id)
+            # if result and result["status"] == PROGRESSIVE_STATUS.COMPLETED:
+            #     Extractor.remove(unique_id)
 
             if result and result["args"]:
                 result["args"] = json.loads(result["args"])
