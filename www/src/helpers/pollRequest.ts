@@ -3,16 +3,22 @@ import { AlertErrorMessage } from "../components/Commons/Alerts";
 import { ApiResponse, requester, RequestMethodParams } from "./requester";
 
 interface PollRequest<T, C> {
-    url: string;
-    data: T;
-    method: RequestMethodParams;
-    maxAttempts?: number;
-    interval?: number;
-    callback: (data: ContentProps<C>) => void;
-    errorCallback: (message: string) => void;
+  url: string;
+  data: T;
+  method: RequestMethodParams;
+  maxAttempts?: number;
+  interval?: number;
+  callback: (data: ContentProps<C>) => void;
+  errorCallback: (message: string) => void;
 }
 export const pollRequest = <T, C>({
-	interval = 10000, maxAttempts = 50, method, data, url, callback, errorCallback
+	interval = 10000,
+	maxAttempts = 50,
+	method,
+	data,
+	url,
+	callback,
+	errorCallback,
 }: PollRequest<T, C>) => {
 	let attempts = 0;
 
@@ -25,9 +31,14 @@ export const pollRequest = <T, C>({
 			const result: ApiResponse<ContentProps<C>> = await requester({
 				data,
 				url,
-				method
+				method,
 			});
-			if (!result || !result.data || result.data.status === "INPROGRESS") {
+			if (
+				!result ||
+        !result.data ||
+        result.data.status === "INPROGRESS" ||
+        result.data.status === "QUEUED"
+			) {
 				setTimeout(execute, interval);
 			} else {
 				callback(result.data);
@@ -39,7 +50,7 @@ export const pollRequest = <T, C>({
 			requester({
 				data,
 				method: "POST",
-				url: "/ai/remove_transcript"
+				url: "/ai/remove_transcript",
 			});
 		}
 	};

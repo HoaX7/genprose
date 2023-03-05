@@ -23,7 +23,7 @@ export type ContentProps<T = string> = {
   unique_id: string;
   content: T;
   content_type: string;
-  status: "INPROGRESS" | "COMPLETED"
+  status: "INPROGRESS" | "COMPLETED" | "QUEUED"
 }
 
 export type PollParams = {

@@ -21,3 +21,5 @@ the fix is to install ffmpeg using ``apt install ffmpeg``
 - If there are problems installing google-cloud-logging
 error message - "moduleNotFound - google"
 this can be fixed by installing ``pip install google-cloud``
+
+- export 'OPENAI_API_KEY' for service_worker.py to generate content
