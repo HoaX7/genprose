@@ -22,6 +22,7 @@ interface P {
   globalStatus: StatusObject[];
   setUrl: (props: string) => void;
   url: string;
+  setInfoText: (props: string) => void;
 }
 function Extractor({
 	onExtraction,
@@ -32,7 +33,8 @@ function Extractor({
 	setQueueMessage,
 	globalStatus,
 	url,
-	setUrl
+	setUrl,
+	setInfoText
 }: P) {
 	const [ saving, setSaving ] = useState(false);
 	const [ polling, setPolling ] = useState(false);
@@ -43,6 +45,7 @@ function Extractor({
 			if (!url) return;
 			// setSaving(true);
 			setPolling(true);
+			setInfoText("We will email you when your content is ready");
 			const resp = await executeFuncAndGetUniqueId({
 				data: {
 					url,
@@ -131,9 +134,6 @@ function Extractor({
 		<div className={className}>
 			{saving && <FullpageLoader title="Extracting..." />}
 			<form onSubmit={handleSubmit}>
-				<div className="mb-2">
-					{polling ? "We will email you when your content is ready" : ""}
-				</div>
 				<div>
 					{/* <label htmlFor="yt">Enter YouTube URL</label> */}
 					<div>

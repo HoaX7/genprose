@@ -56,6 +56,7 @@ function Transcript({
 	const [ selectedModel, setSelectedModel ] = useState(
 		AI_MODEL_ENGINES.TEXT_DAVINCI_003
 	);
+	const [ infoText, setInfoText ] = useState(keywordResult ? "Showing your latest Transcript" : "");
 
 	const modelOptions = Object.keys(AI_MODEL_ENGINES).map((k) => ({
 		label: AI_MODEL_ENGINES[k].name,
@@ -84,7 +85,7 @@ function Transcript({
 					{selectedModel.description}
 				</Typography>
 			</div> */}
-			{keywordResult && (
+			{infoText && (
 				<Typography
 					variant="div"
 					weight="medium"
@@ -97,7 +98,7 @@ function Transcript({
 							alt="info"
 							width={16}
 							className="inline-block mb-1"
-						/> Showing your latest Transcript
+						/> {infoText}
 					</span>
 				</Typography>
 			)}
@@ -113,6 +114,7 @@ function Transcript({
             Extractor
 					</Typography>
 					<Extractors
+						setInfoText={setInfoText}
 						setUrl={setUrl}
 						url={url}
 						onExtraction={(data) => {
