@@ -5,6 +5,8 @@
 
 """
 from lib.Transcription.transcribe import Transcribe
+import lib.Transcription.content as content_extractor
+import lib.Transcription.keywords as keyword_extractor
 from lib.Logging.logger import logger
 from typing import List
 
@@ -15,17 +17,23 @@ transcribe = Transcribe()
 
     @returns audio transcript
 """
-def get_yt_video_from_url(url: str) -> str:
-    return transcribe.get_transcription(url)
+def get_yt_video_from_url(url: str, email: str) -> str:
+    return transcribe.get_transcription(url, email)
 
-def extract_keywords(text: str, use_chatgpt_for_keywords: bool) -> str:
-    return transcribe.extract_keywords(text, use_chatgpt_for_keywords)
+def extract_keywords(text: str, email: str, use_chatgpt_for_keywords: bool) -> str:
+    return keyword_extractor.extract_keywords(text, email, use_chatgpt_for_keywords)
 
 def get_content_from_keywords(prompt: str, **kwargs) -> str:
-    return transcribe.get_content_from_keywords(prompt, **kwargs)
+    return content_extractor.get_content_from_prompt(prompt, **kwargs)
 
 def retrieve_transcript(unique_id: str):
     return transcribe.retrieve_transcript(unique_id)
 
+def get_by_email(**kwargs):
+    return transcribe.get_by_email(**kwargs)
+
 def remove_transcript(unique_id: str):
     return transcribe.remove_transcript(unique_id)
+
+def remove_data_by_email(email: str):
+    return "None"

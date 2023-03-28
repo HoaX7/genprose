@@ -1,5 +1,6 @@
 import { ContentProps } from "../@customTypes/Ai";
 import { AlertErrorMessage } from "../components/Commons/Alerts";
+import { PROGRESSIVE_STATUS } from "./constants";
 import { ApiResponse, requester, RequestMethodParams } from "./requester";
 
 interface PollRequest<T, C> {
@@ -36,22 +37,22 @@ export const pollRequest = <T, C>({
 			if (
 				!result ||
         !result.data ||
-        result.data.status === "INPROGRESS" ||
-        result.data.status === "QUEUED"
+        result.data.status === PROGRESSIVE_STATUS.INPROGRESS ||
+        result.data.status === PROGRESSIVE_STATUS.QUEUED
 			) {
 				setTimeout(execute, interval);
 			} else {
-				callback(result.data);
+				return Promise.resolve(result.data);
 			}
 		} catch (err: any) {
 			AlertErrorMessage({ text: err.message || "Please try again later" });
-			errorCallback(err.message);
-			// remove init data for unique_id
-			requester({
-				data,
-				method: "POST",
-				url: "/ai/remove_transcript",
-			});
+			// // remove init data for unique_id
+			// requester({
+			// 	data,
+			// 	method: "POST",
+			// 	url: "/ai/remove_transcript",
+			// });
+			return Promise.reject(err.message);
 		}
 	};
 

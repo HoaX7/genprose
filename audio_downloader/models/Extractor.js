@@ -22,7 +22,8 @@ const attributes = {
 	},
 	args: {
 		type: "json"
-	}
+	},
+	email: { type: "string" }
 };
 
 module.exports = {
@@ -42,9 +43,9 @@ module.exports = {
 		return db.run(sql, paramArray);
 	},
 	async get_rows_by_status(status = PROGRESSIVE_STATUS.QUEUED) {
-		const sql = "select * from contents where status = ?";
+		const sql = "select * from contents where status = ? and content_type = ?";
 		return new Promise((resolve, reject) => {
-			db.all(sql, [status], (err, rows) => {
+			db.all(sql, [status, CONTENT_TYPES.EXTRACT_AUDIO], (err, rows) => {
 				if (err) reject(err);
 				resolve(rows);
 			});

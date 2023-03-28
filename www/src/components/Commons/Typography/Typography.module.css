@@ -29,20 +29,20 @@
   font-size: var(--font-36);
 }
 .bold {
-  font-family: var(--bold);
+  font-weight: var(--bold);
 }
 .semi-bold {
-  font-family: var(--semi-bold);
+  font-weight: var(--semi-bold);
 }
 .regular {
-  font-family: var(--regular);
+  font-weight: var(--regular);
 }
 .thin {
-  font-family: var(--thin);
+  font-weight: var(--thin);
 }
 .light {
-  font-family: var(--light);
+  font-weight: var(--light);
 }
 .medium {
-  font-family: var(--medium);
+  font-weight: var(--medium);
 }

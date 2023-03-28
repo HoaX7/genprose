@@ -1,4 +1,4 @@
-export const clone = (item: any) => {
+export const clone = <T>(item: any): T => {
 	if (!item) {
 	  return item;
 	}

@@ -5,11 +5,11 @@ import os
 import io
 import sys
 
-model = whisper.load_model("medium")
-
 class WhisperModel(Transcription):
     def __init__(self):
         print("Initializing whisper model...")
+        self.model = whisper.load_model("medium")
+        print("whisper model initialized")
 
     def get_transcription(self, audio_file: str) -> str:
         try:
@@ -19,7 +19,7 @@ class WhisperModel(Transcription):
             logger.info("lib.Whisper.model.get_transcription: transcription started for file: ", audio_file)
             logger.info(f"transcribing audio from path {path}")
 
-            result = model.transcribe(audio_file, verbose=True, language="english")
+            result = self.model.transcribe(audio_file, verbose=True, language="english")
 
             logger.info("lib.Whisper.model.get_transcription: transcription finished for file: ", audio_file) 
             return result
@@ -31,5 +31,5 @@ class WhisperModel(Transcription):
             raise
 
     def extract_from_raw_audio_chunk(self, chunk):
-        result = model.transcribe(chunk)
+        result = self.model.transcribe(chunk)
         return result

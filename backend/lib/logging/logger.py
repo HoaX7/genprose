@@ -26,6 +26,9 @@ class Logger:
         pass
         # self.logger.error(self.prepare_log_dict(*params))
 
+    def debug(self, *params, **kwargs):
+        self.logger.debug(*params, **kwargs)
+
     def start_timer(self):
         return time.time()
 

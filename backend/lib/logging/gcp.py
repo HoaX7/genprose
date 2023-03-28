@@ -37,13 +37,18 @@ class GCPLogger(LogAbstract):
         """
             Labels can be used in 'extra' to set a context
         """
+        logger.info("[info]", extra={"json_fields": { "params": params }})
         print(params)
-        logger.info("info log", extra={"json_fields": { "params": params }})
 
     def warn(self, params):
         print(params)
-        logger.warn("warn log", extra={"json_fields": { "params": params }})
+        logger.warn("[warn]", extra={"json_fields": { "params": params }})
 
     def error(self, params):
         print(params)
-        logger.error("error log", extra={"json_fields": { "params": params }})
+        logger.error("[error]", extra={"json_fields": { "params": params }})
+
+    def debug(self, *params, **kwargs):
+        str = ",".join(params)
+        print(str)
+        logger.debug(f"[debug] {str}", extra=kwargs)

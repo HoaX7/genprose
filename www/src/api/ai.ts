@@ -1,4 +1,4 @@
-import { GeneratedContentProps, TranscriptKeywordProps } from "../@customTypes/Ai";
+import { ContentProps, ContentTypes, GeneratedContentProps, TranscriptKeywordProps } from "../@customTypes/Ai";
 import { AI_MODEL_ENGINES } from "../helpers/constants";
 import { requester, ApiResponse, RequestMethodParams } from "../helpers/requester";
 
@@ -71,4 +71,24 @@ export const prepareContentParams = (prompt: string, engine: string) => {
 		prompt = prompt.substring(0, maxChar);
 	}
 	return prompt;
+};
+
+export const getContentById = async ({ id }: { id: string; }) => {
+	return requester<{ unique_id: string; }, ContentProps<string>>({
+		method: "POST",
+		url: "/ai/preview_transcript",
+		data: { unique_id: id }
+	});
+};
+
+type P = { content_type: ContentTypes, cookies?: any; }
+export const getContentByEmail = async (params: P) => {
+	const cookies = params.cookies;
+	if (params.cookies) delete params.cookies;
+	return requester<P, GeneratedContentProps[]>({
+		method: "GET",
+		data: params,
+		url: "/ai/fetch_by_email",
+		headers: cookies ? { cookies: JSON.stringify({ token: cookies.token }) } : {}
+	});
 };

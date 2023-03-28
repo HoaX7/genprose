@@ -23,3 +23,7 @@ error message - "moduleNotFound - google"
 this can be fixed by installing ``pip install google-cloud``
 
 - export 'OPENAI_API_KEY' for service_worker.py to generate content
+
+# To Start Workers
+Use the command w multiple processes
+- python service_worker.py one of {EXTRACT_TRANSCRIPT, EXTRACT_KEYWORDS, EXTRACT_CONTENT}

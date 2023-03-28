@@ -59,28 +59,31 @@ export default function GeneratedKeywords({
 				method: "POST",
 				data: {
 					prompt,
-					engine: selectedModel.name 
+					engine: selectedModel.name,
+					is_priority: true
 				},
 				url: "/ai/generate_content"
 			});
 			if (resp.error) throw resp;
 			if (!resp.data) throw new Error("No data found");
-			await pollRequest<PollParams, string>({
+			const result = await pollRequest<PollParams, string>({
 				data: { unique_id: resp.data },
 				method: "POST",
 				url: "/ai/retrieve_transcript",
 				callback: (data) => {
-					setPolling(false);
-					onResult(data.content);
+					// setPolling(false);
+					// onResult(data.content);
 				},
 				errorCallback: () => {
-					AlertErrorMessage({ text: "Content generation failed, Please try again later" });
-					setPolling(false);
+					// AlertErrorMessage({ text: "Content generation failed, Please try again later" });
+					// setPolling(false);
 				}
 			});
+			console.log({ result });
+			setPolling(false);
 		} catch (err) {
 			console.error(err);
-			AlertErrorMessage({ text: "Unable to generate content" });
+			AlertErrorMessage({ text: "Content generation failed, Please try again later" });
 			setPolling(false);
 		}
 		// setSaving(false);
@@ -109,7 +112,7 @@ export default function GeneratedKeywords({
 			{keywords.map((item, i) => (
 				<Keyword item={item} key={"keyword_" + i} idx={i + 1} handleClick={(val) => {
 					if (!selectedkeywords.includes(val)) {
-						const res = clone(selectedkeywords);
+						const res = clone<string[]>(selectedkeywords);
 						res.push(val);
 						setSelectedKeywords(res);
 					}
@@ -123,7 +126,7 @@ export default function GeneratedKeywords({
 						<div className="bg-blue-100 px-2 py-1 rounded" key={"keyword_selected_" + i}>
 							{keyword} <span className="text-red-600 cursor-pointer"
 								onClick={() => {
-									const res = clone(selectedkeywords);
+									const res = clone<string[]>(selectedkeywords);
 									res.splice(i, 1);
 									setSelectedKeywords(res);
 								}}

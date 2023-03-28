@@ -39,25 +39,36 @@ module.exports = {
 			YD.on("finished", function(err, data) {
 				console.log("Download completed: ", data);
 				Extractor.update(unique_id, {
-					args: JSON.stringify({ path: data.file }),
-					content_type: CONTENT_TYPES.EXTRACT_TRANSCRIPT
+					args: JSON.stringify({ path: data.file, link }),
+					content_type: CONTENT_TYPES.EXTRACT_TRANSCRIPT,
+					status: PROGRESSIVE_STATUS.QUEUED
 				});
 			});
     
 			YD.on("error", function(error) {
 				Extractor.update(unique_id, {
-					status: PROGRESSIVE_STATUS.QUEUED
+					status: PROGRESSIVE_STATUS.QUEUED,
+					args: JSON.stringify({ link }),
+					content_type: CONTENT_TYPES.EXTRACT_AUDIO
 				});
 				throw error;
 			});
     
-			YD.on("progress", function(progress) {
+			YD.on("progress", function({ progress }) {
 				console.log("download progress...", {
-					percentage: progress.progress.percentage
+					percentage: progress.percentage
 				});
+				// Extractor.update(unique_id, {
+				// 	args: JSON.stringify({ progress })
+				// });
 			});
 		} catch (err) {
 			console.error("Unable to download YT audio");
+			Extractor.update(unique_id, {
+				status: PROGRESSIVE_STATUS.QUEUED,
+				args: JSON.stringify({ link }),
+				content_type: CONTENT_TYPES.EXTRACT_AUDIO
+			});
 		}
 	}
 };

@@ -60,6 +60,7 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 		headers: {
 			"content-type": "application/json",
 			...headers,
+			
 		},
 		timeout,
 		baseURL: process.env.BACKEND_SERVICE,
@@ -78,12 +79,12 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 	}
 	request.cancelToken = cancelToken;
 
-	Requester.interceptors.request.use((request) => {
-		if (request.headers?.cookie) {
-			request.headers.authorization = `Bearer ${request.headers.cookie}`;
+	Requester.interceptors.request.use((_request) => {
+		if (_request.headers?.cookie) {
+			_request.headers.authorization = `Bearer ${_request.headers.cookie}`;
 		}
 
-		return request;
+		return _request;
 	});
 
 	// Interceptors to handle unauthorized routes
@@ -108,11 +109,10 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 			throw err;
 		},
 	);
-
 	return Requester(request)
 		.then((res) => (responseType === "RAW" ? res : res.data))
 		.catch((err) => {
-			console.log("Error occured", err);
+			// console.log("Error occured", err);
 			if (axios.isCancel(err)) return;
 			if (axios.isAxiosError(err)) {
 				// console.error("Request Failed: Axios Error ", err);

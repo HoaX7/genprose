@@ -15,6 +15,12 @@
   --font-32: 32px;
   --font-36: 36px;
 
+  --semi-bold: 600;
+  --bold: 700;
+  --thin: 300;
+  --light: 400;
+  --medium: 500;
+
   --border-color: #161616;
   --dark-color: #262626;
   --primary: #0082fd;

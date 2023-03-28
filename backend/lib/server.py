@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from lib.routes.service import backend_service
+from lib.routes.auth import auth_service
 from lib.routes.ai import ai_service
 from lib.Logging.logger import logger
 import traceback
@@ -18,6 +19,7 @@ cors_whitelist = os.getenv("CORS_WHITELIST")
 CORS(app, supports_credentials=True, origins="*", expose_headers=["Set-Cookie", "Authorization"])
 
 app.register_blueprint(backend_service)
+app.register_blueprint(auth_service)
 app.register_blueprint(ai_service, url_prefix="/ai")
 
 # @app.before_request

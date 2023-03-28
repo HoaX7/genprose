@@ -15,9 +15,14 @@ from flask import make_response
     Note: While using ngrok to server backend
     "secure" must be True and samesite="None"
 """
-def set_session(value) -> None:
+def set_session(value: str):
     resp = make_response("Session authorized")
     # JWT token generated for 'value'
-    resp.set_cookie("token", "==" + value, max_age=None, expires=None, path='/', 
+    resp.set_cookie("token", value, max_age=None, expires=None, path='/', 
     domain=None, secure=False, httponly=True)
+    return resp
+
+def revoke_session():
+    resp = make_response("Session Expired")
+    resp.set_cookie("token", "", expires=0)
     return resp
