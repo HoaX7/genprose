@@ -56,7 +56,7 @@ function Transcript({
 	const [ selectedModel, setSelectedModel ] = useState(
 		AI_MODEL_ENGINES.TEXT_DAVINCI_003
 	);
-	const [ infoText, setInfoText ] = useState(keywordResult ? "We will email you when your content is ready" : "");
+	const [ infoText, setInfoText ] = useState(keywordResult ? "Showing your latest Transcript" : "");
 
 	const modelOptions = Object.keys(AI_MODEL_ENGINES).map((k) => ({
 		label: AI_MODEL_ENGINES[k].name,
