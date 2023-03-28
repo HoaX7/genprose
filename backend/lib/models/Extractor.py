@@ -108,7 +108,7 @@ def get_by_id(unique_id: str):
         return dict(zip(column_names, result))
     return
 
-def get_by_email(email: str, content_type = "", unique_id = ""):
+def get_by_email(email: str, content_type = "", unique_id = "", status = ""):
     queryStr = "select * from contents where email = ?"
     params = (email,)
     if content_type != "":
@@ -117,6 +117,11 @@ def get_by_email(email: str, content_type = "", unique_id = ""):
     if unique_id != "":
         queryStr += " and unique_id = ?"
         params += (unique_id,)
+    if status != "":
+        queryStr += " and status = ?"
+        params += (status,)
+
+    queryStr += " order by updated_at desc"
     db.cursor.execute(queryStr, params)
     result = db.cursor.fetchall()
     if result:

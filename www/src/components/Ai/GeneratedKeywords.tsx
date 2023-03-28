@@ -35,14 +35,15 @@ const Keyword = ({ item, idx, handleClick, selectedKeywords }: K) => {
 
 interface P {
     keywords: TranscriptKeywordProps["keywords"];
-    onResult: (data: ContentProps["content"]) => void;
+    onResult: (data: ContentProps<GeneratedContentProps>) => void;
     selectedModel: typeof AI_MODEL_ENGINES[""];
 	loading: boolean;
 	setPolling: (bool: boolean) => void;
 	polling: boolean;
+	link: string;
 }
 export default function GeneratedKeywords({
-	keywords = [], onResult, selectedModel, loading = false, setPolling, polling
+	keywords = [], onResult, selectedModel, loading = false, setPolling, polling, link
 }: P) {
 	const [ selectedkeywords, setSelectedKeywords ] = useState<string[]>([]);
 	const [ saving, setSaving ] = useState(false);
@@ -52,7 +53,7 @@ export default function GeneratedKeywords({
 		try {
 			e.preventDefault();
 			if (!text) return;
-			setPolling(true);
+			setSaving(true);
 			let prompt = text + " using keywords " + selectedkeywords.join(", ");
 			prompt = prepareContentParams(prompt, selectedModel.name);
 			const resp = await executeFuncAndGetUniqueId({
@@ -60,13 +61,14 @@ export default function GeneratedKeywords({
 				data: {
 					prompt,
 					engine: selectedModel.name,
-					is_priority: true
+					is_priority: true,
+					link
 				},
 				url: "/ai/generate_content"
 			});
 			if (resp.error) throw resp;
 			if (!resp.data) throw new Error("No data found");
-			const result = await pollRequest<PollParams, string>({
+			const result = await pollRequest<PollParams, GeneratedContentProps>({
 				data: { unique_id: resp.data },
 				method: "POST",
 				url: "/ai/retrieve_transcript",
@@ -79,12 +81,12 @@ export default function GeneratedKeywords({
 					// setPolling(false);
 				}
 			});
-			console.log({ result });
-			setPolling(false);
+			onResult(result);
+			setSaving(false);
 		} catch (err) {
 			console.error(err);
 			AlertErrorMessage({ text: "Content generation failed, Please try again later" });
-			setPolling(false);
+			setSaving(false);
 		}
 		// setSaving(false);
 	};
@@ -156,7 +158,7 @@ export default function GeneratedKeywords({
 				<Button
 					type="submit"
 					className="mt-3 flex items-center"
-					disabled={polling || selectedkeywords.length <= 0}
+					disabled={saving || polling || selectedkeywords.length <= 0}
 				>
 					{saving ? "Generating..." : "Generate content"}
 					{saving && <Spinner size="xxs" className="ml-2" />}

@@ -94,12 +94,13 @@ class Transcribe:
             email = kwargs.get("email")
             content_type = kwargs.get("content_type") or ""
             unique_id = kwargs.get("unique_id") or ""
+            status = kwargs.get("status") or ""
             if not email:
                 raise Exception("Missing 'email'")
             logger.info(
                 f"transcribe.get_by_email: fetch data with emmail: {email} & unique_id: {unique_id}"
             )
-            result = Extractor.get_by_email(email, content_type, unique_id)
+            result = Extractor.get_by_email(email, content_type, unique_id, status)
             if not result:
                 return []
             else:

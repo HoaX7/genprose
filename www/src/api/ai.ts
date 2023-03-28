@@ -82,10 +82,10 @@ export const getContentById = async ({ id }: { id: string; }) => {
 };
 
 type P = { content_type: ContentTypes, cookies?: any; }
-export const getContentByEmail = async (params: P) => {
+export const getContentByEmail = async <R>(params: P) => {
 	const cookies = params.cookies;
 	if (params.cookies) delete params.cookies;
-	return requester<P, GeneratedContentProps[]>({
+	return requester<P, R>({
 		method: "GET",
 		data: params,
 		url: "/ai/fetch_by_email",

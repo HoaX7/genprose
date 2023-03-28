@@ -1,12 +1,21 @@
 import React, { Fragment, useState } from "react";
-import { ContentProps, GeneratedContentProps, PollParams, StatusObject } from "../../@customTypes/Ai";
+import {
+	ContentProps,
+	GeneratedContentProps,
+	PollParams,
+	StatusObject,
+} from "../../@customTypes/Ai";
 import Typography from "../Commons/Typography/Typography";
 import Extractors from "./Extractors";
 import GeneratedContents from "./GeneratedContents";
 import GeneratedKeywords from "./GeneratedKeywords";
 import Textarea from "../Commons/Input/TextareaInput";
 import { AlertErrorMessage } from "../Commons/Alerts";
-import { executeFuncAndGetUniqueId, getContentFromKeywords, prepareContentParams } from "../../api/ai";
+import {
+	executeFuncAndGetUniqueId,
+	getContentFromKeywords,
+	prepareContentParams,
+} from "../../api/ai";
 import Button from "../Commons/ Button/Button";
 import FullpageLoader from "../Commons/Loaders/FullpageLoader";
 import CollapsibleContent from "../Commons/CollapsibleContent";
@@ -18,18 +27,28 @@ import { pollRequest } from "../../helpers/pollRequest";
 import Spinner from "../Commons/Loaders/Spinner";
 
 interface Props {
-	setGlobalStatus: (props: StatusObject[]) => void;
-	setQueueMessage: (props: string) => void;
-	globalStatus: StatusObject[];
-	result?: ContentProps<GeneratedContentProps>[];
+  setGlobalStatus: (props: StatusObject[]) => void;
+  setQueueMessage: (props: string) => void;
+  globalStatus: StatusObject[];
+  result?: ContentProps<GeneratedContentProps>[];
+  keywordResult?: ContentProps<string[][]>;
 }
-function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: Props) {
-	const [ transcript, setTranscript ] = useState<string>();
-	const [ keywords, setKeywords ] = useState<string[][]>();
-	const [ _result, setResult ] = useState<ContentProps<GeneratedContentProps>[]>(result || []);
+function Transcript({
+	setGlobalStatus,
+	setQueueMessage,
+	globalStatus,
+	result,
+	keywordResult
+}: Props) {
+	const [ transcript, setTranscript ] = useState<string>(keywordResult?.args.text || "");
+	const [ keywords, setKeywords ] = useState<string[][]>(keywordResult?.content || []);
+	const [ _result, setResult ] = useState<ContentProps<GeneratedContentProps>[]>(
+		result || []
+	);
 	const [ prompt, setPrompt ] = useState(
 		"Generate a 100 word essay using this transcript"
 	);
+	const [ url, setUrl ] = useState(keywordResult?.args.link || "");
 	const [ saving, setSaving ] = useState(false);
 	const [ isChecked, setIsChecked ] = useState(true);
 	const [ contentPolling, setContentPolling ] = useState<string[]>([]);
@@ -65,9 +84,26 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
 					{selectedModel.description}
 				</Typography>
 			</div> */}
-			<div className="grid grid-cols-2 md:divide-x divide-y md:divide-y-0">
+			{keywordResult && (
+				<Typography
+					variant="div"
+					weight="medium"
+					font={14}
+					className="mb-3"
+				>
+					<span className="bg-gray-200 py-1 pl-2 pr-3 rounded ">
+						<img 
+							src="assets/images/info.svg"
+							alt="info"
+							width={16}
+							className="inline-block mb-1"
+						/> Showing your latest Transcript
+					</span>
+				</Typography>
+			)}
+			<div className="grid grid-cols-2 md:divide-x divide-y md:divide-y-0 gap-4">
 				{/* {saving && <FullpageLoader />} */}
-				<div className="col-span-2 md:col-span-1 p-3">
+				<div className="col-span-2 md:col-span-1">
 					<Typography
 						variant="div"
 						font={18}
@@ -77,11 +113,18 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
             Extractor
 					</Typography>
 					<Extractors
+						setUrl={setUrl}
+						url={url}
 						onExtraction={(data) => {
-							// 15ab257c3dd04081943f660e3ab5e534
-							// d5c33769f10549e2a56415fa3747aec6 - new content
-							setKeywords(data.keywords);
-							setTranscript(data.transcript);
+							if (data.keywords) {
+								setKeywords(data.keywords);
+							}
+							if (data.transcript) {
+								setTranscript(data.transcript);
+							}
+							if (data.generatedContent) {
+								setResult([ ..._result, data.generatedContent ]);
+							}
 						}}
 						setGlobalStatus={setGlobalStatus}
 						setQueueMessage={setQueueMessage}
@@ -118,34 +161,41 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
 										e.preventDefault();
 										setSaving(true);
 										let text =
-										prompt +
-										" generate using this transcript " +
-										transcript;
+                      prompt + " generate using this transcript " + transcript;
 
 										text = prepareContentParams(text, selectedModel.name);
 										const resp = await executeFuncAndGetUniqueId({
 											method: "POST",
 											data: {
 												prompt: text,
-												engine: selectedModel.name 
+												engine: selectedModel.name,
+												is_priority: true,
+												link: url
 											},
-											url: "/ai/generate_content"
+											url: "/ai/generate_content",
 										});
 										if (resp.error || !resp.data) throw resp;
-										// await pollRequest<PollParams, GeneratedContentProps>({
-										// 	method: "POST",
-										// 	data: { unique_id: resp.data },
-										// 	url: "/ai/retrieve_transcript",
-										// 	callback: (data) => {
-										// 		const res = clone(result);
-										// 		res.push(data.content);
-										// 		setResult(res);
-										// 		setSaving(false);
-										// 	},
-										// 	errorCallback: () => {
-										// 		setSaving(false);
-										// 	}
-										// });
+										const result = await pollRequest<PollParams, GeneratedContentProps>({
+											method: "POST",
+											data: { unique_id: resp.data },
+											url: "/ai/retrieve_transcript",
+											callback: (data) => {
+												// const res = clone(result);
+												// res.push(data.content);
+												// setResult(res);
+												// setSaving(false);
+											},
+											errorCallback: () => {
+												// setSaving(false);
+											},
+										});
+										if (result) {
+											const res =
+                        clone<ContentProps<GeneratedContentProps>[]>(_result);
+											res.push(result);
+											setResult(res);
+										}
+										setSaving(false);
 									} catch (err) {
 										console.log("Transcript error", err);
 										AlertErrorMessage({ text: "Unable to generate content" });
@@ -172,7 +222,7 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
 						</div>
 					)}
 				</div>
-				<div className="col-span-2 md:col-span-1 p-3">
+				<div className="col-span-2 md:col-span-1 pl-3">
 					<Typography
 						variant="div"
 						font={18}
@@ -233,8 +283,11 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
 					<GeneratedKeywords
 						keywords={keywords || []}
 						onResult={(data) => {
-							return;
+							const resp = clone<ContentProps<GeneratedContentProps>[]>(_result);
+							resp.push(data);
+							setResult(resp);
 						}}
+						link={url}
 						selectedModel={selectedModel}
 						loading={pollingKeywords}
 						polling={contentPolling.includes(CONTENT_TYPES.EXTRACT_CONTENT)}
@@ -254,7 +307,7 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
 				</div>
 			</div>
 			<div className="grid grid-cols-2 md:divide-x divide-y md:divide-y-0 mt-3">
-				<div className="col-span-2 md:col-span-2 p-3">
+				<div className="col-span-2 md:col-span-2">
 					<div className="flex items-center mb-3">
 						<Typography
 							variant="div"
@@ -262,13 +315,16 @@ function Transcript({ setGlobalStatus, setQueueMessage, globalStatus, result }: 
 							weight="medium"
 							className="underline"
 						>
-            Content Generated
+              Content Generated
 						</Typography>
-						{(contentPolling.includes(CONTENT_TYPES.EXTRACT_CONTENT) || saving) ? (
-							<div className="flex items-center text-gray-600">
-								<Spinner size="xxs" className="mx-2" /> Generating content...
-							</div>
-						) : ""}
+						{contentPolling.includes(CONTENT_TYPES.EXTRACT_CONTENT) ||
+            saving ? (
+								<div className="flex items-center text-gray-600">
+									<Spinner size="xxs" className="mx-2" /> Generating content...
+								</div>
+							) : (
+								""
+							)}
 					</div>
 					<GeneratedContents data={_result} />
 				</div>

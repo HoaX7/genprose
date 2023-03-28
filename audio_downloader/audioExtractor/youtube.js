@@ -22,6 +22,8 @@ module.exports = {
      */
 	async downloadFromLink(link, unique_id) {
 		try {
+			// FIXME - How do you handle this case? This will be stuck
+			// in infinite task process
 			const id = getYtID(link);
 			if (!id) {
 				console.log("YT ID not found for link: ", link);

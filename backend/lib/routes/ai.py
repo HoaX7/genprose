@@ -99,8 +99,9 @@ def get_content_from_keywords():
 
         model_engine = data.get("engine", "")
         is_priority = data.get("is_priority", "") or False
+        link = data.get("link") or "not-found"
         result = Transcription.get_content_from_keywords(
-            data["prompt"], engine=model_engine, email=request.user["email"], is_priority=is_priority
+            data["prompt"], engine=model_engine, email=request.user["email"], is_priority=is_priority, link=link
         )
         return result, 200
     except Exception as e:
@@ -115,7 +116,7 @@ def fetch_by_email():
     try:
         params = request.args.to_dict()
         content_type = params.get("content_type")
-        print(request.user)
+        print(content_type, "fetch content by email")
         if not request.user or not request.user["email"]:
             return "Unauthorized", 401
         if not content_type:
@@ -123,7 +124,7 @@ def fetch_by_email():
         elif content_type not in CONTENT_TYPE_LIST:
             return f"'content_type' must be one of {CONTENT_TYPE_LIST}", 422
         result = Transcription.get_by_email(
-            email=request.user["email"], content_type=content_type
+            email=request.user["email"], content_type=content_type, status=PROGRESSIVE_STATUS.COMPLETED
         )
         for entry in result:
             if entry["content"] and entry["content_type"] in [

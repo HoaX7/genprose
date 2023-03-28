@@ -53,20 +53,23 @@ def get_content_from_prompt(prompt: str, **kwargs) -> str:
         email = kwargs.get("email")
         is_priority = kwargs.get("is_priority")
         status = PROGRESSIVE_STATUS.QUEUED
+        args = {"prompt": prompt, "engine": engine}
         if is_priority == True:
+            link = kwargs.get("link")
+            args["link"] = link or "not-found"
             start_process(unique_id, prompt)
             status = PROGRESSIVE_STATUS.PRIORITY_QUEUE
 
-        # Extractor.create(
-        #         unique_id=unique_id,
-        #         content="{}",
-        #         args=json.dumps(
-        #             {"prompt": prompt, "engine": engine}, separators=(",", ":")
-        #         ),
-        #         content_type=CONTENT_TYPES.EXTRACT_CONTENT,
-        #         status=status,
-        #         email=email,
-        #     )
+        Extractor.create(
+                unique_id=unique_id,
+                content="{}",
+                args=json.dumps(
+                    args, separators=(",", ":")
+                ),
+                content_type=CONTENT_TYPES.EXTRACT_CONTENT,
+                status=status,
+                email=email,
+            )
         return unique_id
     except Exception as e:
         print(e)
@@ -81,17 +84,17 @@ def start_process(unique_id: str, prompt: str):
     background_process.daemon = True
     background_process.start()
     print(f"Spawned daemon process: {background_process.pid}")
-    processes[unique_id] = background_process
-    print("inside same func", processes.get(unique_id))
+    # processes[unique_id] = background_process
+    # print("inside same func", processes.get(unique_id))
 
 def __start_priority_func(unique_id: str, prompt: str):
-    sleep(10)
-    print("After 10s")
-    print("in calling func", processes.get(unique_id))
-    # result = __get_content(prompt, "davinci")
+    # sleep(10)
+    # print("After 10s")
+    # print("in calling func", processes.get(unique_id))
+    result = __get_content(prompt, "davinci")
     logger.info("__start_priority_func: daemon task completed")
     
-    # Extractor.update(unique_id, {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED})
+    Extractor.update(unique_id, {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED})
 
 def __get_content(prompt: str, engine: str):
     logger.info(

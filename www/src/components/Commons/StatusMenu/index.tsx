@@ -31,7 +31,7 @@ function StatusMenu({
 		queueMessage = "All tasks completed";
 	}
 	return (
-		<div className="mt-3 container mx-auto flex justify-end fixed bottom-0 right-0 left-0">
+		<div className="mt-3 container mx-auto flex justify-end fixed bottom-0 right-0 left-0 z-20">
 			<div className="flex flex-col rounded-t-xl border shadow w-full lg:w-1/4 md:w-2/4">
 				<Typography
 					variant="div"
@@ -43,7 +43,7 @@ function StatusMenu({
 					<Button
 						onClick={() => {
 							if (globalStatus.length > 0) {
-								setQueueMessage(`Completed ${globalStatus.filter((g) => g.isComplete).length} Tasks`);
+								setQueueMessage("All Tasks Completed");
 								setGlobalStatus([]);
 							}
 						}}
@@ -55,7 +55,7 @@ function StatusMenu({
             &times;
 					</Button>
 				</Typography>
-				<ul className="list-none bg-white">
+				<ul className="list-none bg-white max-h-60 overflow-auto">
 					{globalStatus.map((item, i) => (
 						<li
 							className="px-3 py-2"

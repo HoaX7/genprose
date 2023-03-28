@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ContentProps, PollParams, StatusObject, TranscriptKeywordProps } from "@customTypes/Ai";
+import { ContentProps, GeneratedContentProps, PollParams, StatusObject } from "@customTypes/Ai";
 import { executeFuncAndGetUniqueId } from "api/ai";
 import { pollRequest } from "helpers/pollRequest";
 import Button from "../Commons/ Button/Button";
@@ -10,8 +10,9 @@ import { clone } from "helpers";
 
 interface P {
   onExtraction: (data: {
-	  keywords: string[][];
-	  transcript: string;
+	  keywords?: string[][];
+	  transcript?: string;
+	  generatedContent?: ContentProps<GeneratedContentProps>;
   }) => void;
   className?: string;
   useChatGpt?: boolean;
@@ -19,6 +20,8 @@ interface P {
   setGlobalStatus: (props: StatusObject[]) => void;
   setQueueMessage: (props: string) => void;
   globalStatus: StatusObject[];
+  setUrl: (props: string) => void;
+  url: string;
 }
 function Extractor({
 	onExtraction,
@@ -27,9 +30,10 @@ function Extractor({
 	onPolling,
 	setGlobalStatus,
 	setQueueMessage,
-	globalStatus
+	globalStatus,
+	url,
+	setUrl
 }: P) {
-	const [ url, setUrl ] = useState("");
 	const [ saving, setSaving ] = useState(false);
 	const [ polling, setPolling ] = useState(false);
 
@@ -39,27 +43,26 @@ function Extractor({
 			if (!url) return;
 			// setSaving(true);
 			setPolling(true);
-			// const resp = await executeFuncAndGetUniqueId({
-			// 	data: {
-			// 		url,
-			// 		use_chatgpt_for_keywords: useChatGpt,
-			// 	},
-			// 	method: "POST",
-			// 	url: "/ai/transcribe",
-			// });
-			// if (resp.error) throw resp;
-			// if (!resp.data) throw new Error("No data found");
-			// setQueueMessage("Your queue position is 5");
-			// const res = clone<StatusObject[]>(globalStatus);
-			// res.push({
-			// 	content_type: "EXTRACT_AUDIO",
-			// 	name: "Extract Transcript",
-			// 	isComplete: false,
-			// 	status: "QUEUED",
-			// 	id: resp.data
-			// });
-			// setGlobalStatus(res);
-			const resp = { data: "cc494b8969a248f2af8f8880fe00e602" };
+			const resp = await executeFuncAndGetUniqueId({
+				data: {
+					url,
+					use_chatgpt_for_keywords: useChatGpt,
+				},
+				method: "POST",
+				url: "/ai/transcribe",
+			});
+			if (resp.error) throw resp;
+			if (!resp.data) throw new Error("No data found");
+			setQueueMessage("Your queue position is 5");
+			const res = clone<StatusObject[]>(globalStatus);
+			res.push({
+				content_type: "EXTRACT_AUDIO",
+				name: "Extract Transcript",
+				isComplete: false,
+				status: "QUEUED",
+				id: resp.data
+			});
+			setGlobalStatus(res);
 			const result = await pollRequest<PollParams, string[][]>({
 				method: "POST",
 				data: { unique_id: resp.data },
@@ -84,15 +87,16 @@ function Extractor({
 				transcript: result.args.text || "" 
 			});
 			if (result.args.generate_content_unique_id) {
-				newRes.push({
+				const _resp = clone<StatusObject[]>(globalStatus);
+				_resp.push({
 					id: result.args.generate_content_unique_id,
 					isComplete: false,
 					status: "INPROGRESS",
 					content_type: "EXTRACT_CONTENT",
 					name: "Generating Sample Content"
 				});
-				setGlobalStatus(newRes);
-				const contentRes = await pollRequest({
+				setGlobalStatus(_resp);
+				const contentRes = await pollRequest<PollParams, GeneratedContentProps>({
 					method: "POST",
 					data: { unique_id: result.args.generate_content_unique_id },
 					url: "/ai/retrieve_transcript",
@@ -103,7 +107,16 @@ function Extractor({
 						setPolling(false);
 					}
 				});
-				console.log({ contentRes });
+				if (contentRes) {
+					onExtraction({ generatedContent: contentRes });
+					const _newRes = clone<StatusObject[]>(globalStatus);
+					const idx = _newRes.findIndex((r) => r.id === resp.data);
+					if (idx >= 0) {
+						_newRes[idx].isComplete = true;
+						_newRes[idx].status = "COMPLETED";
+						setGlobalStatus(_newRes);
+					}
+				}
 			}
 			setPolling(false);
 			return;

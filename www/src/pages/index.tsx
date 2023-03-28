@@ -17,8 +17,11 @@ interface Props {
 	setGlobalStatus: (props: StatusObject[]) => void;
 	globalStatus: StatusObject[];
 	result?: ContentProps<GeneratedContentProps>[];
+	keywordResult?: ContentProps<string[][]>[];
 }
-function index({ globalStatus, setGlobalStatus, setQueueMessage, result }: Props) {
+function index({
+	globalStatus, setGlobalStatus, setQueueMessage, result, keywordResult 
+}: Props) {
 	return (
 		<div className="container mx-auto p-3">
 			<Transcript 
@@ -26,6 +29,8 @@ function index({ globalStatus, setGlobalStatus, setQueueMessage, result }: Props
 				setQueueMessage={setQueueMessage}
 				globalStatus={globalStatus}
 				result={result}
+				// Show latest only
+				keywordResult={(keywordResult || [])[0]}
 			/>
 		</div>
 	);
@@ -33,12 +38,38 @@ function index({ globalStatus, setGlobalStatus, setQueueMessage, result }: Props
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	try {
 		const cookies = ctx.req.cookies;
-		if (!cookies.token) return { props: { result: [] } };
+		if (!cookies.token) return {
+			props: {
+				result: [],
+				keywordResult: [] 
+			} 
+		};
 		const result = await getContentByEmail({
 			content_type: "EXTRACT_CONTENT",
 			cookies: ctx.req.cookies
 		});
-		return { props: { result: result.data || [] } };
+		const keywords = await getContentByEmail({
+			content_type: "EXTRACT_KEYWORDS",
+			cookies: ctx.req.cookies
+		});
+
+		// running into Recursive use of cursors not allowed. Error on backend
+		// const [ result, keywords ] = await Promise.all([
+		// 	getContentByEmail<ContentProps<GeneratedContentProps[]>>({
+		// 		content_type: "EXTRACT_CONTENT",
+		// 		cookies: ctx.req.cookies
+		// 	}),
+		// 	getContentByEmail<ContentProps<string[][]>>({
+		// 		content_type: "EXTRACT_KEYWORDS",
+		// 		cookies: ctx.req.cookies
+		// 	})
+		// ]);
+		return {
+			props: {
+				result: result.data || [],
+				keywordResult: keywords.data 
+			} 
+		};
 	} catch (err) {
 		console.log("pages.index.getInitialProps: ERROR", err);
 		return {

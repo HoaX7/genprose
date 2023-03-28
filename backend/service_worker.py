@@ -28,32 +28,32 @@ parser.add_argument(
 args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
 
 async def start_task():
-    # while True:
-    try:
-        content_type = args.content_type
-        if not content_type:
-            sys.exit(0)
-        else:
-            content_type = content_type.upper()
-        print(f"Starting task for content_type: {content_type}")
-        queue_list = Extractor.get_rows_by_content_type(PROGRESSIVE_STATUS.QUEUED, content_type)
-        tasks = []
-        for item in queue_list:
-            print(item["unique_id"])
-            process_tasks(
-                    item["unique_id"],
-                    item["args"] or "",
-                    item["content_type"],
-                    item["email"],
-                )
+    while True:
+        try:
+            content_type = args.content_type
+            if not content_type:
+                sys.exit(0)
+            else:
+                content_type = content_type.upper()
+            print(f"Starting task for content_type: {content_type}")
+            queue_list = Extractor.get_rows_by_content_type(PROGRESSIVE_STATUS.QUEUED, content_type)
+            tasks = []
+            for item in queue_list:
+                print(item["unique_id"])
+                process_tasks(
+                        item["unique_id"],
+                        item["args"] or "",
+                        item["content_type"],
+                        item["email"],
+                    )
 
-        # print(f"Executing {len(tasks)} Tasks")
-        # await asyncio.gather(*tasks)
-    except Exception as e:
-        print("ERROR: ", e)
-    finally:
-        print("Sleeping for 5 seconds...")
-        await asyncio.sleep(5)
+            # print(f"Executing {len(tasks)} Tasks")
+            # await asyncio.gather(*tasks)
+        except Exception as e:
+            print("ERROR: ", e)
+        finally:
+            print("Sleeping for 5 seconds...")
+            await asyncio.sleep(5)
 
 
 async def main():
