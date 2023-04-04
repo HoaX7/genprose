@@ -23,7 +23,7 @@ def async_wrapper(func):
 
     return async_func
 
-def unlinkFile(self, filename: str) -> None:
+def unlinkFile(filename: str) -> None:
     try:
         if os.path.isfile(filename):
             print("File removed - ", filename)

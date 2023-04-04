@@ -36,6 +36,7 @@ async def start_task():
                 content_type = content_type.upper()
             print(f"Starting task for content_type: {content_type}")
             queue_list = Extractor.get_rows_by_content_type(PROGRESSIVE_STATUS.QUEUED, content_type)
+            print(f"Queuing {len(queue_list)} tasks")
             tasks = []
             for item in queue_list:
                 print(item["unique_id"])

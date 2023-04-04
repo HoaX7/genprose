@@ -17,7 +17,7 @@ def extract_transcript(path, unique_id, **kwargs):
     try:
         Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.INPROGRESS})
         result = model.get_transcription(path)
-        # unlinkFile(path)
+        unlinkFile(path)
         content_uid = uuid4().hex
         args = kwargs.get("args") or {}
         args["text"] = result["text"]
