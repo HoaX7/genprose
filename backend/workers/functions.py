@@ -3,7 +3,7 @@ import lib.models.Extractor as Extractor
 import lib.Transcription.content as content_extractor
 import lib.Transcription.keywords as keyword_extractor
 from lib.Transcription.transcribe import Transcribe
-from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
+from lib.helpers.constants import CONTENT_TYPES
 import json
 
 Transcript = Transcribe()
@@ -13,11 +13,11 @@ def process_tasks(unique_id, args, content_type, email, **kwargs):
     try:
         print(f"Processing task for unique_id: {unique_id}")
         params = json.loads(args)
-        if content_type == CONTENT_TYPES.EXTRACT_TRANSCRIPT:
-            return Transcript.extract_transcript(
-                params["path"], unique_id, args=params, email=email
-            )
-        elif content_type == CONTENT_TYPES.EXTRACT_KEYWORDS:
+        # if content_type == CONTENT_TYPES.EXTRACT_TRANSCRIPT:
+        #     return Transcript.extract_transcript(
+        #         params["path"], unique_id, args=params, email=email
+        #     )
+        if content_type == CONTENT_TYPES.EXTRACT_KEYWORDS:
             return keyword_extractor.start_keyword_extraction(
                 params["text"],
                 params["use_chatgpt_for_keywords"],

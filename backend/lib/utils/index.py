@@ -22,3 +22,15 @@ def async_wrapper(func):
         return "[ASYNC_WRAPPER] async func completed"
 
     return async_func
+
+def unlinkFile(self, filename: str) -> None:
+    try:
+        if os.path.isfile(filename):
+            print("File removed - ", filename)
+            os.remove(filename)
+        else:
+            print("File does not exist - ", filename)
+        return True
+    except Exception as e:
+        print(e)
+        return "Unable to remove file"

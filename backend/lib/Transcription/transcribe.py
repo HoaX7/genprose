@@ -1,15 +1,12 @@
-from lib.helpers.constants import getSamplePrompt
 from lib.Logging.logger import logger
-from lib.Whisper.model import WhisperModel
 from lib.Openai.model import ChatGPTModel
 import os
 from uuid import uuid4
 import lib.models.Extractor as Extractor
-from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
+from lib.helpers.constants import CONTENT_TYPES
 import json
 from typing import Dict
 
-model = WhisperModel()
 content_model = ChatGPTModel()
 
 """
@@ -23,17 +20,6 @@ content_model = ChatGPTModel()
 
 
 class Transcribe:
-    def unlinkFile(self, filename: str) -> None:
-        try:
-            if os.path.isfile(filename):
-                print("File removed - ", filename)
-                os.remove(filename)
-            else:
-                print("File does not exist - ", filename)
-            return True
-        except Exception as e:
-            print(e)
-            return "Unable to remove file"
 
     """
     Get transcription from extractor.
@@ -126,46 +112,3 @@ class Transcribe:
         except Exception as e:
             raise e
 
-    """
-        - This method is used by service_worker.py to
-        start the transcript extraction from downloaded audio files
-    """
-
-    def extract_transcript(self, path, unique_id, **kwargs):
-        try:
-            Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.INPROGRESS})
-            result = model.get_transcription(path)
-            # self.unlinkFile(path)
-            
-            content_uid = uuid4().hex
-            args = kwargs.get("args") or {}
-            args["text"] = result["text"]
-            args["use_chatgpt_for_keywords"] = True # Set True if gpt is faster
-            args["generate_content_unique_id"] = content_uid
-            Extractor.update(
-                unique_id,
-                {
-                    "content": result["text"],
-                    "args": json.dumps(args),
-                    "status": PROGRESSIVE_STATUS.QUEUED,
-                    "content_type": CONTENT_TYPES.EXTRACT_KEYWORDS,
-                },
-            )
-
-            Extractor.create(
-                unique_id=content_uid,
-                email=kwargs.get("email"),
-                args=json.dumps(
-                    {
-                        "prompt": getSamplePrompt(result["text"]),
-                        "link": args["link"] or "",
-                    },
-                    separators=(",", ":"),
-                ),
-                status=PROGRESSIVE_STATUS.QUEUED,
-                content_type=CONTENT_TYPES.EXTRACT_CONTENT,
-                content="",
-            )
-        except Exception as e:
-            Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.QUEUED})
-            print("Unable to extract transcript: ", e)

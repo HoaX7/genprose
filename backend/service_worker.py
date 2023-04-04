@@ -5,7 +5,6 @@ load_dotenv()
 import asyncio
 import lib.models.Extractor as Extractor
 from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
-
 from workers.functions import process_tasks
 import argparse
 import sys
@@ -18,10 +17,10 @@ parser.add_argument(
     choices=[
         CONTENT_TYPES.EXTRACT_CONTENT,
         CONTENT_TYPES.EXTRACT_KEYWORDS,
-        CONTENT_TYPES.EXTRACT_TRANSCRIPT,
+        # CONTENT_TYPES.EXTRACT_TRANSCRIPT,
         CONTENT_TYPES.EXTRACT_CONTENT.lower(),
         CONTENT_TYPES.EXTRACT_KEYWORDS.lower(),
-        CONTENT_TYPES.EXTRACT_TRANSCRIPT.lower(),
+        # CONTENT_TYPES.EXTRACT_TRANSCRIPT.lower(),
     ],
     help="input a content type to start extraction process",
 )
@@ -42,7 +41,7 @@ async def start_task():
                 print(item["unique_id"])
                 process_tasks(
                         item["unique_id"],
-                        item["args"] or "",
+                        item["args"] or "{}",
                         item["content_type"],
                         item["email"],
                     )
