@@ -95,6 +95,7 @@ def __start_priority_func(unique_id: str, prompt: str):
     logger.info("__start_priority_func: daemon task completed")
     
     Extractor.update(unique_id, {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED})
+    multiprocessing.current_process().terminate()
 
 def __get_content(prompt: str, engine: str):
     logger.info(
