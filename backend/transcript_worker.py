@@ -11,11 +11,12 @@ async def start_task():
     while True:
         try:
             print(f"Starting tasks for content_type: {CONTENT_TYPES.EXTRACT_TRANSCRIPT}")
-            queue_list = Extractor.get_rows_by_content_type(PROGRESSIVE_STATUS.QUEUED, CONTENT_TYPES.EXTRACT_TRANSCRIPT)
-            print(f"Queuing {len(queue_list)} tasks")
-            for item in queue_list:
-                params = json.loads(item["args"] or "{}")
-                extract_transcript(params["path"], item["unique_id"], args=params, email=item["email"])
+            # queue_list = Extractor.get_rows_by_content_type(PROGRESSIVE_STATUS.QUEUED, CONTENT_TYPES.EXTRACT_TRANSCRIPT)
+            # print(f"Queuing {len(queue_list)} tasks")
+            # for item in queue_list:
+            #     params = json.loads(item["args"] or "{}")
+                # extract_transcript(params["path"], item["unique_id"], args=params, email=item["email"])
+            extract_transcript("../downloads/audio.mp3", "uid1", args={}, email="test@g.com")
         except Exception as e:
             print("ERROR: ", e)
         finally:

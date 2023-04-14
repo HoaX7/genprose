@@ -15,38 +15,39 @@ model = WhisperModel()
 
 def extract_transcript(path, unique_id, **kwargs):
     try:
-        Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.INPROGRESS})
+        # Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.INPROGRESS})
         result = model.get_transcription(path)
-        unlinkFile(path)
-        content_uid = uuid4().hex
-        args = kwargs.get("args") or {}
-        args["text"] = result["text"]
-        args["use_chatgpt_for_keywords"] = True # Set True if gpt is faster
-        args["generate_content_unique_id"] = content_uid
-        Extractor.update(
-            unique_id,
-            {
-                "content": result["text"],
-                "args": json.dumps(args),
-                "status": PROGRESSIVE_STATUS.QUEUED,
-                "content_type": CONTENT_TYPES.EXTRACT_KEYWORDS,
-            },
-        )
+        print(result["text"])
+        # unlinkFile(path)
+        # content_uid = uuid4().hex
+        # args = kwargs.get("args") or {}
+        # args["text"] = result["text"]
+        # args["use_chatgpt_for_keywords"] = True # Set True if gpt is faster
+        # args["generate_content_unique_id"] = content_uid
+        # Extractor.update(
+        #     unique_id,
+        #     {
+        #         "content": result["text"],
+        #         "args": json.dumps(args),
+        #         "status": PROGRESSIVE_STATUS.QUEUED,
+        #         "content_type": CONTENT_TYPES.EXTRACT_KEYWORDS,
+        #     },
+        # )
 
-        Extractor.create(
-            unique_id=content_uid,
-            email=kwargs.get("email"),
-            args=json.dumps(
-                {
-                    "prompt": getSamplePrompt(result["text"]),
-                    "link": args["link"] or "",
-                },
-                separators=(",", ":"),
-            ),
-            status=PROGRESSIVE_STATUS.QUEUED,
-            content_type=CONTENT_TYPES.EXTRACT_CONTENT,
-            content="",
-        )
+        # Extractor.create(
+        #     unique_id=content_uid,
+        #     email=kwargs.get("email"),
+        #     args=json.dumps(
+        #         {
+        #             "prompt": getSamplePrompt(result["text"]),
+        #             "link": args["link"] or "",
+        #         },
+        #         separators=(",", ":"),
+        #     ),
+        #     status=PROGRESSIVE_STATUS.QUEUED,
+        #     content_type=CONTENT_TYPES.EXTRACT_CONTENT,
+        #     content="",
+        # )
     except Exception as e:
         Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.QUEUED})
         print("Unable to extract transcript: ", e)

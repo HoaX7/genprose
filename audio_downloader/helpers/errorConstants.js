@@ -1,0 +1,6 @@
+const ERROR_CONSTANTS = {
+	INVALID_URL: "IV_URL",
+	UNKOWN: "UNKNOWN"
+};
+
+module.exports = ERROR_CONSTANTS;
