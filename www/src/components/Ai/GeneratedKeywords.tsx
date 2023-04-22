@@ -69,7 +69,7 @@ export default function GeneratedKeywords({
 			if (resp.error) throw resp;
 			if (!resp.data) throw new Error("No data found");
 			const result = await pollRequest<PollParams, GeneratedContentProps>({
-				data: { unique_id: resp.data },
+				data: { id: resp.data.id },
 				method: "POST",
 				url: "/ai/retrieve_transcript",
 				callback: (data) => {
