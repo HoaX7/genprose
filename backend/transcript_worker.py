@@ -20,8 +20,8 @@ async def start_task():
             print("ERROR: ", e)
         finally:
             print("Sleeping for 5 seconds...")
-            break
-            # await asyncio.sleep(5)
+            # break
+            await asyncio.sleep(5)
             # break
 
 
