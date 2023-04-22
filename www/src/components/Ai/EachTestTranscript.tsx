@@ -28,7 +28,7 @@ export default function EachTestTranscript({ item, i }: Props) {
 					{item.args.link}
 				</a>{" "}
 				<a
-					className="bg-gray-200 absolute mx-2 px-3 rounded hover:cursor-pointer"
+					className="bg-gray-200 mx-2 px-3 py-1 rounded hover:cursor-pointer"
 					target={"_blank"}
 					href={`/content/${item.id}`}
 					rel="noreferrer"
