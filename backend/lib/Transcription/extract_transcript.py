@@ -1,6 +1,7 @@
 # from lib.utils.index import unlinkFile
 # from lib.helpers.openai import getSamplePrompt
 # from lib.Whisper.model import WhisperModel
+from queue import Empty
 import lib.models.Content as Content
 from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
 
@@ -26,26 +27,38 @@ def extract_transcript(path, id, **kwargs):
                 "transcript_model": f"{TRANSCRIPTION_MODELS.ASSEMBLYAI}_{TRANSCRIPTION_MODELS.DEEPGRAM}",
             },
         )
+        # queue = multiprocessing.Queue()
         # Calling both assembly and deepgram for testing only
 
-        assembly_ai_process = multiprocessing.Process(
-            target=transcribe_from_assembly_ai, args=(id, path)
-        )
-        deepgram_process = multiprocessing.Process(target=transcribe_from_deepgram, args=(id, path, False, False))
-        deepgram_enhanced_process = multiprocessing.Process(target=transcribe_from_deepgram, args=(id, path, True, False))
-        deepgram_nova_process = multiprocessing.Process(target=transcribe_from_deepgram, args=(id, path, False, True))
+        task_1 = transcribe_from_deepgram(path, False, False)
+        task_2 = transcribe_from_deepgram(path, True, False)
+        task_3 = transcribe_from_deepgram(path, False, True)
+        task_4 = transcribe_from_assembly_ai(path)
 
-        assembly_ai_process.start()
-        deepgram_process.start()
-        deepgram_enhanced_process.start()
-        deepgram_nova_process.start()
+        data = {}
+        data.update(task_1)
+        data.update(task_2)
+        data.update(task_3)
+        data.update(task_4)
 
-        assembly_ai_process.join()
-        deepgram_process.join()
-        deepgram_enhanced_process.join()
-        deepgram_nova_process.join()
+        # assembly_ai_process = multiprocessing.Process(
+        #     target=transcribe_from_assembly_ai, args=(id, path)
+        # )
+        # deepgram_process = multiprocessing.Process(target=transcribe_from_deepgram, args=(path, False, False))
+        # deepgram_enhanced_process = multiprocessing.Process(target=transcribe_from_deepgram, args=(path, True, False))
+        # deepgram_nova_process = multiprocessing.Process(target=transcribe_from_deepgram, args=(path, False, True))
 
-        Content.update(id, {"status": PROGRESSIVE_STATUS.COMPLETED})
+        # assembly_ai_process.start()
+        # deepgram_process.start()
+        # deepgram_enhanced_process.start()
+        # deepgram_nova_process.start()
+
+        # assembly_ai_process.join()
+        # deepgram_process.join()
+        # deepgram_enhanced_process.join()
+        # deepgram_nova_process.join()
+
+        Content.update(id, {"status": PROGRESSIVE_STATUS.COMPLETED, "content": data})
         print("Processing completed...")
 
         # unlinkFile(path)
@@ -89,11 +102,11 @@ def extract_transcript(path, id, **kwargs):
         print("Unable to extract transcript: ", e)
 
 
-def transcribe_from_assembly_ai(id: str, path: str):
+def transcribe_from_assembly_ai(path: str):
     model = Transcript(path, TRANSCRIPTION_MODELS.ASSEMBLYAI)
-    model.extract_transcript(id)
+    return model.extract_transcript()
 
 
-def transcribe_from_deepgram(id: str, path: str, premium_tier, luxury_tier):
+def transcribe_from_deepgram(path: str, premium_tier, luxury_tier):
     model = Transcript(path, TRANSCRIPTION_MODELS.DEEPGRAM, premium_tier, luxury_tier)
-    model.extract_transcript(id)
+    return model.extract_transcript()

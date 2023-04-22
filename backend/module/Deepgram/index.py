@@ -1,4 +1,3 @@
-from lib.models.Content import update_content, get_by_id
 from lib.helpers.adapters.transcriptAdapter import TranscriptAdapter
 from lib.Logging.logger import logger
 from deepgram import Deepgram
@@ -48,10 +47,10 @@ class DeepgramAi(TranscriptAdapter):
                 result = response["results"]["channels"][0]["alternatives"][0]["transcript"]
                 time_taken = time.time() - start_time
                 logger.info(f"Deepgram: Transcript extraction took: {time_taken}s")
-                logger.info("Deepgram: Transcript generated with result: ", {
-                    "result": result,
-                    "response": response
-                })
+                # logger.info("Deepgram: Transcript generated with result: ", {
+                #     "result": result,
+                #     "response": response
+                # })
                 self.result = result
                 return result
         except FileNotFoundError:
@@ -68,14 +67,14 @@ class DeepgramAi(TranscriptAdapter):
     def fetch_transcript(self):
         return
 
-    def save(self, id):
+    def save(self):
         data = {}
         key = f"deepgram_{self.tier}"
         data[key] = {
             "transcript": self.result
         }
-        update_content(id, data)
-        print("deepgram.save: transcript saved")
+        print("deepgram.save: saving transcript...")
+        return data
 
 
 Model = DeepgramAi

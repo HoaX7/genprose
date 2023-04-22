@@ -1,6 +1,4 @@
-from unittest import result
 from lib.helpers.constants import PROGRESSIVE_STATUS
-from lib.models.Content import update_content, get_by_id, update
 from lib.helpers.adapters.transcriptAdapter import TranscriptAdapter
 from lib.Logging.logger import logger
 from api.assemblyai.index import (
@@ -48,7 +46,6 @@ class AssemblyAi(TranscriptAdapter):
             if not id:
                 return
             result = fetch_transcript_by_id(id)
-            print(result)
             return result
         except Exception as e:
             raise Exception(e)
@@ -63,25 +60,18 @@ class AssemblyAi(TranscriptAdapter):
             raise Exception(e)
 
     # id - the id from contents table to save data
-    def save(self, id):
+    def save(self):
         try:
             result = self._poll_request()
             if not result:
                 return
             if result["status"] == "error":
-                update(
-                    id,
-                    {
-                        "status": PROGRESSIVE_STATUS.ERROR,
-                        "meta": {"error": result["error"]},
-                    },
-                )
-                return
+                return {
+                    "status": PROGRESSIVE_STATUS.ERROR,
+                    "meta": {"error": result["error"]},
+                }
 
-            update_content(
-                id, {"assembly_ai": {"id": result["id"], "transcript": result["text"]}}
-            )
-            print("AssemblyAi content saved")
+            return {"assembly_ai": {"id": result["id"], "transcript": result["text"]}}
         except Exception as e:
             raise Exception(e)
 

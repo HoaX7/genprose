@@ -31,6 +31,6 @@ class Transcript():
         self.model = module.Model(filepath, premium_tier, luxury_tier) # path, premium_tier, luxury_tier
 
     # id - The id from 'contents' table
-    def extract_transcript(self, id: str):
+    def extract_transcript(self):
         self.model.extract_transcript()
-        self.model.save(id)
+        return self.model.save()
