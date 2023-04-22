@@ -34,3 +34,8 @@ def unlinkFile(filename: str) -> None:
     except Exception as e:
         print(e)
         return "Unable to remove file"
+
+def check_filepath(filepath: str) -> bool:
+    if os.path.isfile(filepath):
+        return True
+    return False

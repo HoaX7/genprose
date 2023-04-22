@@ -1,7 +1,9 @@
+from lib.models.User import find
 from flask import request
 import functools
 from lib.Logging.logger import logger
 import json
+from controller.session_controller import verify_jwt_token
 
 
 def login_required(func):
@@ -17,15 +19,13 @@ def login_required(func):
             """
             token = request.cookies.get("token")
             __cookies = request.headers.get("Cookies")
-            __token = ""
-            if token:
-                __token = token.split(":")
-            elif __cookies:
+
+            if not token and __cookies:
                 temp = json.loads(__cookies)
                 if temp["token"]:
-                    __token = temp["token"].split(":")
-
-            if __token and verify_token(__token):
+                    token = temp["token"]
+            
+            if token and verify_token(token):
                 return func(*args, **kwargs)
 
             return "Unauthorized", 401
@@ -36,10 +36,14 @@ def login_required(func):
     return secure_function
 
 
-def verify_token(token: list[str]) -> bool:
-    secret = token[0].split("secret=")[1]
-    email = token[1].split("email=")[1]
-    if secret == "AAAA":
-        request.user = {"email": email}
-        return True
-    return False
+def verify_token(token: str) -> bool:
+    data = verify_jwt_token(token)
+    if not data:
+        return False
+
+    existing_user = find(data["email"])
+    if not existing_user or existing_user["id"] != data["id"]:
+        return False
+
+    request.user = data
+    return True

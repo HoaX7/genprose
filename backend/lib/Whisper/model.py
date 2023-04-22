@@ -19,7 +19,7 @@ class WhisperModel(Transcription):
             logger.info("lib.Whisper.model.get_transcription: transcription started for file: ", audio_file)
             logger.info(f"transcribing audio from path {path}")
 
-            result = self.model.transcribe(audio_file, verbose=True, language="english")
+            result = self.model.transcribe(audio_file, verbose=True, language="English")
 
             logger.info("lib.Whisper.model.get_transcription: transcription finished for file: ", audio_file) 
             return result

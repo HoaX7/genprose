@@ -178,8 +178,8 @@ function Transcript({
 										});
 										if (resp.error || !resp.data) throw resp;
 										const result = await pollRequest<PollParams, GeneratedContentProps>({
-											method: "POST",
-											data: { unique_id: resp.data },
+											method: "GET",
+											data: { id: resp.data.id },
 											url: "/ai/retrieve_transcript",
 											callback: (data) => {
 												// const res = clone(result);

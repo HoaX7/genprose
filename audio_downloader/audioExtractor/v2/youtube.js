@@ -22,8 +22,7 @@ module.exports = {
 			const videoInfo = await ytdl.getInfo(url);
 			console.timeEnd("url");
 			await this._download(videoInfo);
-			return "ok";
-			// return videoInfo.player_response.videoDetails;
+			return videoInfo.player_response.videoDetails;
 		} catch (err) {
 			console.error("v2.youtube.fetchYTVideoInfo: Failed", err);
 			throw new UnknownError("Unable to validate YT url");
@@ -33,11 +32,17 @@ module.exports = {
 		console.log("downloading YT audio from videoinfo");
 		return this._download(info);
 	},
-	downloadFromUrl(url) {
+	/**
+     * @param {string} url 
+     * @returns 
+     */
+	async downloadFromUrl(url) {
 		const isUrlValid = ytdl.validateURL(url);
 		if (!isUrlValid) {
 			throw new InvalidUrlError("Invalid YouTube URL");
 		}
+		const filepath = await this._download(url);
+		return filepath;
 	},
 	/**
      * Read docs for more filter info
@@ -49,15 +54,16 @@ module.exports = {
 			let stream;
 			console.time("download");
 			const filters = {
-				quality: "lowestaudio",
 				filter: "audioonly",
+				quality: "highestaudio"
 			};
+			console.log("v2.youtube._download: download started");
 			if (typeof data === "string") {
-				stream = ytdl(data);
+				stream = ytdl(data, filters);
 			} else {
-				stream = ytdl.downloadFromInfo(data);
+				stream = ytdl.downloadFromInfo(data, filters);
 			}
-			const filename = "audio";
+			const filename = new Date().getTime();
 			const dir = "../downloads";
 			const isDirValid = await makeDir(dir);
 			if (!isDirValid) return;
@@ -77,7 +83,7 @@ module.exports = {
 				console.log("download complete");
 				console.timeEnd("download");
 			});
-			return;
+			return filepath;
 		} catch (err) {
 			console.error("v2.youtube._download: Failed", err);
 			throw new UnknownError("Unable to download YouTube audio");

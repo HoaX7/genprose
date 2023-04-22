@@ -1,5 +1,4 @@
 from lib.utils.index import async_wrapper
-import lib.models.Extractor as Extractor
 import lib.Transcription.content as content_extractor
 import lib.Transcription.keywords as keyword_extractor
 from lib.Transcription.transcribe import Transcribe

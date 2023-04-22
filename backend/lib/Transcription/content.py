@@ -1,7 +1,7 @@
 import json
 from time import sleep
 from uuid import uuid4
-import lib.models.Extractor as Extractor
+import lib.models.Content as Content 
 from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
 from lib.Logging.logger import logger
 from lib.Openai.model import ChatGPTModel
@@ -20,26 +20,27 @@ content_model = ChatGPTModel()
 """
 def start_content_generation(prompt: str, engine: str, unique_id: str, **kwargs):
     try:
-        Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.INPROGRESS})
-        result = __get_content(prompt, engine)
-        send_mail = kwargs.get("send_mail") or False
-        email = kwargs.get("email")
-        if send_mail == True:
-            print(f"Sending email to: {email}")
-            mailer.send_mail(
-                subject="Your Content is Ready",
-                receiver_email=email,
-                message=__prepare_email_body(unique_id),
-                is_html=True
-            )
+        return "ok"
+        # Content.update(unique_id, {"status": PROGRESSIVE_STATUS.INPROGRESS})
+        # result = __get_content(prompt, engine)
+        # send_mail = kwargs.get("send_mail") or False
+        # email = kwargs.get("email")
+        # if send_mail == True:
+        #     print(f"Sending email to: {email}")
+        #     mailer.send_mail(
+        #         subject="Your Content is Ready",
+        #         receiver_email=email,
+        #         message=__prepare_email_body(unique_id),
+        #         is_html=True
+        #     )
 
-        Extractor.update(
-            unique_id,
-            {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED},
-        )
+        # Extractor.update(
+        #     unique_id,
+        #     {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED},
+        # )
     except Exception as e:
         print(e)
-        Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.QUEUED})
+        # Extractor.update(unique_id, {"status": PROGRESSIVE_STATUS.QUEUED})
 
 """
     @param {is_priority} - boolean
@@ -48,29 +49,30 @@ def start_content_generation(prompt: str, engine: str, unique_id: str, **kwargs)
 """
 def get_content_from_prompt(prompt: str, **kwargs) -> str:
     try:
-        unique_id = uuid4().hex
-        engine = kwargs.get("engine")
-        email = kwargs.get("email")
-        is_priority = kwargs.get("is_priority")
-        status = PROGRESSIVE_STATUS.QUEUED
-        args = {"prompt": prompt, "engine": engine}
-        if is_priority == True:
-            link = kwargs.get("link")
-            args["link"] = link or "not-found"
-            start_process(unique_id, prompt)
-            status = PROGRESSIVE_STATUS.PRIORITY_QUEUE
+        return "ok"
+        # unique_id = uuid4().hex
+        # engine = kwargs.get("engine")
+        # email = kwargs.get("email")
+        # is_priority = kwargs.get("is_priority")
+        # status = PROGRESSIVE_STATUS.QUEUED
+        # args = {"prompt": prompt, "engine": engine}
+        # if is_priority == True:
+        #     link = kwargs.get("link")
+        #     args["link"] = link or "not-found"
+        #     start_process(unique_id, prompt)
+        #     status = PROGRESSIVE_STATUS.PRIORITY_QUEUE
 
-        Extractor.create(
-                unique_id=unique_id,
-                content="{}",
-                args=json.dumps(
-                    args, separators=(",", ":")
-                ),
-                content_type=CONTENT_TYPES.EXTRACT_CONTENT,
-                status=status,
-                email=email,
-            )
-        return unique_id
+        # Extractor.create(
+        #         unique_id=unique_id,
+        #         content="{}",
+        #         args=json.dumps(
+        #             args, separators=(",", ":")
+        #         ),
+        #         content_type=CONTENT_TYPES.EXTRACT_CONTENT,
+        #         status=status,
+        #         email=email,
+        #     )
+        # return unique_id
     except Exception as e:
         print(e)
         logger.error(
@@ -94,7 +96,7 @@ def __start_priority_func(unique_id: str, prompt: str):
     result = __get_content(prompt, "davinci")
     logger.info("__start_priority_func: daemon task completed")
     
-    Extractor.update(unique_id, {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED})
+    # Extractor.update(unique_id, {"content": json.dumps(result), "status": PROGRESSIVE_STATUS.COMPLETED})
     multiprocessing.current_process().terminate()
 
 def __get_content(prompt: str, engine: str):

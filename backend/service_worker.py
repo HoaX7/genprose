@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 import asyncio
-import lib.models.Extractor as Extractor
+import lib.models.Content as Extractor
 from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
 from workers.functions import process_tasks
 import argparse

@@ -11,6 +11,7 @@ interface PollRequest<T, C> {
   interval?: number;
   callback: (data: ContentProps<C>) => void;
   errorCallback: (message: string) => void;
+  onProgress?: (data: any) => void;
 }
 export const pollRequest = <T, C>({
 	interval = 10000,
@@ -20,7 +21,8 @@ export const pollRequest = <T, C>({
 	url,
 	callback,
 	errorCallback,
-}: PollRequest<T, C>): Promise<ContentProps<C>> => {
+	onProgress
+}: PollRequest<T, C>): Promise<any> => {
 	let attempts = 0;
 	return new Promise((resolve, reject) => {
 		(async function execute() {
@@ -39,6 +41,11 @@ export const pollRequest = <T, C>({
         			!result.data ||
 					result.data.status !== PROGRESSIVE_STATUS.COMPLETED
 				) {
+					if (result.data?.status === PROGRESSIVE_STATUS.ERROR) {
+						// Change this to show apporpriate error
+						throw new Error("Unknown Error occured");
+					}
+					if (typeof onProgress === "function") onProgress(result.data);
 					setTimeout(execute, interval);
 				} else {
 					return resolve(result.data);

@@ -14,15 +14,15 @@ class Logger:
     def prepare_log_dict(self, *params):
         return {("param" + str(idx + 1)): param for idx,param in enumerate(params)}
 
-    def info(self, *params):
-        pass
+    def info(self, *params, **kwargs):
+        print(*params, **kwargs)
         # self.logger.info(self.prepare_log_dict(*params))
     
-    def warn(self, *params):
+    def warn(self, *params, **kwargs):
         pass
         # self.logger.warn(self.prepare_log_dict(*params))
 
-    def error(self, *params):
+    def error(self, *params, **kwargs):
         pass
         # self.logger.error(self.prepare_log_dict(*params))
 

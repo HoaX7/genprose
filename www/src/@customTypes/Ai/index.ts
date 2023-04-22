@@ -1,4 +1,4 @@
-export type Status = "INPROGRESS" | "COMPLETED" | "QUEUED";
+export type Status = "INPROGRESS" | "COMPLETED" | "QUEUED" | "ERROR";
 export type ContentTypes = "EXTRACT_AUDIO" | "EXTRACT_KEYWORDS" | "EXTRACT_CONTENT" | "EXTRACT_TRANSCRIPT"
 export type TranscriptKeywordProps = {
   transcript: string;
@@ -21,6 +21,26 @@ export type GeneratedContentProps = {
   };
 };
 
+type TO = {
+  transcript: string;
+};
+export type TestTranscriptData = {
+  id: string;
+  content: {
+    assembly_ai: TO;
+    deepgram_base: TO;
+    deepgram_enhanced: TO;
+    deepgram_nova: TO;
+  };
+  args: {
+    link: string;
+    path: string;
+  };
+  content_type: ContentTypes;
+  status: Status;
+  user_id: string;
+}
+
 export type ContentProps<T = string> = {
   unique_id: string;
   content: T;
@@ -38,7 +58,7 @@ export type ContentProps<T = string> = {
 }
 
 export type PollParams = {
-  unique_id: string;
+  id: string;
 }
 
 export type StatusObject = {

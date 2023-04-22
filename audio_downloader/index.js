@@ -22,12 +22,14 @@ const fs = require("fs");
 
 const boot = async () => {
 	console.time("download");
-	const info = await ytdl.getInfo("https://www.youtube.com/watch?v=7jmrUpEFpRc");
-	console.log("Seconds: ", info.player_response.videoDetails.lengthSeconds);
-	const stream = ytdl.downloadFromInfo(info, {
+	const stream = ytdl("https://www.youtube.com/watch?v=s4xnyr2mCuI", {
 		filter: "audioonly",
 		quality: "highestaudio"
 	});
+	// const stream = ytdl.downloadFromInfo(info, {
+	// 	filter: "audioonly",
+	// 	quality: "highestaudio"
+	// });
 	stream.pipe(fs.createWriteStream("./audio.mp3"));
 
 	stream.on("data", (chunk) => {

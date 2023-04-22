@@ -9,11 +9,12 @@ import Spinner from "../Commons/Loaders/Spinner";
 import { clone } from "helpers";
 
 interface P {
-  onExtraction: (data: {
-	  keywords?: string[][];
-	  transcript?: string;
-	  generatedContent?: ContentProps<GeneratedContentProps>;
-  }) => void;
+	onExtraction: (data: any) => void;
+//   onExtraction: (data: {
+// 	  keywords?: string[][];
+// 	  transcript?: string;
+// 	  generatedContent?: ContentProps<GeneratedContentProps>;
+//   }) => void;
   className?: string;
   useChatGpt?: boolean;
   onPolling: (bool: boolean) => void;
@@ -56,71 +57,75 @@ function Extractor({
 			});
 			if (resp.error) throw resp;
 			if (!resp.data) throw new Error("No data found");
-			setQueueMessage("Your queue position is 5");
-			const res = clone<StatusObject[]>(globalStatus);
-			res.push({
-				content_type: "EXTRACT_AUDIO",
-				name: "Extract Transcript",
-				isComplete: false,
-				status: "QUEUED",
-				id: resp.data
-			});
-			setGlobalStatus(res);
-			const result = await pollRequest<PollParams, string[][]>({
-				method: "POST",
-				data: { unique_id: resp.data },
+			// setQueueMessage("Your queue position is 5");
+			// const res = clone<StatusObject[]>(globalStatus);
+			// res.push({
+			// 	content_type: "EXTRACT_AUDIO",
+			// 	name: "Extract Transcript",
+			// 	isComplete: false,
+			// 	status: "QUEUED",
+			// 	id: resp.data
+			// });
+			// setGlobalStatus(res);
+			const result = await pollRequest<PollParams, any>({
+				method: "GET",
+				data: { id: resp.data.id },
 				url: "/ai/retrieve_transcript",
 				callback: (data) => {
 					//
 				},
 				errorCallback: () => {
 					setPolling(false);
+				},
+				onProgress: (data) => {
+					console.log({ data });
 				}
 			});
 			if (!result) throw new Error("Unable to fetch data");
-			const newRes = clone<StatusObject[]>(globalStatus);
-			const idx = newRes.findIndex((r) => r.id === resp.data);
-			if (idx >= 0) {
-				newRes[idx].isComplete = true;
-				newRes[idx].status = "COMPLETED";
-				setGlobalStatus(newRes);
-			}
-			onExtraction({
-				keywords: result.content,
-				transcript: result.args.text || "" 
-			});
-			if (result.args.generate_content_unique_id) {
-				const _resp = clone<StatusObject[]>(globalStatus);
-				_resp.push({
-					id: result.args.generate_content_unique_id,
-					isComplete: false,
-					status: "INPROGRESS",
-					content_type: "EXTRACT_CONTENT",
-					name: "Generating Sample Content"
-				});
-				setGlobalStatus(_resp);
-				const contentRes = await pollRequest<PollParams, GeneratedContentProps>({
-					method: "POST",
-					data: { unique_id: result.args.generate_content_unique_id },
-					url: "/ai/retrieve_transcript",
-					callback: (data) => {
-						//
-					},
-					errorCallback: () => {
-						setPolling(false);
-					}
-				});
-				if (contentRes) {
-					onExtraction({ generatedContent: contentRes });
-					const _newRes = clone<StatusObject[]>(globalStatus);
-					const idx = _newRes.findIndex((r) => r.id === resp.data);
-					if (idx >= 0) {
-						_newRes[idx].isComplete = true;
-						_newRes[idx].status = "COMPLETED";
-						setGlobalStatus(_newRes);
-					}
-				}
-			}
+			onExtraction(result);
+			// const newRes = clone<StatusObject[]>(globalStatus);
+			// const idx = newRes.findIndex((r) => r.id === resp.data);
+			// if (idx >= 0) {
+			// 	newRes[idx].isComplete = true;
+			// 	newRes[idx].status = "COMPLETED";
+			// 	setGlobalStatus(newRes);
+			// }
+			// onExtraction({
+			// 	keywords: result.content,
+			// 	transcript: result.args.text || "" 
+			// });
+			// if (result.args.generate_content_unique_id) {
+			// 	const _resp = clone<StatusObject[]>(globalStatus);
+			// 	_resp.push({
+			// 		id: result.args.generate_content_unique_id,
+			// 		isComplete: false,
+			// 		status: "INPROGRESS",
+			// 		content_type: "EXTRACT_CONTENT",
+			// 		name: "Generating Sample Content"
+			// 	});
+			// 	setGlobalStatus(_resp);
+			// 	const contentRes = await pollRequest<PollParams, GeneratedContentProps>({
+			// 		method: "POST",
+			// 		data: { unique_id: result.args.generate_content_unique_id },
+			// 		url: "/ai/retrieve_transcript",
+			// 		callback: (data) => {
+			// 			//
+			// 		},
+			// 		errorCallback: () => {
+			// 			setPolling(false);
+			// 		}
+			// 	});
+			// 	if (contentRes) {
+			// 		onExtraction({ generatedContent: contentRes });
+			// 		const _newRes = clone<StatusObject[]>(globalStatus);
+			// 		const idx = _newRes.findIndex((r) => r.id === resp.data);
+			// 		if (idx >= 0) {
+			// 			_newRes[idx].isComplete = true;
+			// 			_newRes[idx].status = "COMPLETED";
+			// 			setGlobalStatus(_newRes);
+			// 		}
+			// 	}
+			// }
 			setPolling(false);
 			return;
 		} catch (err) {

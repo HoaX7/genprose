@@ -1,3 +1,8 @@
-const sqliteDB = require("./sqlite");
+const knex = require("knex");
+const knexfile = require("./knexfile");
 
-module.exports = sqliteDB;
+const env = "development";
+const envConfig = knexfile[env];
+
+const connection = knex(envConfig);
+module.exports = connection;

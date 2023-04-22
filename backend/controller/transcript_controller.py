@@ -26,14 +26,14 @@ def extract_keywords(text: str, email: str, use_chatgpt_for_keywords: bool) -> s
 def get_content_from_keywords(prompt: str, **kwargs) -> str:
     return content_extractor.get_content_from_prompt(prompt, **kwargs)
 
-def retrieve_transcript(unique_id: str):
-    return transcribe.retrieve_transcript(unique_id)
+def retrieve_transcript(id: str):
+    return transcribe.retrieve_transcript(id)
 
-def get_by_email(**kwargs):
-    return transcribe.get_by_email(**kwargs)
+def get_by_user(**kwargs):
+    return transcribe.get_by_user(**kwargs)
 
-def remove_transcript(unique_id: str):
-    return transcribe.remove_transcript(unique_id)
+def remove_transcript(id: str):
+    return transcribe.remove_transcript(id)
 
 def remove_data_by_email(email: str):
     return "None"

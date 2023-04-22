@@ -1,6 +1,6 @@
 const { extractAudio } = require("./audioExtractor");
 const { sleep } = require("./helpers");
-const Extractor = require("./models/Extractor");
+const Extractor = require("./models/Contents");
 
 const main = async () => {
 	// eslint-disable-next-line no-constant-condition
@@ -9,7 +9,7 @@ const main = async () => {
 			console.log("Worker polling...");
 			const result = await Extractor.get_rows_by_status();
 			console.log(`Processing ${(result || []).length} tasks`);
-			await Promise.all((result || []).map((item) => extractAudio(JSON.parse(item.args).link, item.unique_id)));
+			await Promise.all((result || []).map((item) => extractAudio(item.args.link, item.id)));
 		} catch (err) {
 			console.log("Failed to starter worker...", err);
 		} finally {

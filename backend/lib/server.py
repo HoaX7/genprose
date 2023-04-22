@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from lib.routes.service import backend_service
 from lib.routes.auth import auth_service
 from lib.routes.ai import ai_service
+from lib.routes.test import test_service
 from lib.Logging.logger import logger
 import traceback
 from flask_cors import CORS
@@ -21,7 +22,7 @@ CORS(app, supports_credentials=True, origins="*", expose_headers=["Set-Cookie", 
 app.register_blueprint(backend_service)
 app.register_blueprint(auth_service)
 app.register_blueprint(ai_service, url_prefix="/ai")
-
+app.register_blueprint(test_service, url_prefix="/test")
 # @app.before_request
 # def log_request_info():
 #     logger.info("Inbound request", request.remote_addr, request.method, request.scheme, request.full_path)

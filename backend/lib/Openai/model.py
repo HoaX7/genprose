@@ -7,7 +7,7 @@ accepted_models = ["text-davinci-003", "text-curie-001", "text-babbage-001", "te
 
 class ChatGPTModel:
     def __init__(self):
-        pass
+        print("Initializing open ai")
 
     def generate_content(self, prompt: str, model_engine: str) -> str:
         if not model_engine or model_engine not in accepted_models:

@@ -2,12 +2,13 @@ import { ContentProps, ContentTypes, GeneratedContentProps, TranscriptKeywordPro
 import { AI_MODEL_ENGINES } from "../helpers/constants";
 import { requester, ApiResponse, RequestMethodParams } from "../helpers/requester";
 
+// Route depricated 
 export const getTranscriptionAndKeywordsFromURL = (params: {
 	url: string;
 	use_chatgpt_for_keywords?: boolean;
 }): Promise<ApiResponse<TranscriptKeywordProps>> => {
 	return requester({
-		url: "/ai/get_transcript",
+		url: "/ai/transcribe",
 		data: params,
 		method: "POST",
 		timeout: 120000
@@ -18,7 +19,7 @@ export const executeFuncAndGetUniqueId = <T>(params: {
 	method: RequestMethodParams;
 	data: T;
 	url: string;
-}): Promise<ApiResponse<string>> => {
+}): Promise<ApiResponse<{ id: string; }>> => {
 	return requester({
 		data: params.data,
 		url: params.url,
@@ -74,10 +75,10 @@ export const prepareContentParams = (prompt: string, engine: string) => {
 };
 
 export const getContentById = async ({ id }: { id: string; }) => {
-	return requester<{ unique_id: string; }, ContentProps<string>>({
-		method: "POST",
+	return requester<{ id: string; }, ContentProps<string>>({
+		method: "GET",
 		url: "/ai/preview_transcript",
-		data: { unique_id: id }
+		data: { id }
 	});
 };
 
@@ -88,7 +89,7 @@ export const getContentByEmail = async <R>(params: P) => {
 	return requester<P, R>({
 		method: "GET",
 		data: params,
-		url: "/ai/fetch_by_email",
+		url: "/ai/fetch_by_userid",
 		headers: cookies ? { cookies: JSON.stringify({ token: cookies.token }) } : {}
 	});
 };

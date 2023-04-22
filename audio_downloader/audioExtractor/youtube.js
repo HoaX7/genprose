@@ -5,6 +5,13 @@ const path = require("path");
 const Extractor = require("../models/Extractor");
 const { PROGRESSIVE_STATUS, CONTENT_TYPES } = require("../helpers/constants");
 
+///////////////////////////////
+//
+// FILE DEPRECATED
+//
+//////////////////////////////////
+
+
 //Configure YoutubeMp3Downloader with your settings
 var YD = new YoutubeMp3Downloader({
 	"outputPath": `${path.join(process.cwd(), "../downloads")}`,    // Output file location (default: the home directory)
