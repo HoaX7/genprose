@@ -21,6 +21,7 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
     Note: While using ngrok to server backend
     "secure" must be True and samesite="None"
+    "domain": .genprose.com
 """
 def set_session(value):
     token = jwt.encode(value, SECRET_KEY, algorithm="HS256")
