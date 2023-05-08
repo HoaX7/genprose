@@ -39,9 +39,6 @@ def generate_content(**kwargs):
         #     prompt += f"keywords: {','.join(keywords)}"
 
         text = __get_content(prompt, engine)
-        # if not text:
-        #     raise Exception("No content was geneerated")
-        # Content.update_content(id, text.strip(), True)
 
         return text
     except Exception as e:

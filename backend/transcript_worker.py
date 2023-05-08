@@ -48,26 +48,6 @@ def process(item):
             send_mail=True
         )
         Content.update_content(id, result, True)
-
-        # dummy content, open AI will charge my bank
-#         Content.update_content(
-#             id,
-#             """Passion. That's what drives creative entrepreneurs to want to build something big. It's the same for the oh-so-random guy who got a podcast, no matter how good or not it may be. Let's start here and go to his profile page.
-
-# He built a newsletter, and was especially good at conversion stuff. He got a lot of people to click like he built, especially when it came to the top stuff. Everything was geared towards simplifying their audience's business and helping them with their growth.
-
-# People saw his tweet and wanted to pick anyone who was listening. But there was a little bit of credibility to the second part of that. That's why they want to sort through conversion stuff and focus on the value they provide.
-
-# So if you're going to pick anyone who's listening, you need a little bit of credibility. We'll link to the show notes, and want to sort through conversion stuff and the value they provide.
-
-# Don't worry, going to pick anyone who's listening. The key here is focused value. We'll link to the show notes and the bit of credibility that comes with it.
-
-# It immediately lets people know who the guy is. They're on his profile page for a specific purpose, and they're the main target audience – creative entrepreneurs.
-
-# It immediately lets them know that they're the main target audience anyway. The profile page has a specific purpose, like wanting to build something big.
-# """,
-#             True,
-#         )
         logger.info(f"content generation completed. Lifecycle completed")
     except Exception as e:
         print("worker.py: Extraction Failed", e)

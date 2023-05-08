@@ -1,3 +1,4 @@
+import { logoutApi } from "api/auth";
 import axios, {
 	AxiosRequestConfig,
 	AxiosRequestHeaders,
@@ -104,6 +105,7 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 				console.log("Please re-login");
 				AlertErrorMessage({ text: "Your session has expired. Please re-login." });
 				if (isServer === false) {
+					await logoutApi();
 					window.location.href = "/";
 				}
 			}
