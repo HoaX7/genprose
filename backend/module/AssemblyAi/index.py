@@ -71,7 +71,7 @@ class AssemblyAi(TranscriptAdapter):
                     "meta": {"error": result["error"]},
                 }
 
-            return {"assembly_ai": {"id": result["id"], "transcript": result["text"]}}
+            return result["text"]
         except Exception as e:
             raise Exception(e)
 

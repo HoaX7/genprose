@@ -11,17 +11,18 @@ interface Props extends TypographyProps {
         | string[]
         | number
         | number[]
-        | (string | JSX.Element | number)[];
+        | (string | JSX.Element | number)[]
+		| React.ReactNode;
     className?: string;
 	onClick?: React.MouseEventHandler<HTMLHeadingElement>;
 }
 
 export default function Typography({
-	variant,
+	variant = "span",
 	children,
 	className,
-	font,
-	weight,
+	font = 16,
+	weight = "regular",
 	onClick
 }: Props) {
 	const Container = variant;

@@ -8,8 +8,16 @@ def create_transcript(path: str):
         service=TRANSCRIPTION_MODELS.ASSEMBLYAI,
         version="v2",
         method="POST",
-        data={"audio_url": path, "language_code": "en"}
+        data={
+            "audio_url": path,
+            "language_code": "en",
+            # Enabling summary costs extra
+            # read @docs (https://www.assemblyai.com/pricing) for more info
+            # "summarization": True,
+            # "summary_model": "informative",
+        },
     )
+
 
 def fetch_transcript_by_id(id: str):
     return make_request(
@@ -17,8 +25,9 @@ def fetch_transcript_by_id(id: str):
         service=TRANSCRIPTION_MODELS.ASSEMBLYAI,
         version="v2",
         method="GET",
-        data={}
+        data={},
     )
+
 
 def upload_audio_file(filepath: str):
     return make_request(
@@ -27,5 +36,5 @@ def upload_audio_file(filepath: str):
         version="v2",
         method="POST",
         data=filepath,
-        isFile=True
+        isFile=True,
     )

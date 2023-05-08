@@ -1,3 +1,6 @@
+.font-8 {
+  font-size: var(--font-8);
+}
 .font-10 {
   font-size: var(--font-10);
 }
@@ -29,20 +32,26 @@
   font-size: var(--font-36);
 }
 .bold {
-  font-weight: var(--bold);
+  /* font-weight: var(--bold); */
+  font-family: 'Plus Jakarta Sans Bold';
 }
 .semi-bold {
-  font-weight: var(--semi-bold);
+  /* font-weight: var(--semi-bold); */
+  font-family: 'Plus Jakarta Sans SemiBold';
 }
 .regular {
-  font-weight: var(--regular);
+  /* font-weight: var(--regular); */
+  font-family: 'Plus Jakarta Sans';
 }
 .thin {
   font-weight: var(--thin);
+  font-family: 'Plus Jakarta Sans Light';
 }
 .light {
-  font-weight: var(--light);
+  /* font-weight: var(--light); */
+  font-family: 'Plus Jakarta Sans Light';
 }
 .medium {
-  font-weight: var(--medium);
+  /* font-weight: var(--medium); */
+  font-family: 'Plus Jakarta Sans Medium';
 }

@@ -7,6 +7,7 @@ import App from "next/app";
 import WithStore from "store/WithContext";
 import Auth from "store/AuthStore";
 import FullpageLoader from "components/Commons/Loaders/FullpageLoader";
+import WithPageTransition from "components/Mainlayout/WithPageTransition";
 
 // Logged in data must come from ssr props
 function TheContentMachine({
@@ -15,7 +16,7 @@ function TheContentMachine({
 	isLoggedIn = false,
 }: AppProps & { isLoggedIn: boolean }) {
 	const [ _isLoggedIn, setIsLoggedIn ] = useState(false);
-	const [ loading, setLoading ] = useState(true);
+	const [ loading, setLoading ] = useState(false);
 
 	useEffect(() => {
 		const loggedIn = Auth.isLoggedIn();
@@ -26,6 +27,7 @@ function TheContentMachine({
 		<Fragment>
 			{loading ? <FullpageLoader title="Loading.." /> : _isLoggedIn ? (
 				<MainLayout isLoggedIn={isLoggedIn}>
+					{/* <WithPageTransition {...pageProps} Component={Component} isLoggedIn={isLoggedIn} /> */}
 					<Component {...pageProps} isLoggedIn={isLoggedIn} />
 				</MainLayout>
 			) : (
@@ -38,14 +40,14 @@ function TheContentMachine({
 TheContentMachine.getInitialProps = async (appContext: AppContext) => {
 	const { ctx } = appContext;
 	const { pageProps } = await App.getInitialProps(appContext);
-	let isLoggedIn = false;
+	let isLoggedIn = true;
 	const cookie = ctx.req?.headers.cookie || "";
 	if (cookie && cookie.includes("token=")) {
 		isLoggedIn = true;
 	}
 	return {
 		pageProps,
-		isLoggedIn 
+		isLoggedIn
 	};
 };
 

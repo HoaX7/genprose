@@ -1,90 +1,28 @@
-import { getContentByEmail } from "api/ai";
 import React from "react";
-import Transcript from "../components/Ai/Transcript";
 import { connectStore } from "store/WithContext";
-import { setGlobalStatus, setQueueMessage } from "store/actionCreators";
-import { ContentProps, GeneratedContentProps, StatusObject, TestTranscriptData } from "@customTypes/Ai";
-import { GetServerSideProps } from "next";
-import TestTranscripts from "components/Ai/TestTranscripts";
+import { setGlobalStatus, setMetadata, setQueueMessage } from "store/actionCreators";
+import { Metadata, StatusObject } from "@customTypes/Ai";
+import TranscriptIndex from "components/Transcript";
 
 const connect = connectStore((state, dispatch) => ({
 	setGlobalStatus: (props) => setGlobalStatus(props)(dispatch),
 	setQueueMessage: (props) => setQueueMessage(props),
-	globalStatus: state.globalStatus
+	globalStatus: state.globalStatus,
+	setMetadata: (props) => setMetadata(props)(dispatch)
 }));
 
 interface Props {
 	setQueueMessage: (props: string) => void;
 	setGlobalStatus: (props: StatusObject[]) => void;
 	globalStatus: StatusObject[];
-	result?: TestTranscriptData[];
-	// result?: ContentProps<GeneratedContentProps>[];
-	// keywordResult?: ContentProps<string[][]>[];
+	setMetadata: (props: Metadata) => void;
 }
-function index({ globalStatus, setGlobalStatus, setQueueMessage, result }: Props) {
+function index(props: Props) {
 	return (
 		<div className="container mx-auto p-3">
-			<TestTranscripts 
-				setGlobalStatus={setGlobalStatus}
-				setQueueMessage={setQueueMessage}
-				globalStatus={globalStatus}
-				result={result}	
-			/>
-			{/* <Transcript 
-				setGlobalStatus={setGlobalStatus}
-				setQueueMessage={setQueueMessage}
-				globalStatus={globalStatus}
-				result={result}
-				// Show latest only
-				keywordResult={(keywordResult || [])[0]}
-			/> */}
+			<TranscriptIndex setMetadata={props.setMetadata} />
 		</div>
 	);
 }
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	try {
-		const cookies = ctx.req.cookies;
-		if (!cookies.token) return {
-			props: {
-				result: [],
-				keywordResult: [] 
-			} 
-		};
-		const result = await getContentByEmail({
-			content_type: "EXTRACT_TRANSCRIPT",
-			cookies: ctx.req.cookies
-		});
-		// const keywords = await getContentByEmail({
-		// 	content_type: "EXTRACT_KEYWORDS",
-		// 	cookies: ctx.req.cookies
-		// });
-
-		// running into Recursive use of cursors not allowed. Error on backend
-		// const [ result, keywords ] = await Promise.all([
-		// 	getContentByEmail<ContentProps<GeneratedContentProps[]>>({
-		// 		content_type: "EXTRACT_CONTENT",
-		// 		cookies: ctx.req.cookies
-		// 	}),
-		// 	getContentByEmail<ContentProps<string[][]>>({
-		// 		content_type: "EXTRACT_KEYWORDS",
-		// 		cookies: ctx.req.cookies
-		// 	})
-		// ]);
-		return {
-			props: {
-				result: result.data || [],
-				// keywordResult: keywords.data 
-			} 
-		};
-	} catch (err) {
-		console.log("pages.index.getInitialProps: ERROR", err);
-		return {
-			props: {
-				error: true,
-				message: "Unable to fetch content" 
-			} 
-		};
-	}
-};
 
 export default connect(index);

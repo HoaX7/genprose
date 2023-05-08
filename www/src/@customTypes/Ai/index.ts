@@ -41,12 +41,15 @@ export type TestTranscriptData = {
   user_id: string;
 }
 
-export type ContentProps<T = string> = {
-  unique_id: string;
-  content: T;
+export type ContentProps = {
+  id: string;
+  content?: string[];
+  keywords?: string[];
+  transcript?: string;
   content_type: ContentTypes;
   status: Status,
-  email: string;
+  user_id: string;
+  is_private: boolean;
   args: {
     link?: string;
     path?: string;
@@ -54,6 +57,9 @@ export type ContentProps<T = string> = {
     use_chatgpt_for_keywords?: boolean;
     prompt?: string;
     generate_content_unique_id?: string;
+    title?: string;
+    persona?: string;
+    tone?: string;
   }
 }
 
@@ -67,4 +73,9 @@ export type StatusObject = {
   name: string;
   isComplete: boolean;
   id: string;
+}
+
+export type Metadata = {
+  url?: string;
+  stepper?: string[];
 }

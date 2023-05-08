@@ -40,7 +40,7 @@ class TFIdfModel:
         Logic can be improved for better results
         and keyword list can be shuffled.
     """
-    def extract_keywords(self, text: str) -> list[list[str]]:
+    def extract_keywords(self, text: str, count = 50) -> list[str]:
         if type(text) != str:
             raise Exception("Invalid text type. Expected type 'str'")
 
@@ -49,10 +49,8 @@ class TFIdfModel:
 
         # Consider top 50 results
         # and convert them into 10 lists of 5 words
-        avg = avg[:50]
-        keyword_list = divide_chunks(avg.tolist(), 10)
-
-        return list(keyword_list)
+        avg = avg[:count]
+        return avg.tolist()
 
     def vectorize(self, data: str, matrix_range = 1):
         cv = TfidfVectorizer(ngram_range=(matrix_range,matrix_range))

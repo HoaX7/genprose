@@ -1,49 +1,47 @@
-import { ContentProps, GeneratedContentProps } from "@customTypes/Ai";
+import { ContentProps, Metadata } from "@customTypes/Ai";
 import { getContentById } from "api/ai";
-import EachTestTranscript from "components/Ai/EachTestTranscript";
-import Typography from "components/Commons/Typography/Typography";
+import ContentIndex from "components/Content";
 import { GetServerSideProps } from "next";
 import React from "react";
+import { setMetadata } from "store/actionCreators";
+import { connectStore } from "store/WithContext";
+
+const con = connectStore((state, dispatch) => ({
+	setMetadata: (props: Metadata) => setMetadata(props)(dispatch),
+	profile: state.profile
+}));
 
 interface Props {
-  result?: any;
+  result?: ContentProps;
+  setMetadata: (props: Metadata) => void;
 }
-export default function Index({ result }: Props) {
-	// let content = "<i>No content available</i>";
-	// if (result?.content?.choices && result.content.choices[0].text) {
-	// 	const link = result.args.link;
-	// 	content = result.content.choices[0].text;
-	// 	content =
-	//   content +
-	//   `<div>Content is inspiried by 
-	//   <a class="text-blue-500 underline" href={${link}} target="_blank">${link}</a></div>`;
-	// }
+function Index({ result, setMetadata }: Props) {
 	return (
 		<div className="container mx-auto p-3">
-			<Typography
-				variant="div"
-				font={18}
-				weight="medium"
-			>
-				What to restrict access to content? Go Premium!
-			</Typography>
-			<EachTestTranscript item={result} i={0} />
+			<ContentIndex result={result} setMetadata={setMetadata} />
 		</div>
 	);
 }
 
+export default con(Index);
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	let id = ctx.params?.id;
-	if (!id)
-		return {
-			props: {
-				error: true,
-				message: "Invalid content ID",
-			},
-		};
-	if (typeof id === "object") {
-		id = id[0];
+	try {
+		let id = ctx.params?.id;
+		if (!id)
+			return {
+				props: {
+					error: true,
+					message: "Invalid content ID",
+				},
+			};
+		if (typeof id === "object") {
+			id = id[0];
+		}
+		const result = await getContentById({ id });
+		return { props: { result: result.data } };
+	} catch (err) {
+		console.error("content.id.getServerSideProps: Failed", err);
+		return { props: { error: "Unable to fetch content" } };
 	}
-	const result = await getContentById({ id });
-	return { props: { result: result.data } };
 };

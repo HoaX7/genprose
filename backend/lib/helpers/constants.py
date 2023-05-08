@@ -18,6 +18,25 @@ class __ProgressiveStatus:
     COMPLETED = "COMPLETED"
     ERROR = "ERROR"
 
+class __Persona:
+    def __init__(self) -> None:
+        pass
+
+    CEO = "CEO"
+    CONTENT_CREATOR = "Content Creator"
+    HEAD_OF_MARKETING = "Head of Marketing"
+    FASHION_DESIGNER = "Fashion Designer"
+    DOCTOR = "Doctor"
+    LEAD_DEVELOPER = "Lead Developer"
+
+class __Tone:
+    def __init__(self) -> None:
+        pass
+
+    PASSIVE = "Passive"
+    AGGRESSIVE = "Aggressive"
+    AUTHORITATIVE = "Authoritative"
+
 class __TranscriptionModels:
     def __init__(self) -> None:
         pass
@@ -31,6 +50,8 @@ class __TranscriptionModels:
 PROGRESSIVE_STATUS = __ProgressiveStatus()
 CONTENT_TYPES = __ContentTypes()
 TRANSCRIPTION_MODELS = __TranscriptionModels()
+TONE = __Tone()
+PERSONA = __Persona()
 
 CONTENT_TYPE_LIST = [
     CONTENT_TYPES.EXTRACT_AUDIO,

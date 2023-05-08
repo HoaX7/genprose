@@ -1,36 +1,25 @@
-from lib.utils.index import async_wrapper
-import lib.Transcription.content as content_extractor
-import lib.Transcription.keywords as keyword_extractor
+from lib.helpers.openai import get_sample_prompt
+import lib.Transcription.extract_content as content_extractor
+import lib.Transcription.extract_keywords as keyword_extractor
 from lib.Transcription.transcribe import Transcribe
 from lib.helpers.constants import CONTENT_TYPES
-import json
 
 Transcript = Transcribe()
 
-# @async_wrapper
-def process_tasks(unique_id, args, content_type, email, **kwargs):
+def process_tasks(id, args, content_type, user_id, **kwargs):
     try:
-        print(f"Processing task for unique_id: {unique_id}")
-        params = json.loads(args)
-        # if content_type == CONTENT_TYPES.EXTRACT_TRANSCRIPT:
-        #     return Transcript.extract_transcript(
-        #         params["path"], unique_id, args=params, email=email
-        #     )
+        print(f"Processing task for id: {id}")
         if content_type == CONTENT_TYPES.EXTRACT_KEYWORDS:
             return keyword_extractor.start_keyword_extraction(
-                params["text"],
-                params["use_chatgpt_for_keywords"],
-                unique_id,
-                args=params,
+                id,
+                args["transcript"],
+                False
             )
         elif content_type == CONTENT_TYPES.EXTRACT_CONTENT:
-            return content_extractor.start_content_generation(
-                params["prompt"],
-                "davinci",
-                unique_id,
-                args=params,
-                send_mail=True,
-                email=email,
+            return content_extractor.generate_content(
+                user_id=user_id,
+                id=id,
+                prompt=get_sample_prompt(args["keywords"])
             )
         print(f"Content type did not match for: {content_type}")
         return

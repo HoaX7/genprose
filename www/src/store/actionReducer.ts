@@ -19,6 +19,11 @@ export default (state: InitialAppContextProps, action: ActionDispatchParams<unkn
 			return Object.assign({}, state, { globalStatus: action.payload, });
 		case actionTypes.SET_QUEUE_MESSAGE:
 			return Object.assign({}, state, { queueMessage: action.payload });
+		case actionTypes.SET_METADATA:
+			if (typeof action.payload === "object") {
+				return Object.assign({}, state, { metadata: { ...action.payload } });
+			}
+			return state;
 		default:
 			return state;
 	}

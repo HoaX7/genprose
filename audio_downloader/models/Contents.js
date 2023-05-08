@@ -41,5 +41,10 @@ module.exports = {
 			.where({ status, content_type });
 
 		return query;
+	},
+	async updateArgsConcatJsonb(id, args) {
+		return db(tableName).where({ id }).update({
+			args: db.raw("args || ?::jsonb", [JSON.stringify(args)])
+		});
 	}
 };

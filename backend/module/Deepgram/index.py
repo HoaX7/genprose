@@ -16,17 +16,19 @@ DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
     - tier: enhanced
     - price for nova tier: $0.0044 / minute (highest)
 """
+
+
 class DeepgramAi(TranscriptAdapter):
     def __init__(self, path: str, premium_tier: bool, luxury_tier: bool) -> None:
         self.path = path
         self.model = Deepgram(DEEPGRAM_API_KEY)
 
-        if luxury_tier == True:
-            self.tier = "nova"
-        elif premium_tier == True:
+        if premium_tier == True:
             self.tier = "enhanced"
+        # elif premium_tier == True:
+        #     self.tier = "base"
         else:
-            self.tier = "base"
+            self.tier = "nova"
         print("Deepgram model initialized")
 
     def extract_transcript(self):
@@ -34,17 +36,25 @@ class DeepgramAi(TranscriptAdapter):
             logger.info("Deepgram: Transcribing audio file: ", self.path)
             with open(self.path, "rb") as audio:
                 """
-                    The response returned has a lot more information
-                    such as confidence and words detected.
+                The response returned has a lot more information
+                such as confidence and words detected.
 
-                    We are currently only returning the transcript
+                We are currently only returning the transcript
                 """
                 start_time = time.time()
                 source = {"buffer": audio, "mimetype": "audio/mp3"}
                 response = self.model.transcription.sync_prerecorded(
-                    source, {"punctuate": True, "language": "en", "model": self.tier}
+                    source,
+                    {
+                        "punctuate": True,
+                        "language": "en",
+                        "model": self.tier,
+                        # "summarize": True,
+                    },
                 )
-                result = response["results"]["channels"][0]["alternatives"][0]["transcript"]
+                result = response["results"]["channels"][0]["alternatives"][0][
+                    "transcript"
+                ]
                 time_taken = time.time() - start_time
                 logger.info(f"Deepgram: Transcript extraction took: {time_taken}s")
                 # logger.info("Deepgram: Transcript generated with result: ", {
@@ -68,13 +78,8 @@ class DeepgramAi(TranscriptAdapter):
         return
 
     def save(self):
-        data = {}
-        key = f"deepgram_{self.tier}"
-        data[key] = {
-            "transcript": self.result
-        }
         print("deepgram.save: saving transcript...")
-        return data
+        return self.result
 
 
 Model = DeepgramAi

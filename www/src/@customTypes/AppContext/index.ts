@@ -1,4 +1,4 @@
-import { StatusObject } from "@customTypes/Ai";
+import { Metadata, StatusObject } from "@customTypes/Ai";
 import { ProfileProps } from "@customTypes/Profile";
 
 export type InitialAppContextProps = {
@@ -6,6 +6,7 @@ export type InitialAppContextProps = {
     isLoggedIn: boolean;
     globalStatus: StatusObject[];
     queueMessage: string;
+    metadata: Metadata;
 }
 
 export type ActionDispatchParams<T> = {
@@ -19,4 +20,5 @@ export type ActionCreatorProps = {
     logout: () => void;
     setGlobalStatus: (props: StatusObject[]) => void;
     setQueueMessage: (props: string) => void;
+    setMetadata: (props: Metadata) => void;
 }

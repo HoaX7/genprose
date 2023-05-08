@@ -41,7 +41,7 @@ export default function SuccessTicketIcon({ size = "xl", className }: Props) {
 			value=""
 			readOnly={true}
 			className={clsx(
-				"rounded-full accent-green-600",
+				"rounded-full",
 				className,
 				classMap[size].h,
 				classMap[size].w

@@ -1,10 +1,6 @@
 from lib.Logging.logger import logger
-import os
-from uuid import uuid4
 import lib.models.Content as Content
 from lib.helpers.constants import CONTENT_TYPES
-import json
-from typing import Dict
 
 """
     - We are generating 'unique_id' and storing
@@ -26,18 +22,24 @@ class Transcribe:
     @returns {result["text"]: <transcript>}
     """
 
-    def get_transcription(self, link: str, user_id: str) -> str:
+    def queue_audio_download_from_url(self, link: str, user_id: str, persona: str, tone: str) -> str:
         try:
+            logger.info(f"transcribe.queue_audio_download_from_url: Queuing data: ", {
+                "link": link,
+                "user_id": user_id,
+                "persona": persona,
+                "tone": tone
+            })
             id = Content.create(
                 user_id=user_id,
-                args={"link": link},
+                args={"link": link, "persona": persona, "tone": tone},
                 content_type=CONTENT_TYPES.EXTRACT_AUDIO
             )
-            logger.info(f"transcribe.get_transcript: Queued 'audio download' task with id: {id}")
+            logger.info(f"transcribe.queue_audio_download_from_url: Queued 'audio download' task with id: {id}")
             return id
         except Exception as e:
             print(e)
-            logger.error("transcribe.get_transcription: ERROR", {"error": e})
+            logger.error("transcribe.queue_audio_download_from_url: ERROR", {"error": e})
             return "Unable to transcribe this video."
 
     """
@@ -45,10 +47,10 @@ class Transcribe:
         the polling api calls from frontend
     """
 
-    def retrieve_transcript(self, id: str):
-        logger.info(f"retrieve_transcript: Fetching data with unique_id: {id}")
+    def retrieve_transcript(self, id: str, is_private: bool):
+        logger.info(f"retrieve_transcript: Fetching data with id: {id}")
         try:
-            result = Content.get_by_id(id)
+            result = Content.get_by_id(id, is_private)
             if not result:
                 return {}
             return result

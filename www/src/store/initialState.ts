@@ -6,6 +6,7 @@ const initialState: InitialAppContextProps = {
 	isLoggedIn: false,
 	globalStatus: [],
 	queueMessage: "",
+	metadata: {}
 };
 
 export default initialState;

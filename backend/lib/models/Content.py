@@ -35,6 +35,8 @@ class Content(BaseModel):
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="cascade"), nullable=False
     )
     content = Column(JSONB, server_default="{}")
+    keywords = Column(JSONB, server_default="[]")
+    transcript = Column(JSONB, server_default="")
     args = Column(JSONB)
     content_type = Column(
         Enum(
@@ -75,7 +77,7 @@ class Content(BaseModel):
 
 def create(**kwargs):
     with Session() as session:
-        content = kwargs.get("content") or {}
+        content = kwargs.get("content") or []
         status = kwargs.get("status") or PROGRESSIVE_STATUS.QUEUED
         content_type = kwargs.get("content_type") or CONTENT_TYPES.EXTRACT_AUDIO
         args = kwargs.get("args")
@@ -86,6 +88,8 @@ def create(**kwargs):
             args=args,
             content_type=content_type,
             status=status,
+            keywords=[],
+            transcript=""
         )
         session.add(content)
         session.commit()
@@ -94,7 +98,7 @@ def create(**kwargs):
         return result
 
 
-def get_by_id(id: str):
+def get_by_id(id: str, is_private = False):
     try:
         with Session() as session:
             result = (
@@ -106,8 +110,11 @@ def get_by_id(id: str):
                     Content.status,
                     Content.user_id,
                     Content.is_private,
+                    Content.keywords,
+                    Content.transcript
                 )
                 .filter_by(id=uuid.UUID(id))
+                .filter_by(is_private=is_private)
                 .one()
             )
             res = result._asdict()
@@ -119,7 +126,10 @@ def get_by_id(id: str):
         return None
 
 
-def get_by_user_id(user_id: str, content_type="", id="", status=""):
+def get_by_user_id(user_id: str, **kwargs):
+    id = kwargs.get("id")
+    content_type = kwargs.get("content_type")
+    status = kwargs.get("status")
     with Session() as session:
         query = session.query(
             Content.id,
@@ -129,6 +139,8 @@ def get_by_user_id(user_id: str, content_type="", id="", status=""):
             Content.status,
             Content.user_id,
             Content.is_private,
+            Content.keywords,
+            Content.transcript
         ).filter_by(user_id=uuid.UUID(user_id))
         if content_type:
             query = query.filter_by(content_type=content_type)
@@ -157,6 +169,8 @@ def get_rows_by_content_type(status: str, content_type: str):
                 Content.status.label("status"),
                 Content.is_private.label("is_private"),
                 Content.user_id.label("user_id"),
+                Content.keywords.label("keywords"),
+                Content.transcript.label("transcript")
             )
             .filter_by(status=status)
             .filter_by(content_type=content_type)
@@ -179,22 +193,15 @@ def update(id: str, data: Dict):
         return True
 
 
-def update_content(id: str, data):
+def update_content(id: str, data, task_completed = False):
     print(f"updating contents 'content' column for id: {id} data: {json.dumps(data)}")
     with Session() as session:
+        task_completed_stmt = ""
+        if task_completed == True:
+            task_completed_stmt = f"status = '{PROGRESSIVE_STATUS.COMPLETED}',"
         statement = sql.text(
-            f"UPDATE contents SET content = content || :data WHERE id = :id"
+            f"UPDATE contents SET {task_completed_stmt} content = :data || content WHERE id = :id"
         )
         session.execute(statement, {"data": json.dumps(data), "id": str(id)})
         session.commit()
 
-
-# def update(unique_id: str, data: dict):
-#     print("updating: ", data)
-#     query_str = prepare_update_str(data)
-#     data['unique_id'] = unique_id
-#     data['updated_at'] = datetime.datetime.utcnow()
-#     print(f"Executing update query: {query_str}")
-#     print(f"Updating with values: {data}")
-#     db_session.query(Content).filter_by(unique_id=unique_id).update(data)
-#     db_session.commit()

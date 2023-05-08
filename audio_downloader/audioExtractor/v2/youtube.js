@@ -3,6 +3,7 @@ const InvalidUrlError = require("../errors/invalidUrl");
 const UnknownError = require("../errors/unknown");
 const fs = require("fs");
 const { makeDir } = require("../../helpers");
+const { AUDIO_DOWNLOAD_PATH } = require("../../helpers/constants");
 
 module.exports = {
 	/**
@@ -28,20 +29,20 @@ module.exports = {
 			throw new UnknownError("Unable to validate YT url");
 		}
 	},
-	downloadFromVideoInfo(info) {
+	downloadFromVideoInfo(info, onComplete) {
 		console.log("downloading YT audio from videoinfo");
-		return this._download(info);
+		return this._download(info, onComplete);
 	},
 	/**
      * @param {string} url 
      * @returns 
      */
-	async downloadFromUrl(url) {
+	async downloadFromUrl(url, onComplete, onInfo) {
 		const isUrlValid = ytdl.validateURL(url);
 		if (!isUrlValid) {
 			throw new InvalidUrlError("Invalid YouTube URL");
 		}
-		const filepath = await this._download(url);
+		const filepath = await this._download(url, onComplete, onInfo);
 		return filepath;
 	},
 	/**
@@ -49,7 +50,7 @@ module.exports = {
      * read more at https://github.com/fent/node-ytdl-core 
      * @param {ytdl.videoInfo | string} data 
      */
-	async _download(data) {
+	async _download(data, onComplete, onInfo) {
 		try {
 			let stream;
 			console.time("download");
@@ -64,12 +65,20 @@ module.exports = {
 				stream = ytdl.downloadFromInfo(data, filters);
 			}
 			const filename = new Date().getTime();
-			const dir = "../downloads";
+			const dir = `../${AUDIO_DOWNLOAD_PATH}`;
 			const isDirValid = await makeDir(dir);
 			if (!isDirValid) return;
 			const filepath = `${dir}/${filename}.mp3`;
 
 			stream.pipe(fs.createWriteStream(filepath));
+
+			stream.on("info", (info) => {
+				// read @docs https://github.com/fent/node-ytdl-core/blob/master/typings/index.d.ts#L235
+				// for more info
+				if (info && typeof onInfo === "function") {
+					onInfo(info.videoDetails);
+				}
+			});
 
 			stream.on("data", (chunk) => {
 				console.log("Downloading chunk: ", chunk);
@@ -81,6 +90,9 @@ module.exports = {
 
 			stream.on("end", () => {
 				console.log("download complete");
+				if (typeof onComplete === "function") {
+					onComplete();
+				}
 				console.timeEnd("download");
 			});
 			return filepath;

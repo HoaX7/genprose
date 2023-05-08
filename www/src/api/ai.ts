@@ -75,7 +75,7 @@ export const prepareContentParams = (prompt: string, engine: string) => {
 };
 
 export const getContentById = async ({ id }: { id: string; }) => {
-	return requester<{ id: string; }, ContentProps<string>>({
+	return requester<{ id: string; }, ContentProps>({
 		method: "GET",
 		url: "/ai/preview_transcript",
 		data: { id }
@@ -91,5 +91,20 @@ export const getContentByEmail = async <R>(params: P) => {
 		data: params,
 		url: "/ai/fetch_by_userid",
 		headers: cookies ? { cookies: JSON.stringify({ token: cookies.token }) } : {}
+	});
+};
+
+type GP = {
+	id: string;
+	prompt: string;
+	is_priority: boolean;
+	persona: string;
+	tone: string;
+}
+export const generateContent = (params: GP) => {
+	return requester<GP, ContentProps>({
+		url: "/ai/generate_content",
+		data: params,
+		method: "POST"
 	});
 };

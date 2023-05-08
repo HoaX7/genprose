@@ -51,6 +51,9 @@ function StatusMenu({
 							"rounded-full w-6 h-6 !bg-transparent hover:!bg-gray-200",
 							"flex items-center justify-center"
 						)}
+						variant="span"
+						weight="regular"
+						font={14}
 					>
             &times;
 					</Button>

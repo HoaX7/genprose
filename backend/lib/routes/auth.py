@@ -29,7 +29,7 @@ def login():
         return "Unable to login", 500
 
 @auth_service.route("/logout", methods=["POST"])
-@login_required
+# @login_required
 def logout():
     try:
         return revoke_session()

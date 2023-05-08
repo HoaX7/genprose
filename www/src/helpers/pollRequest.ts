@@ -3,26 +3,24 @@ import { AlertErrorMessage } from "../components/Commons/Alerts";
 import { PROGRESSIVE_STATUS } from "./constants";
 import { ApiResponse, requester, RequestMethodParams } from "./requester";
 
-interface PollRequest<T, C> {
+interface PollRequest<T> {
   url: string;
   data: T;
   method: RequestMethodParams;
   maxAttempts?: number;
   interval?: number;
-  callback: (data: ContentProps<C>) => void;
   errorCallback: (message: string) => void;
-  onProgress?: (data: any) => void;
+  onProgress?: (data: ContentProps) => void;
 }
-export const pollRequest = <T, C>({
+export const pollRequest = <T>({
 	interval = 10000,
 	maxAttempts = 200,
 	method,
 	data,
 	url,
-	callback,
 	errorCallback,
 	onProgress
-}: PollRequest<T, C>): Promise<any> => {
+}: PollRequest<T>): Promise<ContentProps> => {
 	let attempts = 0;
 	return new Promise((resolve, reject) => {
 		(async function execute() {
@@ -31,7 +29,7 @@ export const pollRequest = <T, C>({
 				console.log("polling with data: ", data);
 				if (attempts >= maxAttempts) throw new Error("Exceeded max attempts, Please try again");
 				attempts++;
-				const result: ApiResponse<ContentProps<C>> = await requester({
+				const result: ApiResponse<ContentProps> = await requester({
 					data,
 					url,
 					method,
@@ -45,13 +43,13 @@ export const pollRequest = <T, C>({
 						// Change this to show apporpriate error
 						throw new Error("Unknown Error occured");
 					}
-					if (typeof onProgress === "function") onProgress(result.data);
+					if (typeof onProgress === "function" && result.data) onProgress(result.data);
 					setTimeout(execute, interval);
 				} else {
 					return resolve(result.data);
 				}
 			} catch (err: any) {
-				AlertErrorMessage({ text: err.message || "Please try again later" });
+				AlertErrorMessage({ text: err?.message || "Please try again later" });
 				// // remove init data for unique_id
 				// requester({
 				// 	data,

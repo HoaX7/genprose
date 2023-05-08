@@ -72,6 +72,9 @@ function Login({ setProfile }: L) {
 				<Button type="submit"
 					className="mt-3"
 					disabled={saving || !data.secret_code || !data.email}
+					font={16}
+					weight="regular"
+					variant="span"
 				>
 					Login
 				</Button>

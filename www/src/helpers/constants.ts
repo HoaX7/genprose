@@ -1,5 +1,3 @@
-export const MAX_ALLOWED_KEYWORDS = 20;
-
 export const AI_MODEL_ENGINES: {
     [key: string]: {
         name: string;
@@ -47,3 +45,68 @@ export const CONTENT_TYPES = {
 };
 
 export const STATE_NAME = "tcm_state";
+
+export const MAX_ALLOWED_GENERATED_CONTENT = 4;
+export const MAX_ALLOWED_GENERATED_CONTENT_PREMIUM = 10;
+
+export const MAX_ALLOWED_KEYWORD_SELECTION = 5;
+export const MAX_ALLOWED_KEYWORD_SELECTION_PREMIUM = 12;
+
+export const MAX_PROMPT_LEN = 2000;
+
+export const STEPPER_KEYS = {
+	AUDIO_FILE: "audio_file",
+	PERSONA: "persona",
+	GENERATE_CONTENT: "generate_content"
+};
+
+export const LOADING_FACTS = [
+	// eslint-disable-next-line max-len
+	"AI enables machines to learn, reason, and solve complex problems, transforming industries and driving technological advancements.",
+	// eslint-disable-next-line max-len
+	"SEO techniques improve website visibility, driving targeted traffic, and increasing the chances of online success.",
+	// eslint-disable-next-line max-len
+	"Understanding user motivations and behaviors helps design engaging digital experiences that captivate and convert visitors."
+];
+
+export const TONES = [
+	{
+		key: "passive",
+		name: "Passive",
+	},
+	{
+		key: "aggressive",
+		name: "Aggressive",
+	},
+	{
+		key: "authoritative",
+		name: "Authoritative",
+	},
+];
+
+export const PERSONAS = [
+	{
+		key: "content_creator",
+		name: "Content Creator",
+	},
+	{
+		key: "ceo",
+		name: "CEO",
+	},
+	{
+		key: "head_of_marketing",
+		name: "Head of Marketing",
+	},
+	{
+		key: "fashion_designer",
+		name: "Fashion Designer",
+	},
+	{
+		key: "doctor",
+		name: "Doctor",
+	},
+	{
+		key: "lead_software_developer",
+		name: "Lead Developer",
+	},
+];

@@ -32,6 +32,8 @@ def upgrade() -> None:
         ),
         sa.Column("args", JSONB(), nullable=True),
         sa.Column("content", JSONB(), nullable=True),
+        sa.Column("keywords", JSONB(), nullable=True),
+        sa.Column("transcript", JSONB(), nullable=True),
         sa.Column(
             "content_type",
             sa.Enum(

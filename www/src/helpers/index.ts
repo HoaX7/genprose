@@ -26,3 +26,8 @@ export const clone = <T>(item: any): T => {
 	}
 	return result;
 };
+
+export const numericWithComma = (num: number) => {
+	const n = Number(num);
+	return n.toLocaleString();
+};
