@@ -1,7 +1,9 @@
+import { ProfileProps } from "@customTypes/Profile";
 import { requester } from "../helpers/requester";
 
-export const login = (params: { secret_code: string; email: string; }) => {
-	return requester({
+type P = {  secret_code: string; email: string; }
+export const login = (params: P) => {
+	return requester<P, ProfileProps>({
 		data: params,
 		method: "POST",
 		url: "/login"

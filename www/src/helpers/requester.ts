@@ -6,6 +6,7 @@ import axios, {
 	CancelToken,
 } from "axios";
 import { AlertErrorMessage } from "components/Commons/Alerts";
+import Auth from "store/AuthStore";
 
 export type PaginationMetadata = {
     current_page: number;
@@ -105,9 +106,10 @@ const requester = async <D, T, RT extends ResponseType = "API_RESPONSE">({
 				console.log("Please re-login");
 				AlertErrorMessage({ text: "Your session has expired. Please re-login." });
 				if (isServer === false) {
-					await logoutApi();
+					Auth.clear();
 					window.location.href = "/";
 				}
+				await logoutApi();
 			}
 
 			throw err;

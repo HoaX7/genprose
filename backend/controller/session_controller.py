@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 """
 def set_session(value):
     token = jwt.encode(value, SECRET_KEY, algorithm="HS256")
-    resp = make_response("Session authorized")
+    resp = make_response(value)
     resp.set_cookie("token", token, max_age=None, expires=None, path='/', 
     domain=None, secure=False, httponly=True)
     return resp

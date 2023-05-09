@@ -27,8 +27,8 @@ function Login({ setProfile }: L) {
 				e.preventDefault();
 				setSaving(true);
 				try {
-					await login(data);
-					setProfile({ email: data.email });
+					const resp = await login(data);
+					if (resp.data) setProfile(resp.data);
 					window.location.reload();
 				} catch (err) {
 					console.error(err);

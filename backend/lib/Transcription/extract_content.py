@@ -1,3 +1,4 @@
+from lib.Database.index import initializeConnection
 import lib.models.Content as Content
 from lib.helpers.constants import PROGRESSIVE_STATUS, CONTENT_TYPES
 from lib.Logging.logger import logger
@@ -55,6 +56,11 @@ def generate_content(**kwargs):
 
 
 def start_process(id, prompt: str, engine: str, send_mail: bool):
+    # Parent DataBase Pool connection must not be carried to
+    # child process. Hence, we call dispose on 'sqlalchemy' before starting the process
+
+    initializeConnection()
+
     background_process = multiprocessing.Process(
         target=__start_priority_func, args=(id, prompt, engine, send_mail)
     )
