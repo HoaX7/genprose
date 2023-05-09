@@ -5,8 +5,9 @@ import clsx from "clsx";
 interface Props {
   content: string;
   className?: string;
+  editable?: boolean;
 }
-export default function Pre({ content, className }: Props) {
+export default function Pre({ content, className, editable = false }: Props) {
 	return (
 		<pre
 			style={{ fontFamily: "inherit" }}
