@@ -8,8 +8,8 @@
     background: transparent;
 }
 .input::placeholder, .textarea::placeholder {
-    font-weight: bold;
-    font-size: .9rem;
+    /* font-weight: bold; */
+    /* font-size: .9rem; */
 }
 .textarea {
     resize: none;

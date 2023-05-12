@@ -3,7 +3,7 @@ import clsx from "clsx";
 import React from "react";
 import { setGlobalStatus, setQueueMessage } from "store/actionCreators";
 import { connectStore } from "store/WithContext";
-import Button from "../ Button/Button";
+import Button from "../Button/Button";
 import Spinner from "../Loaders/Spinner";
 import Typography from "../Typography/Typography";
 import SuccessTicketIcon from "./SuccessTicketIcon";

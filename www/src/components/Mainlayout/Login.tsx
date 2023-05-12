@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Typography from "../Commons/Typography/Typography";
 import Input from "../Commons/Input/TextInput";
 import { login } from "../../api/auth";
-import Button from "../Commons/ Button/Button";
+import Button from "../Commons/Button/Button";
 import FullpageLoader from "../Commons/Loaders/FullpageLoader";
 import { AlertErrorMessage } from "../Commons/Alerts";
 import { setProfile } from "store/actionCreators";

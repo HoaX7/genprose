@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import Input from "components/Commons/Input/TextInput";
 import Typography from "components/Commons/Typography/Typography";
-import Button from "components/Commons/ Button/Button";
+import Button from "components/Commons/Button/Button";
 import { AlertErrorMessage } from "components/Commons/Alerts";
 import { executeFuncAndGetUniqueId, generateContent } from "api/ai";
 import Router from "next/router";

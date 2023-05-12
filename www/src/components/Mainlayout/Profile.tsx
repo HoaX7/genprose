@@ -1,4 +1,4 @@
-import Button from "components/Commons/ Button/Button";
+import Button from "components/Commons/Button/Button";
 import { CaretSvg } from "components/Commons/Svg";
 import Typography from "components/Commons/Typography/Typography";
 import React from "react";

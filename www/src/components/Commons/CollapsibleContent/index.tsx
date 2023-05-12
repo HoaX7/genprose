@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
-import Button from "../ Button/Button";
+import Button from "../Button/Button";
 import Typography from "../Typography/Typography";
 import styles from "./Content.module.css";
 import { sanitize } from "isomorphic-dompurify";

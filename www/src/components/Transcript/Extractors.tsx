@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import Button from "components/Commons/ Button/Button";
+import Button from "components/Commons/Button/Button";
 import { AlertErrorMessage } from "components/Commons/Alerts";
 import Typography from "components/Commons/Typography/Typography";
 import React, { useState } from "react";

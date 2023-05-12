@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Router from "next/router";
 import React from "react";
-import Button from "../ Button/Button";
+import Button from "../Button/Button";
 import Typography from "../Typography/Typography";
 
 interface Props {

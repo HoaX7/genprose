@@ -1,6 +1,6 @@
 import { ContentProps, Metadata } from "@customTypes/Ai";
 import clsx from "clsx";
-import Button from "components/Commons/ Button/Button";
+import Button from "components/Commons/Button/Button";
 import SuccessTicketIcon from "components/Commons/StatusMenu/SuccessTicketIcon";
 import Typography from "components/Commons/Typography/Typography";
 import { pollRequest } from "helpers/pollRequest";

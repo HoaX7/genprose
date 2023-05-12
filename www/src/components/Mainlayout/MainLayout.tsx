@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import Button from "../Commons/ Button/Button";
+import Button from "../Commons/Button/Button";
 import StatusMenu from "../Commons/StatusMenu";
 import Typography from "../Commons/Typography/Typography";
 import Router from "next/router";
@@ -42,7 +42,7 @@ const MainLayout = ({ children, logout, metadata = {}, setMetadata }: Props) => 
 						<img 
 							src="../assets/images/logo-white-img.png"
 							width={32}
-							alt="tmc"
+							alt="genprose"
 							className="inline"
 							loading="eager"
 						/> Gen Prose 
