@@ -90,23 +90,23 @@ export const PERSONAS = [
 		name: "Content Creator",
 	},
 	{
-		key: "ceo",
-		name: "CEO",
+		key: "fin_biz",
+		name: "Business / Financial",
 	},
 	{
-		key: "head_of_marketing",
-		name: "Head of Marketing",
+		key: "marketing",
+		name: "Marketing",
 	},
 	{
 		key: "fashion_designer",
-		name: "Fashion Designer",
+		name: "Fashion Design",
 	},
 	{
-		key: "doctor",
-		name: "Doctor",
+		key: "medical",
+		name: "Medical",
 	},
 	{
-		key: "lead_software_developer",
-		name: "Lead Developer",
+		key: "it",
+		name: "Technology",
 	},
 ];

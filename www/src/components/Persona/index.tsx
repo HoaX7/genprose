@@ -16,7 +16,7 @@ import { setMetadata } from "store/actionCreators";
 import { Metadata } from "@customTypes/Ai";
 import { PERSONAS, STEPPER_KEYS, TONES } from "helpers/constants";
 
-const con = connectStore((state, dispatch) => ({ setMetadata: (props) => setMetadata(props)(dispatch) }));
+const con = connectStore((state, dispatch) => ({ setMetadata: (props) => setMetadata(props)(dispatch), }));
 
 interface Props {
   link: string;
@@ -28,7 +28,12 @@ interface Props {
 }
 
 function PersonaIndex({
-	link, persona, tone, keywords, id, setMetadata
+	link,
+	persona,
+	tone,
+	keywords,
+	id,
+	setMetadata,
 }: Props) {
 	const [ selected, setSelected ] = useState({
 		persona: persona || PERSONAS[0].name,
@@ -36,6 +41,7 @@ function PersonaIndex({
 	});
 	const [ saving, setSaving ] = useState(false);
 	const [ selectedKeywords, setSelectedKeywords ] = useState(keywords || []);
+	const [ showTip, setShowTip ] = useState(false);
 
 	const handleGenerateArticle = async () => {
 		try {
@@ -45,7 +51,7 @@ function PersonaIndex({
 				data: {
 					url: link,
 					persona: selected.persona,
-					tone: selected.tone
+					tone: selected.tone,
 				},
 			});
 			if (result.error) throw result;
@@ -75,7 +81,7 @@ function PersonaIndex({
 				id,
 				prompt: getPrompt(selectedKeywords, selected.persona, selected.tone),
 				persona: selected.persona,
-				tone: selected.tone
+				tone: selected.tone,
 			});
 			setSaving(false);
 			setMetadata({ stepper: [ STEPPER_KEYS.AUDIO_FILE, STEPPER_KEYS.PERSONA ] });
@@ -115,8 +121,43 @@ function PersonaIndex({
 				</div>
 			)}
 			<div className="mt-3">
-				<Typography variant="div" font={16} weight="medium" className="mt-3">
-          Choose Persona / Tone
+				<Typography variant="div" font={16} weight="medium" className="mt-3 relative">
+          Choose Persona / Tone{" "}
+					<img
+						alt="info"
+						src={"../assets/images/info.svg"}
+						width={18}
+						className="inline cursor-pointer"
+						onMouseLeave={() => {
+							if (showTip) setShowTip(false);
+						}}
+						onMouseEnter={() => {
+							if (!showTip) setShowTip(true);
+						}}
+					/>
+					<dialog
+						open={showTip}
+						className={clsx("absolute bg-site -top-24",
+							"rounded-lg z-10 shadow text-gray-600",
+							"text-start", "w-auto md:w-3/5 md:left-2/3")}
+					>
+						<Typography variant="div" weight="regular" font={14} 
+							className="flex items-center">
+							<img
+								alt="info"
+								src={"../assets/images/info.svg"}
+								width={14}
+								className="mr-1"
+							/>	info
+						</Typography>
+						<Typography
+							variant="p"
+							weight="regular"
+							font={16}
+						>
+							The persona / tone indicates from what point of view the content is written.
+						</Typography>
+					</dialog>
 				</Typography>
 				<Personas selected={selected} setSelected={setSelected} />
 				<Tones selected={selected} setSelected={setSelected} />
@@ -131,7 +172,9 @@ function PersonaIndex({
 							handleGenerateArticle();
 						}
 					}}
-					disabled={(saving || (id && selectedKeywords.length < 5)) ? true : false}
+					disabled={
+						saving || (id && selectedKeywords.length < 5) ? true : false
+					}
 					variant="div"
 					weight="bold"
 					font={18}
@@ -139,7 +182,7 @@ function PersonaIndex({
 					{saving ? (
 						<span className="flex items-center">
 							<Spinner size="xxs" className="mr-2" />
-                            Generating...
+              Generating...
 						</span>
 					) : (
 						"Generate Article"
