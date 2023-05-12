@@ -22,12 +22,12 @@ class __Persona:
     def __init__(self) -> None:
         pass
 
-    CEO = "CEO"
+    FIN_BIZ = "Business / Financial"
     CONTENT_CREATOR = "Content Creator"
-    HEAD_OF_MARKETING = "Head of Marketing"
-    FASHION_DESIGNER = "Fashion Designer"
-    DOCTOR = "Doctor"
-    LEAD_DEVELOPER = "Lead Developer"
+    MARKETING = "Marketing"
+    FASHION_DESIGNER = "Fashion Design"
+    MEDICAL = "Medical"
+    IT = "Technology"
 
 class __Tone:
     def __init__(self) -> None:
