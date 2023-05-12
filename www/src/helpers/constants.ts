@@ -91,7 +91,7 @@ export const PERSONAS = [
 	},
 	{
 		key: "fin_biz",
-		name: "Business / Financial",
+		name: "Business - Financial",
 	},
 	{
 		key: "marketing",

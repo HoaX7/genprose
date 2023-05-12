@@ -22,7 +22,7 @@ class __Persona:
     def __init__(self) -> None:
         pass
 
-    FIN_BIZ = "Business / Financial"
+    FIN_BIZ = "Business - Financial"
     CONTENT_CREATOR = "Content Creator"
     MARKETING = "Marketing"
     FASHION_DESIGNER = "Fashion Design"
