@@ -22,6 +22,7 @@ def upgrade() -> None:
     op.create_table('users',
         sa.Column('id', UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
         sa.Column('email', sa.String(20), nullable=False),
+        sa.Column('coins', sa.Float, default=0),
         sa.Column('is_premium', sa.Boolean, default=False),
         sa.Column('premium_since', sa.TIMESTAMP, nullable=True),
         sa.Column('premium_days', sa.Integer, nullable=True),

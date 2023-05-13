@@ -14,6 +14,7 @@ from sqlalchemy import (
     Integer,
     DateTime,
     func,
+    Float
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session 
@@ -28,6 +29,7 @@ class User(BaseModel):
 
     id = Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column("email", String)
+    coins = Column("coins", Float, default=0)
     is_premium = Column("is_premium", Boolean, default=False)
     premium_since = Column("premium_since", TIMESTAMP)
     premium_days = Column("premium_days", Integer)
@@ -58,6 +60,7 @@ def create(email: str) -> None:
             is_premium=user.is_premium,
             premium_days=user.premium_days,
             premium_since=user.premium_since,
+            coins=user.coins
         )
         return result
 
@@ -72,6 +75,7 @@ def find(email: str) -> User:
                 User.is_premium.label("is_premium"),
                 User.premium_days.label("premium_days"),
                 User.premium_since.label("premium_since"),
+                User.coins.label("coins")
             )
             .filter_by(email=email)
             .filter_by(is_deleted=False)

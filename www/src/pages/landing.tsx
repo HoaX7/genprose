@@ -216,7 +216,7 @@ export default function landing() {
 								AlertErrorMessage({
 									text:
                     err?.message ||
-                    "Something went wrong. Please try again later.s",
+                    "Something went wrong. Please try again later.",
 								});
 							}
 							setSaving(false);
