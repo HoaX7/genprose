@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import type { AppContext, AppProps } from "next/app";
-import MainLayout from "../components/Mainlayout/MainLayout";
-import Login from "../components/Mainlayout/Login";
+// import MainLayout from "../components/Mainlayout/MainLayout";
+// import Login from "../components/Mainlayout/Login";
 import "../../public/styles/globals.css";
 import App from "next/app";
 import WithStore from "store/WithContext";
 import Auth from "store/AuthStore";
-import FullpageLoader from "components/Commons/Loaders/FullpageLoader";
+// import FullpageLoader from "components/Commons/Loaders/FullpageLoader";
+import Landing from "./landing";
 // import WithPageTransition from "components/Mainlayout/WithPageTransition";
 
 // Logged in data must come from ssr props
@@ -25,30 +26,34 @@ function TheContentMachine({
 	}, []);
 	return (
 		<Fragment>
-			{loading ? <FullpageLoader title="Loading.." /> : _isLoggedIn ? (
-				<MainLayout isLoggedIn={isLoggedIn}>
-					{/* <WithPageTransition {...pageProps} Component={Component} isLoggedIn={isLoggedIn} /> */}
-					<Component {...pageProps} isLoggedIn={isLoggedIn} />
-				</MainLayout>
-			) : (
-				<Login />
-			)}
-			<div id="modal-root" />
+			<Landing />
+			<div id="modal-root" />	
 		</Fragment>
+		// <Fragment>
+		// 	{loading ? <FullpageLoader title="Loading.." /> : _isLoggedIn ? (
+		// 		<MainLayout isLoggedIn={isLoggedIn}>
+		// 			{/* <WithPageTransition {...pageProps} Component={Component} isLoggedIn={isLoggedIn} /> */}
+		// 			<Component {...pageProps} isLoggedIn={isLoggedIn} />
+		// 		</MainLayout>
+		// 	) : (
+		// 		<Login />
+		// 	)}
+		// 	<div id="modal-root" />
+		// </Fragment>
 	);
 }
 
 TheContentMachine.getInitialProps = async (appContext: AppContext) => {
 	const { ctx } = appContext;
 	const { pageProps } = await App.getInitialProps(appContext);
-	let isLoggedIn = true;
-	const cookie = ctx.req?.headers.cookie || "";
-	if (cookie && cookie.includes("token=")) {
-		isLoggedIn = true;
-	}
+	// let isLoggedIn = true;
+	// const cookie = ctx.req?.headers.cookie || "";
+	// if (cookie && cookie.includes("token=")) {
+	// 	isLoggedIn = true;
+	// }
 	return {
 		pageProps,
-		isLoggedIn 
+		isLoggedIn: true 
 	};
 };
 

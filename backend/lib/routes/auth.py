@@ -7,8 +7,27 @@ from lib.models.User import find, create
 
 auth_service = Blueprint("auth_service", __name__)
 
+
+@auth_service.route("/signup", methods=["POST"])
+def signup():
+    try:
+        data = request.json
+        if not data["email"]:
+            return "Please enter a valid email", 422
+        user = find(data["email"])
+        if user:
+            return "A user with this email has already been registered", 409
+        else:
+            logger.info(f"Creating new user with email: {data['email']}")
+            user = create(data["email"])
+        return user, 201
+    except Exception as e:
+        print(e)
+        logger.error("lib.routes.auth.signup: ERROR", e)
+        return "Unable to sighup", 500
+
 """
-    #TODO - Encode session details in JWT
+    #TODO - Enable oauth
 """
 @auth_service.route("/login", methods=["POST"])
 def login():

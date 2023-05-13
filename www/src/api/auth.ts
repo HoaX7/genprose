@@ -17,3 +17,11 @@ export const logoutApi = () => {
 		url: "/logout"
 	});
 };
+
+export const signupApi = ({ email }: Pick<P, "email">) => {
+	return requester<Pick<P, "email">, ProfileProps>({
+		data: { email },
+		method: "POST",
+		url: "/signup"
+	});
+};
