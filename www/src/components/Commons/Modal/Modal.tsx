@@ -55,12 +55,15 @@ export default function Modal({
 						)}
 					>
 						<div className="bg-gray-200 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-							<div className={clsx("py-1 px-3 right-5 rounded text-right bg-gray-300 absolute cursor-pointer", disabled ? "pointer-events-none opacity-75" : "")}
-								onClick={closeModal}
-								tabIndex={1}
-								ref={closeBtnRef}
+							<div className={clsx("px-3 right-5 rounded",
+								"bg-gray-300 absolute cursor-pointer", 
+								disabled ? "pointer-events-none opacity-75" : "",
+								"mx-auto")}
+							onClick={closeModal}
+							tabIndex={1}
+							ref={closeBtnRef}
 							>
-                                &times;
+								<div className="pb-1">&times;</div>
 							</div>
 							<div className="sm:flex sm:items-start">
 								{icon === "success" ? <SuccessIcon /> : icon === "error" ? <ErrorIcon /> : null}
