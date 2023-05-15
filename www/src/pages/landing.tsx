@@ -34,6 +34,7 @@ export default function landing() {
 	const [ email, setEmail ] = useState("");
 	const [ isExploding, setIsExploding ] = useState(false);
 	const [ saving, setSaving ] = useState(false);
+	const [ muted, setMuted ] = useState(true);
 
 	const renderContent = (name: string, description: string) => {
 		return (
@@ -61,8 +62,8 @@ export default function landing() {
 	return (
 		<div className="bg-site-gradient text-white">
 			<div className="container p-10 mx-auto">
-				<div className="md:mt-32 mt-10 grid grid-cols-3 gap-4">
-					<div className="col-span-3 md:col-span-2">
+				<div className="mt-10 grid grid-cols-4 gap-4">
+					<div className="col-span-4 md:col-span-3">
 						<Typography
 							weight="medium"
 							variant="h1"
@@ -80,7 +81,7 @@ export default function landing() {
 						</Typography>
 						<Typography
 							variant="p"
-							font={24}
+							font={20}
 							weight="regular"
 							className="mt-5 !font-18 md:!font-24"
 						>
@@ -100,28 +101,36 @@ export default function landing() {
 							<a href="#footer">Join the waitlist</a>
 						</Button>
 					</div>
-					<div className="col-span-3 md:col-span-1">
-						<div
-							className={clsx(
-								"bg-site shadow rounded-md text-black w-full",
-								"flex flex-col items-center justify-center opacity-50",
-								"h-40 md:h-full"
-							)}
-						>
-							<img
-								alt="video"
-								src={"../assets/images/youtube.svg"}
-								width={48}
-							/>
-							<Typography font={18} weight="bold" variant="div">
-                Video Coming Soon
-							</Typography>
+				</div>
+				<div className="md:relative">
+					<div className="mt-5 md:absolute md:right-0 md:-top-24">
+						<div className="shadow-lg rounded-md relative">
+							<video src="../assets/videos/ad.mp4"
+								width={650}
+								autoPlay
+								className="rounded-md"
+								muted={muted}
+							></video>
+							<div className={clsx("absolute bottom-5 right-5 rounded-full w-12 h-12",
+								"flex items-center justify-center z-10 shadow bg-site-secondary-transparent",
+								"cursor-pointer")
+							}
+							onClick={(e) => {
+								e.preventDefault();
+								setMuted(!muted);
+							}}
+							>
+								<img alt="sound/mute" 
+									src={`../assets/images/${muted ? "muted.svg" : "sound.svg"}`}
+									width={24}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div className="text-black bg-site">
-				<div className="container p-3 mx-auto">
+			<div className="text-black bg-site md:mt-32">
+				<div className="container p-3 mx-auto md:pt-24">
 					{content.map(({ name, key, description, gif }, i) => (
 						<section
 							key={key}
