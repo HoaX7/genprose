@@ -1,0 +1,15 @@
+name = "marketing_worker"
+main = "src/index.ts"
+compatibility_date = "2023-04-29"
+d1_databases = [
+	{ binding = "DEV", database_name = "<db_dev>", database_id = "<db_uuid>", preview_database_id = "<db_uuid>" }
+]
+
+[dev]
+port = 6002
+
+
+[env.production]
+d1_databases = [
+	{ binding = "<PROD>", database_name = "<db_prod>", database_id = "<db_uuid>" }
+]
