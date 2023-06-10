@@ -11,3 +11,4 @@ node_modules/
 downloads*
 database.db
 .vscode
+env.DB

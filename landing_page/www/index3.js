@@ -2,14 +2,16 @@ const stepper = document.getElementById("stepper");
 
 if (stepper) {
   const steps = ["Paste your link", "Get your content", "Publish your blog"];
-  steps.map((item) => {
+  steps.map((item, i) => {
     const divEl = document.createElement("div");
     divEl.classList.add("flex", "items-center");
     divEl.innerHTML = `<span class="shadow-lg flex items-center justify-center bg-indigo-600 w-7 h-7 rounded-full">
         <svg aria-hidden="true" class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-        </span> <span class="shadow-lg ml-1 text-base bg-indigo-600 text-green-300 px-3 py-1 font-semibold rounded-full">
+        </span>
+        <span class="shadow-lg ml-1 text-base bg-indigo-600 text-green-300 px-3 py-1 font-semibold rounded-full">
         ${item}
-        </span>`;
+        </span>
+        ${i !== 2 ? `<span class="mx-5 hidden lg:block"><hr class="border-indigo-600 w-20" /></span>` : ""}`;
     stepper.appendChild(divEl);
   });
 }
@@ -28,7 +30,7 @@ if (howItWorks) {
         "Paste it in <span class='font-semibold'>Gen Prose</span> and select your content style preferences.",
     },
     {
-      pill: "⚡️",
+      pill: "⚡️ zap",
       description: "Get your content and publish in your blog.",
     },
   ];
@@ -36,7 +38,7 @@ if (howItWorks) {
   howItWorksContent.map((item) => {
     const liEl = document.createElement("li");
     liEl.classList.add("mt-5");
-    liEl.innerHTML = `<span class="rounded-full bg-indigo-600 py-1 px-3">${item.pill}</span> ${item.description}`;
+    liEl.innerHTML = `<span class="rounded-full bg-indigo-600 py-1 px-3">${item.pill}</span> <span class="ml-2">${item.description}</span>`;
     howItWorks.appendChild(liEl);
   });
 }
@@ -82,4 +84,64 @@ if (joinWaitlistLoader) {
         divEl2.appendChild(childEl)
     })
     joinWaitlistLoader.appendChild(divEl2)
+}
+
+const adVideo = document.getElementById("ad-video")
+const muteBtnImg = document.getElementById("mute-btn-img")
+const submitBtn = document.getElementById("submit-btn")
+
+const toggleMuteVideo = () => {
+    if (adVideo) {
+        if (muteBtnImg && adVideo.muted) {
+            muteBtnImg.src = "./styles/images/sound.svg"
+        } else if (muteBtnImg && !adVideo.muted) {
+            muteBtnImg.src = "./styles/images/muted.svg"
+        }
+        adVideo.muted = !adVideo.muted
+    } else {
+        console.error("Unable to fetch document: ad-video")
+    }
+}
+
+const errors = {
+    E_102: "The email you entered is already registered",
+    E_101: "The email you entered is not valid"
+}
+
+const onSubmit = async (e) => {
+    e.preventDefault()
+    const inputEl = document.getElementById("email")
+    if (!submitBtn) {
+        console.error("Submit button not found")
+        return
+    }
+    try {
+        submitBtn.innerText = `Saving...`
+        submitBtn.disabled = true
+        const resp = await fetch("https://api.genprose.com/waitlist", {
+            method: "post",
+            body: JSON.stringify({
+                email: inputEl.value
+            }),
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            referrerPolicy: "no-referrer"
+        }).then((res) => res.json())
+        if (!resp.success) {
+            throw resp.data
+        }
+        alert("You are all set to get early access! You will receive an email when it is your turn.")
+    } catch (err) {
+        console.error("onSubmit: Failed", err)
+        if (errors[err.code]) {
+            alert(errors[err.code])
+        } else {
+            alert("Unknown error occured, Please try again.")
+        }
+    }
+    inputEl.value = ""
+    submitBtn.innerText = `Submit`
+    submitBtn.disabled = false
 }

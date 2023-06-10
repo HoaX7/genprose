@@ -19,7 +19,7 @@ export const Waitlist = {
 				);
 			}
 
-			const { results } = await env.<DB_NAME>.prepare(
+			const { results } = await env.HVEC_MARKETING_DB.prepare(
 				"INSERT INTO waitlist (email_address) VALUES (?) RETURNING *"
 			)
 				.bind(content.email.trim())
