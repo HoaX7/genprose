@@ -1,7 +1,7 @@
 const stepper = document.getElementById("stepper");
 
 if (stepper) {
-  const steps = ["Paste your link", "Get your content", "Publish your blog"];
+  const steps = ["Paste your link", "Get your content", "Publish your content"];
   steps.map((item, i) => {
     const divEl = document.createElement("div");
     divEl.classList.add("flex", "items-center");
@@ -31,7 +31,7 @@ if (howItWorks) {
     },
     {
       pill: "⚡️ zap",
-      description: "Get your content and publish in your blog.",
+      description: "Get your content and publish in your article / blog.",
     },
   ];
 
@@ -46,12 +46,10 @@ if (howItWorks) {
 const ourStory = document.getElementById("our-story");
 if (ourStory) {
   const content = [
-    "Coming up with content ideas for a business is a time consuming task. Create a good volume of relevant content is even more tedious.",
-    "Your employees, clients or even your competitors have great ideas that could potentially become a source of your content.",
-    "We created <span class='font-semibold'>Gen Prose</span> to generate SEO optimized content from the content that are locked in audio and video forms.",
-    "Now you can create content from a relevant youtube video, podcast, webinars, internal meetings, zoom recordings and more.",
-    "Instead of you spending hours to create repurposed or derived content, let GenProse handle it. You paste the link and we give the content. You get to customize the content if you don’t like it.",
-    "Save 100+ hours of your time and focus on unique content. Let GenProse handle the auxiliary content.",
+    "Generating content ideas for a business can be a time-consuming task. However, producing a substantial volume of relevant content adds an additional layer of tedium. Fortunately, valuable content ideas can be sourced from your employees, clients, and even your competitors.",
+    "That's why we developed <span class='font-semibold'>Gen Prose</span> —a solution designed to unlock the potential of audio and video content by generating SEO-optimized content. With Gen Prose, you can effortlessly transform relevant YouTube videos, podcasts, webinars, internal meetings, Zoom recordings, and more into engaging written content.",
+    "Instead of spending hours creating repurposed or derived content yourself, let Gen Prose handle the heavy lifting. Simply paste the link to the desired source, and we'll generate the content for you. And if you want to add your personal touch, you have the flexibility to customize the content as well.",
+    "By utilizing Gen Prose, you can save over 100 hours of your valuable time and focus on creating unique and compelling content. Leave the creation of auxiliary content to Gen Prose and experience a streamlined content generation process."
   ];
 
   content.map((it) => {
@@ -108,6 +106,16 @@ const errors = {
     E_101: "The email you entered is not valid"
 }
 
+const reportAnalytics = (eventName = "pageview") => {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+        console.log("[Google Analytics]: triggering event: ", eventName)
+        window.gtag("event", eventName)
+        console.log("[Google Analytics]: event sent")
+    } else {
+        console.warn("[Google Analytics]: gtag not found")
+    }
+}
+
 const onSubmit = async (e) => {
     e.preventDefault()
     const inputEl = document.getElementById("email")
@@ -132,6 +140,8 @@ const onSubmit = async (e) => {
         if (!resp.success) {
             throw resp.data
         }
+
+        reportAnalytics("register")
         alert("You are all set to get early access! You will receive an email when it is your turn.")
     } catch (err) {
         console.error("onSubmit: Failed", err)
