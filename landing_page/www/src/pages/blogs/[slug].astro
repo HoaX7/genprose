@@ -24,9 +24,12 @@ import { epochToLocaleDate, toLocaleDate } from "../../helpers"
 <Mainlayout title={`Gen Prose | ${title}`} keywords={SEO.articles.keywords} description={SEO.articles.description}
     url={`/blogs/${slug}`}>
     <nav class="bg-site-gradient">
-        <div class="container mx-auto text-3xl font-bold flex items-center p-4">
-            <img alt="logo" src="/assets/images/logo-white-img.png"
-                width="36" /><span class="ml-2">Gen Prose</span>
+        <div class="container mx-auto text-3xl font-bold p-4">
+            <a class="flex items-center" href="/">
+                <img alt="logo" src="/assets/images/logo-white-img.png"
+                    width="36" />
+                <span class="ml-2">Gen Prose</span>
+            </a>
         </div>
     </nav>
     <section class="p-4 mx-auto container mt-3">
