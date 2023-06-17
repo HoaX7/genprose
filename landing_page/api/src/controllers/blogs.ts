@@ -11,7 +11,7 @@ export const Blogs = {
     async getAll(req: IRequest, env: Env) {
         try {
             console.log("Fetching blog slugs")
-            const { results } = await env.HVEC_MARKETING_DB.prepare("select id, title, content, metadata, sub_title, slug, updated_at from blogs")
+            const { results } = await env.HVEC_MARKETING_DB.prepare("select id, title, content, metadata, sub_title, slug, updated_at, created_at from blogs")
                 .all()
 
             return jsonSuccess(results)
@@ -42,7 +42,7 @@ export const Blogs = {
             }
             console.log("Fetching blog content for slug:", slug)
             const { results } = await env.HVEC_MARKETING_DB.prepare(
-                `select id, title, content, metadata, slug, sub_title, updated_at from blogs where slug = ?`
+                `select id, title, content, metadata, slug, sub_title, updated_at, created_at from blogs where slug = ?`
             ).bind(slug.trim())
             .all()
 

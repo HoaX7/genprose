@@ -14,7 +14,7 @@ import { epochToLocaleDate, toLocaleDate } from "../../helpers"
         }
     }
 
-    const { title, updated_at, content, sub_title, slug, metadata = {} } = Astro.props
+    const { title, updated_at, created_at, content, sub_title, slug, metadata = {} } = Astro.props
 
     const blogContent = content.replace(/\n/g, "<br/>")
 
@@ -38,7 +38,7 @@ import { epochToLocaleDate, toLocaleDate } from "../../helpers"
             </div>
             <div class="ml-2">
                 <div class="capitalize">{parsedMetadata.author || "Admin"}</div>
-                <div class="text-sm">{toLocaleDate(epochToLocaleDate(updated_at))}</div>
+                <div class="text-sm">{toLocaleDate(epochToLocaleDate(updated_at || created_at))}</div>
             </div>
         </div>
         <pre style="font-family: inherit;" class="mb-3 mt-5 break-words whitespace-pre-line" set:html={blogContent.trim()}></pre>
