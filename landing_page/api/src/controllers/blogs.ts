@@ -27,7 +27,6 @@ export const Blogs = {
             const { results } = await env.HVEC_MARKETING_DB.prepare("select slug from blogs")
                 .all()
 
-            console.log({ results })
             return jsonSuccess(results)
         } catch (err) {
             console.log("Error while fetching slug urls:", err)

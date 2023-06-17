@@ -29,7 +29,7 @@ import { epochToLocaleDate, toLocaleDate } from "../../helpers"
                 width="36" /><span class="ml-2">Gen Prose</span>
         </div>
     </nav>
-    <section class="p-4 mx-auto container">
+    <section class="p-4 mx-auto container mt-3">
         <h1 class="text-2xl font-semibold">{title}</h1>
         <h2>{sub_title}</h2>
         <div class="my-5 flex items-center rounded-md bg-gray-900 p-4">
@@ -41,6 +41,6 @@ import { epochToLocaleDate, toLocaleDate } from "../../helpers"
                 <div class="text-sm">{toLocaleDate(epochToLocaleDate(updated_at))}</div>
             </div>
         </div>
-        <pre style="font-family: inherit;" class="my-3 break-words whitespace-pre-line" set:html={blogContent.trim()}></pre>
+        <pre style="font-family: inherit;" class="mb-3 mt-5 break-words whitespace-pre-line" set:html={blogContent.trim()}></pre>
     </section>
 </Mainlayout>
