@@ -3,6 +3,11 @@ export const INVALID_EMAIL_ERROR = {
 	code: "E_101",
 };
 
+export const INVALID_BLOG_CONTENT_ERROR = {
+	error: "Invalid blog title or content",
+	code: "E_103"
+}
+
 export const NOT_FOUND_ERROR = {
 	error: "Not Found",
 	code: "E_404",

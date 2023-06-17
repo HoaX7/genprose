@@ -3,6 +3,7 @@ import { jsonError, jsonSuccess } from "./helper/response";
 import { Waitlist } from "./router/waitlist";
 import { NOT_FOUND_ERROR } from "./helper/errors";
 import { createCors } from "itty-cors";
+import { Blogs } from "./router/blogs";
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
  *
@@ -45,6 +46,7 @@ router.get("/", () => {
 });
 
 Waitlist(router);
+Blogs(router)
 
 router.all("*", () => jsonError({ code: NOT_FOUND_ERROR.code, message: NOT_FOUND_ERROR.error }, { status: 404 }));
 

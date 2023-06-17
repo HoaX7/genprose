@@ -1,5 +1,6 @@
 ---
     import "../styles/global.css"
+import Footer from "./Footer.astro";
 ---
 
 <html lang="en">
@@ -8,6 +9,7 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="sitemap" href="/sitemap.xml">
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={Astro.props.description} />
     <link rel="canonical" href="https://genprose.com" />
@@ -35,6 +37,7 @@
 
 <body>
     <slot />
+    <Footer />
 </body>
 
 </html>

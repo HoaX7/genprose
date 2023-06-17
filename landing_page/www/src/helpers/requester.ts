@@ -12,16 +12,21 @@ export const requester = async ({
     headers
 }: Props) => {
     try {
-        return fetch(url, {
+        // const base = "https://api.genprose.com"
+        const base = "http://192.168.0.105:6002"
+        const options: RequestInit = {
             method,
-            body: JSON.stringify(data),
             headers: {
                 "accept": "application/json",
                 "content-type": "application/json",
                 ...headers
             },
             referrerPolicy: "no-referrer"
-        }).then((res) => res.json())
+        }
+        if (method !== "GET") {
+            options.body = JSON.stringify(data)
+        }
+        return fetch(`${base}/${url}`, options).then((res) => res.json())
             .catch(err => {
                 throw err
             })
