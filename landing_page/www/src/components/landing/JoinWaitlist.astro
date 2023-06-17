@@ -1,0 +1,73 @@
+<section id="joinwaitlist" class="container p-4 mx-auto">
+    <h2 class="font-bold text-2xl text-center mt-5">
+        Join the Waitlist
+    </h2>
+    <div class="mt-5 flex justify-center">
+        <form class="w-full rounded-lg bg-white flex flex-col md:flex-row p-2 md:w-3/5 lg:w-2/5 md:justify-between"
+            id="waitlist-form" >
+            <input name="email" id="email" type="email" placeholder="Email Address"
+                class="mb-3 border-b md:border-none md:mb-0 p-3 rounded-lg text-black focus:outline-none w-full"
+                required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" autofocus />
+            <button id="submit-btn" type="submit"
+                class="cta-btn px-10 disabled:opacity-75 disabled:cursor-not-allowed p-3 rounded-full font-semibold">Join</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    import { joinWaitlist } from "../../api/waitlist"
+
+    const errors = {
+        E_102: "The email you entered is already registered",
+        E_101: "The email you entered is not valid"
+    }
+
+    const submitBtn = document.getElementById("submit-btn")
+    const waitlistForm = document.getElementById("waitlist-form")
+
+    const reportAnalytics = (eventName = "pageview") => {
+        if (typeof window !== "undefined" && typeof window.gtag === "function") {
+            console.log("[Google Analytics]: triggering event: ", eventName)
+            window.gtag("event", eventName)
+            console.log("[Google Analytics]: event sent")
+        } else {
+            console.warn("[Google Analytics]: gtag not found")
+        }
+    }
+
+    const onSubmit = async (e) => {
+        e.preventDefault()
+        const inputEl = document.getElementById("email")
+        if (!submitBtn) {
+            console.error("Submit button not found")
+            return
+        }
+        try {
+            submitBtn.innerText = `Saving...`
+            submitBtn.disabled = true
+            const resp = await joinWaitlist(inputEl.value)
+            if (!resp.success) {
+                throw resp.data
+            }
+
+            reportAnalytics("register")
+            alert("You are all set to get early access! You will receive an email when it is your turn.")
+        } catch (err) {
+            console.error("onSubmit: Failed", err)
+            if (errors[err.code]) {
+                alert(errors[err.code])
+            } else {
+                alert("Unknown error occured, Please try again.")
+            }
+        }
+        inputEl.value = ""
+        submitBtn.innerText = `Join`
+        submitBtn.disabled = false
+    }
+
+    if (!waitlistForm) {
+        console.error("Unable to initialize waitlist form")
+    } else {
+        waitlistForm.onsubmit = onSubmit
+    }
+</script>

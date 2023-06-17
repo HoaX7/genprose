@@ -1,0 +1,1 @@
+export const STEPS = ["Paste your link", "Get your content", "Publish your content"]

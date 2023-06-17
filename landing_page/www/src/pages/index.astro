@@ -1,0 +1,32 @@
+---
+	import Mainlayout from "../layouts/Mainlayout.astro";
+	import { SEO } from "../helpers/seo"
+	import HeroSection from "../components/landing/HeroSection.astro";
+	import AuxiliaryContent from "../components/landing/AuxiliaryContent.astro";
+	import OurStory from "../components/landing/OurStory.astro";
+	import JoinWaitlist from "../components/landing/JoinWaitlist.astro";
+	import Footer from "../layouts/Footer.astro";
+	import HIW from "../components/landing/HIW.astro";
+---
+
+<Mainlayout title={SEO.home.title} keywords={SEO.home.keywords} description={SEO.home.description} url="/">
+	<section class="hero-section">
+		<HeroSection />
+	</section>
+	<section class="border-b-white border-b bg-white">
+		<div class="p-4 container mx-auto border-b border-b-white">
+			<h2 class="text-black text-2xl font-semibold mt-5">See it yourself!</h2>
+			<div class="shadow-lg my-5 md:rounded-md relative">
+				<video class="rounded-md" loop id="ad-video" muted controls autoplay>
+					<source src="/assets/videos/ad.mp4" type="video/mp4" />
+					Your browser does not support videos.
+				</video>
+			</div>
+		</div>
+	</section>
+	<AuxiliaryContent />
+	<HIW />
+	<OurStory />
+	<JoinWaitlist />
+	<Footer />
+</Mainlayout>

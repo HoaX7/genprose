@@ -1,0 +1,40 @@
+---
+    import "../styles/global.css"
+---
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={Astro.props.description} />
+    <link rel="canonical" href="https://genprose.com" />
+    <meta property="og:url" content={`https://genprose.com/${Astro.props.url}`} />
+    <meta name="og:title" property="og:title" content={Astro.props.description} />
+    <meta name="og:description" property="og:description" content={Astro.props.description} />
+    <meta name="twitter:title" content={Astro.props.title} />
+    <meta name="twitter:description" content={Astro.props.description} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="keywords" content={Astro.props.keywords} />
+    <meta property="og:image" content="https://genprose.com/styles/images/logo-white-img.png" />
+    <meta property="image" content="https://genprose.com/styles/images/logo-white-img.png" />
+    <title>{Astro.props.title}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus Jakarta Sans:r,b">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2XKMY8V0DX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-2XKMY8V0DX');
+    </script>
+</head>
+
+<body>
+    <slot />
+</body>
+
+</html>

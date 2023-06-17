@@ -1,0 +1,45 @@
+---
+    const content = [
+        "Generating content ideas for a business can be a time-consuming task. However, producing a substantial volume of relevant content adds an additional layer of tedium. Fortunately, valuable content ideas can be sourced from your employees, clients, and even your competitors.",
+        `That's why we developed <span class='font-semibold'>Gen Prose</span> —a solution designed to unlock the potential of audio and video content by generating SEO-optimized content. With Gen Prose, you can effortlessly transform relevant YouTube videos, podcasts, webinars, internal meetings, Zoom recordings, and more into engaging written content<span class="absolute ml-2">
+    <span id="audio-wave-loader" class="flex items-center"></span></span>`,
+        "Instead of spending hours creating repurposed or derived content yourself, let Gen Prose handle the heavy lifting. Simply paste the link to the desired source, and we'll generate the content for you. And if you want to add your personal touch, you have the flexibility to customize the content as well.",
+        "By utilizing Gen Prose, you can save over 100 hours of your valuable time and focus on creating unique and compelling content. Leave the creation of auxiliary content to Gen Prose and experience a streamlined content generation process."
+    ];
+
+---
+
+<section class="bg-white">
+    <div class="p-4 mx-auto container">
+        <h2 class="text-2xl font-bold text-black mt-5">Our Story</h2>
+        <div class="text-black mb-5" id="our-story">
+            {content.map((it) => <p class="mt-3" set:html={it}></p>)}
+        </div>
+    </div>
+</section>
+
+<script>
+    const joinWaitlistLoader = document.getElementById("audio-wave-loader")
+    if (joinWaitlistLoader) {
+        const divEl = document.createElement("div")
+        divEl.classList.add("boxContainer", "-mr-2", "z-10")
+        const iter = [1, 2, 3, 4, 5]
+        iter.map(it => {
+            const childEl = document.createElement("div")
+            childEl.classList.add("bg-indigo-600", "box", `box${it}`)
+            childEl.setAttribute("key", `box_${it}`)
+            divEl.appendChild(childEl)
+        })
+        joinWaitlistLoader.appendChild(divEl)
+        const divEl2 = document.createElement("div")
+        divEl2.classList.add("border-2", "border-gray-300", "px-1", "w-8", "rounded-md", "loader-line-container")
+        const iter2 = [1, 2, 3, 4]
+        iter2.map(it => {
+            const childEl = document.createElement("div")
+            childEl.setAttribute("key", `content_list_${it}`)
+            childEl.classList.add("my-1", "before:bg-indigo-600", "loader-line", "rounded", `loader-line-box${it}`)
+            divEl2.appendChild(childEl)
+        })
+        joinWaitlistLoader.appendChild(divEl2)
+    }
+</script>

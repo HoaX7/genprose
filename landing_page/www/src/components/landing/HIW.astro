@@ -1,0 +1,38 @@
+---
+    const content = [
+        {
+            pill: "ctrl + c",
+            description:
+                "Copy the link of the video or the podcast episode or even a webinar.",
+        },
+        {
+            pill: "ctrl + v",
+            description:
+                "Paste it in <span class='font-semibold'>Gen Prose</span> and select your content style preferences.",
+        },
+        {
+            pill: "⚡️ zap",
+            description: "Get your content and publish in your article / blog.",
+        },
+    ];
+
+---
+
+<section class="p-4 mx-auto container mb-5">
+    <h2 class="text-2xl font-bold mt-5">How it works</h2>
+    <ul class="">
+        <li class="mt-5">
+            <span class="rounded-full bg-indigo-600 py-1 px-3">{content[0].pill}</span>
+            <span class="ml-2" set:html={content[0].description}></span>
+        </li>
+        <li class="mt-5">
+            <span class="rounded-full bg-indigo-600 py-1 px-3">{content[1].pill}</span>
+            <span class="ml-2" set:html={content[1].description}></span>
+        </li>
+        <li class="mt-5">
+            <span class="rounded-full bg-indigo-600 py-1 px-3">{content[2].pill}</span>
+            <span class="ml-2" set:html={content[2].description}></span>
+        </li>
+    </ul>
+    <div class="mt-5">Ridiculously Simple. Go from inspiration to result in seconds.</div>
+</section>
