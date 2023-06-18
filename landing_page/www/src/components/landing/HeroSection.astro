@@ -2,27 +2,88 @@
 import Stepper from "./Stepper.astro";
 ---
 
+<style>
+    .avw {
+        display: inline-block;
+        height: 36px;
+        position: relative;
+        background: #f4da35;
+        width: 152px;
+        margin-top: 0.25rem;
+        overflow: hidden;
+        position: relative;
+        top: 8px;
+        padding: 2px 8px;
+        color: #222;
+    }
+    .avw-content {
+        position: absolute;
+        transform: translateY(0);
+        animation: moveup 3s cubic-bezier(0.4, 0, 1, 1) infinite forwards;
+    }
+    @keyframes moveup {
+        0% {
+            transform: translateY(-0.4rem);
+        }
+        33.3% {
+            transform: translateY(-3.4rem);
+        }
+        66% {
+            transform: translateY(-6.8rem);
+        }
+    }
+    /* .avw-content > span {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #434242;
+        animation: ;
+    }
+    .avw-content > span:nth-child(1) {
+        top: 0.25rem;
+    }
+    .avw > span:nth-child(2) {
+        top: 1.8rem;
+    }
+    .avw > span:nth-child(3) {
+        top: 3rem;
+    } */
+</style>
 <div class="container p-4 mx-auto" id="hero">
-    <div class="mt-5 md:mt-24 relative">
+    <div class="md:mt-24 relative">
         <div class="grid grid-cols-5">
             <div class="col-span-5 lg:col-span-3 flex justify-between flex-col">
                 <div class="md:text-6xl text-4xl font-bold mt-10">
                     <img alt="genprose" src="/assets/images/logo-white-img.png" width="42" class="inline" />
                     Gen Prose
                 </div>
-                <h1 class="text-2xl font-semibold mt-3 flex flex-col">
-                    <span class="">Instantly Transmute <sup class="text-sm">(Transform)</sup></span>
-                    <span class="underline">Audio, Video and Webinars</span>
-                    <span class="">into SEO optimized content.</span>
+                <h1 class="text-3xl font-semibold my-8 md:max-w-md leading-relaxed">
+                    <span class=""
+                        >Instantly <span class="relative"
+                            >Transmute <sup class="-top-3 left-0 absolute text-sm text-slate-200">(Transform)</sup></span
+                        >
+                        <span role="presentation" class="avw">
+                            <span class="avw-content">
+                                <span>Audio</span>
+                                <span>Video</span>
+                                <span>Webinars</span>
+                            </span>
+                        </span>
+                    </span>
+                    <span class="sr-only">Audio, Video and Webinars</span>
+                    <span class="">into SEO optimized content</span>
                 </h1>
                 <p class="mt-5 text-2xl">
                     As simple as
-                <div class="lg:gap-8 stepper-bg justify-center mt-3 p-5 py-8 rounded-lg gap-4 flex flex-col md:flex-row"
-                    id="stepper">
-                    <Stepper text="Paste your link" />
-                    <Stepper text="Get your content" />
-                    <Stepper text="Publish your content" />
-                </div>
+                    <div
+                        class="lg:gap-8 stepper-bg justify-center mt-3 p-5 py-8 rounded-lg gap-4 flex flex-col md:flex-row"
+                        id="stepper"
+                    >
+                        <Stepper text="Paste your link" />
+                        <Stepper text="Get your content" />
+                        <Stepper text="Publish your content" />
+                    </div>
                 </p>
             </div>
             <div class="hidden lg:block col-span-2">
