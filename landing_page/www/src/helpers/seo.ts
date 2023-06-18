@@ -1,7 +1,7 @@
 export const SEO = {
     home: {
         title: "Gen Prose | Auxiliary Content",
-        description: "With Gen Prose, you can effortlessly transform relevant YouTube videos, podcasts, webinars, internal meetings, Zoom recordings, and more into engaging written content.",
+        description: "Instantly transform relevant YouTube videos, podcasts, webinars, internal meetings, Zoom recordings, and more into engaging written content.",
         keywords: "genprose auxiliary content, free audio to text converter, podcast to text, ai seo content generator, genprose, seo blog articles, youtube video to text generator, audio to text converter, content writing services, generative ai in seconds"
     },
     articles: {
