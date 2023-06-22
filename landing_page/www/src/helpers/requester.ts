@@ -12,8 +12,7 @@ export const requester = async ({
     headers
 }: Props) => {
     try {
-        // const base = "https://api.genprose.com"
-        const base = "http://192.168.0.107:6002"
+        const base = "https://api.genprose.com"
         const options: RequestInit = {
             method,
             headers: {
