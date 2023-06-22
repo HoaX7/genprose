@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS blogs (
 -- Enable if columns do not exist
 -- ALTER TABLE blogs ADD COLUMN slug TEXT NOT NULL;
 -- ALTER TABLE blogs ADD COLUMN sub_title TEXT;
+-- ALTER TABLE blogs ADD COLUMN description TEXT;
+-- ALTER TABLE blogs ADD COLUMN keywords TEXT;
+-- ALTER TABLE blogs ADD COLUMN featured_image_url TEXT;
 
 CREATE TRIGGER IF NOT EXISTS update_blogs_updated_at
 	AFTER UPDATE ON blogs

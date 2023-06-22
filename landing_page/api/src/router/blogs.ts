@@ -7,4 +7,5 @@ export function Blogs(router: ThrowableRouter) {
     router.get("/blogs/slugUrls/getAll", BlogsController.getSlugUrls)
     router.get("/blogs/:slug", BlogsController.getBySlug)
     router.post("/blogs", withAuth, withContent, BlogsController.create)
+    // router.patch("/blogs/:slug", withAuth, withContent, BlogsController.update)
 }

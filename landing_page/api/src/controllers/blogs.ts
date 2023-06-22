@@ -11,7 +11,7 @@ export const Blogs = {
     async getAll(req: IRequest, env: Env) {
         try {
             console.log("Fetching blog slugs")
-            const { results } = await env.HVEC_MARKETING_DB.prepare("select id, title, content, metadata, sub_title, slug, updated_at, created_at from blogs")
+            const { results } = await env.HVEC_MARKETING_DB.prepare("select * from blogs order by created_at desc")
                 .all()
 
             return jsonSuccess(results)
@@ -42,10 +42,9 @@ export const Blogs = {
             }
             console.log("Fetching blog content for slug:", slug)
             const { results } = await env.HVEC_MARKETING_DB.prepare(
-                `select id, title, content, metadata, slug, sub_title, updated_at, created_at from blogs where slug = ?`
+                `select * from blogs where slug = ?`
             ).bind(slug.trim())
             .all()
-
             return jsonSuccess(results)
         } catch (err) {
             console.error("Error while fetching blog content for id: ", params)
@@ -53,12 +52,40 @@ export const Blogs = {
         }
     },
 
+    // async update({ content, params }: IRequest, env: Env) {
+    //     try {
+    //         const { slug } = params;
+    //         if (!slug) {
+    //             return jsonError({ message: NOT_FOUND_ERROR.error, code: NOT_FOUND_ERROR.code })
+    //         }
+    //         const description = content.description?.trim();
+    //         const keywords = content.keywords?.trim();
+    //         const featured_image = content.featuredImage?.trim();
+    //         if (!description || !keywords || !featured_image) {
+    //             return jsonError({
+    //                 code: INVALID_BLOG_CONTENT_ERROR.code,
+    //                 message: INVALID_BLOG_CONTENT_ERROR.error
+    //             }, { status: 422 }) 
+    //         }
+    //         const { results } = await env.HVEC_MARKETING_DB.prepare(
+    //             `update blogs set description = ?, keywords = ?, featured_image_url = ? where slug = ?`
+    //         ).bind(description, keywords, featured_image, slug).run()
+    //         return jsonSuccess({})
+    //     } catch (err) {
+    //         console.error("Error while updating blog", err)
+    //         return jsonError({ message: INTERNAL_SERVER_ERROR.error, code: INTERNAL_SERVER_ERROR.code }, { status: 500 });
+    //     }
+    // },
+
     async create({ content }: IRequest, env: Env) {
         try {
             const title = content.title?.trim()
             const blogContent = content.content?.trim()
-            const subTitle = content.subTitle.trim()
-            if (!title || !blogContent || !subTitle) {
+            const subTitle = content.subTitle?.trim()
+            const featuredImage = content.featuredImage?.trim()
+            const description = content.description?.trim();
+            const keywords = content.keywords?.trim();
+            if (!title || !blogContent || !subTitle || !description || !keywords || !featuredImage) {
                 return jsonError({
                     code: INVALID_BLOG_CONTENT_ERROR.code,
                     message: INVALID_BLOG_CONTENT_ERROR.error
@@ -74,9 +101,9 @@ export const Blogs = {
             console.log("Blog Content:", content)
             console.log("Slug:", slug)
             const { results } = await env.HVEC_MARKETING_DB.prepare(
-                "INSERT INTO blogs (title, content, slug, sub_title) VALUES (?, ?, ?, ?) RETURNING *"
+                "INSERT INTO blogs (title, content, slug, sub_title, featured_image_url, description, keywords) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *"
             )
-            .bind(title, blogContent, slug, subTitle)
+            .bind(title, blogContent, slug, subTitle, featuredImage, description, keywords)
             .all()
             return jsonSuccess(results, { status: 201 })
         } catch (err) {

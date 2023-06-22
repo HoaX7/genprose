@@ -6,4 +6,7 @@ export type BlogProps = {
     title: string;
     content: string;
     sub_title: string;
+    description: string;
+    keywords: string;
+    featured_image_url: string;
 }
