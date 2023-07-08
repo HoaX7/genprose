@@ -1,16 +1,16 @@
 ---
 const content = [
     "Generating content ideas for a business can be a time-consuming task. However, producing a substantial volume of relevant content adds an additional layer of tedium. Fortunately, valuable content ideas can be sourced from your employees, clients, and even your competitors.",
-    `That's why we developed <span class='font-semibold'>Gen Prose</span> — a solution designed to unlock the potential of audio and video content by generating SEO-optimized content. With Gen Prose, you can effortlessly transform relevant YouTube videos, podcasts, webinars, internal meetings, Zoom recordings, and more into engaging written content.`,
-    "Instead of spending hours creating repurposed or derived content yourself, let Gen Prose handle the heavy lifting. Simply paste the link to the desired source, and we'll generate the content for you. And if you want to add your personal touch, you have the flexibility to customize the content as well.",
-    "By utilizing Gen Prose, you can save over 100 hours of your valuable time and focus on creating unique and compelling content. Leave the creation of auxiliary content to Gen Prose and experience a streamlined content generation process.",
+    `That's why we developed <span class='font-semibold'>Gen Prose</span> — a solution designed to unlock the potential of audio and video content by converting audio to text and transcribing it into SEO-optimized content. With Gen Prose, you can effortlessly transform relevant YouTube videos, podcasts, webinars, internal meetings, Zoom recordings, and more into engaging written content.`,
+    `Instead of spending hours manually transcribing audio, let Gen Prose handle the heavy lifting. Our advanced software can seamlessly convert audio to text and transcribe it with accuracy. Simply paste the link of the desired source, and we'll generate the SEO optimized content for you. And if you want to add your personal touch, you have the flexibility to customize the content as well.`,
+    "By utilizing Gen Prose, you can save over 100 hours of your valuable time and focus on creating unique and compelling content. Leave the task of converting audio to text and transcribing it to Gen Prose, and experience a streamlined content generation process.",
 ];
 ---
 
 <section class="bg-white">
     <div class="p-4 mx-auto container">
         <h2 class="text-2xl font-bold text-black mt-5">Our Story</h2>
-        <div class="grid grid-cols-1 md:grid-cols-5">
+        <div class="grid gap-4 grid-cols-1 md:grid-cols-5">
             <div class="text-black mb-5 col-span-3" id="our-story">
                 {content.map((it) => <p class="mt-3" set:html={it} />)}
             </div>
@@ -18,7 +18,7 @@ const content = [
                 class="col-span-2 text-slate-800 flex flex-col justify-center items-center bg-slate-100 p-8 md:py-0 rounded-lg text-center"
             >
                 <div class="flex justify-center items-center mb-4">
-                    <img src="/assets/images/ourstory.svg" alt="audio to seo optimized content" width="500" />
+                    <img src="/assets/images/ourstory.svg" alt="transcribe audio to text free" width="500" />
                 </div>
                 Audio to Value in Seconds
             </div>

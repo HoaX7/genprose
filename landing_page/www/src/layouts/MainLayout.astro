@@ -13,12 +13,14 @@ import Footer from "./Footer.astro";
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={Astro.props.description} />
-    <link rel="canonical" href="https://genprose.com" />
-    <meta property="og:url" content={`https://genprose.com/${Astro.props.url}`} />
+    <link rel="canonical" href={`https://genprose.com${Astro.props.url}`} />
+    <meta property="og:url" content={`https://genprose.com${Astro.props.url}`} />
     <meta name="og:title" property="og:title" content={Astro.props.title} />
     <meta name="og:description" property="og:description" content={Astro.props.description} />
     <meta name="twitter:title" content={Astro.props.title} />
     <meta name="twitter:description" content={Astro.props.description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="@hoaxy777" />
     <meta property="og:locale" content="en_US" />
     <meta name="keywords" content={Astro.props.keywords} />
     <meta property="og:image" content="https://genprose.com/assets/images/og-image.jpg" />

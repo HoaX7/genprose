@@ -20,13 +20,17 @@
     const parsedMetadata = metadata ? JSON.parse(metadata) : {}
 ---
 
-<Mainlayout title={title} keywords={keywords || SEO.articles.keywords} description={description ||
-    SEO.articles.description} url={`blogs/${slug}`}>
+<Mainlayout title={`${title}, Useful Articles`} keywords={keywords || SEO.articles.keywords} description={description ||
+    SEO.articles.description} url={`/blogs/${slug}/`}>
     <nav class="bg-site-gradient">
-        <div class="container mx-auto text-3xl font-bold p-4">
+        <div class="container mx-auto text-3xl font-bold p-4 flex justify-between items-center">
             <a class="flex items-center" href="/">
                 <img alt="logo" src="/assets/images/logo-white-img.png" width="36" />
-                <span class="ml-2">Gen Prose</span>
+                <span class="ml-2 hidden md:block">Gen Prose</span>
+                <span class="ml-2 md:hidden">GP</span>
+            </a>
+            <a class="text-lg rounded-full py-3 cta-btn px-5 cursor-pointer font-semibold" href="/#joinwaitlist">
+               Get Early Access 
             </a>
         </div>
     </nav>
@@ -35,12 +39,12 @@
         <h2>{sub_title}</h2>
         {featured_image_url && (
             <div class="my-5 flex items-center justify-center">
-                <img src={featured_image_url} alt={keywords} />
+                <img src={featured_image_url} alt={(keywords || "").split(",")[0] || `${title} featured image`} />
             </div>
         )}
         <div class="my-5 flex items-center rounded-md bg-gray-900 p-4">
             <div class="border rounded-full w-12 h-12 flex items-center justify-center">
-                <img src="/assets/images/user-icon.svg" alt="genprose-blog-user-icon" />
+                <img src="/assets/images/user-icon.svg" alt="genprose user icon" />
             </div>
             <div class="ml-2">
                 <div class="capitalize">{parsedMetadata.author || "Admin"}</div>
