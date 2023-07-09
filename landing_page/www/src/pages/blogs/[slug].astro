@@ -20,8 +20,8 @@
     const parsedMetadata = metadata ? JSON.parse(metadata) : {}
 ---
 
-<Mainlayout title={`${title}, Useful Articles`} keywords={keywords || SEO.articles.keywords} description={description ||
-    SEO.articles.description} url={`/blogs/${slug}/`}>
+<Mainlayout ogType="article" title={`${title}, Useful Articles`} keywords={keywords || SEO.articles.keywords} description={description ||
+    SEO.articles.description} url={`/blogs/${slug}`}>
     <nav class="bg-site-gradient">
         <div class="container mx-auto text-3xl font-bold p-4 flex justify-between items-center">
             <a class="flex items-center" href="/">

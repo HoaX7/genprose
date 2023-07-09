@@ -9,5 +9,11 @@ export default defineConfig({
     priority: .8,
     changefreq: "weekly",
     lastmod: new Date('2023-02-01')
-  })]
+  })],
+  site: "https://genprose.com",
+  trailingSlash: "ignore",
+  // required for cloudflare to remove trailing slash ('/')
+  build: {
+    format: "file"
+  }
 });

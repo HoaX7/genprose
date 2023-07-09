@@ -17,6 +17,7 @@ import Footer from "./Footer.astro";
     <meta property="og:url" content={`https://genprose.com${Astro.props.url}`} />
     <meta property="og:title" content={Astro.props.title} />
     <meta property="og:description" content={Astro.props.description} />
+    <meta property="og:type" content={Astro.props.ogType || "website"} />
     <meta property="twitter:title" content={Astro.props.title} />
     <meta property="twitter:description" content={Astro.props.description} />
     <meta property="twitter:card" content="summary" />
