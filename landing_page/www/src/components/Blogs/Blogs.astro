@@ -13,7 +13,7 @@
             return <a href={`/blogs/${item.slug}`}
                 class="flex flex-col h-full bg-white shadow-lg rounded-md col-span-6 md:col-span-3 lg:col-span-2">
                 <BlogCard title={item.title} subTitle={item.sub_title}
-                    src={item.featured_image_url} alt="blog" />
+                    src={item.featured_image_url} alt={item.title + " article image"} />
             </a>
             })}
         </div>

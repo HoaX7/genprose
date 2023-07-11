@@ -1,57 +1,129 @@
 ---
-    import { getAllBlogs } from "../../api/blogs"
-    import { epochToLocaleDate, toLocaleDate } from "../../helpers"
-    import { SEO } from "../../helpers/seo"
-    import Mainlayout from "../../layouts/Mainlayout.astro"
+import { getAllBlogs } from "../../api/blogs";
+import { epochToLocaleDate, toLocaleDate } from "../../helpers";
+import { SEO } from "../../helpers/seo";
+import Mainlayout from "../../layouts/MainLayout.astro";
+import { AVERAGE_READ_TIME, DOT } from "../../helpers/constants";
+import BlogCard from "../../components/Blogs/Card.astro";
+import { BlogProps } from "../../types/blogs";
+import Image from "../../components/Picture/Image.astro";
 
-    export async function getStaticPaths() {
-        try {
-            const blogs = await getAllBlogs()
-            return blogs?.data.map((d) => ({ params: { slug: d.slug }, props: d }))
-        } catch (err) {
-            console.error("Error while fetching blogs for static paths", err)
-            return []
-        }
-    }
+export async function getStaticPaths() {
+  try {
+    const blogs = await getAllBlogs();
+    return blogs?.data.map((d) => ({
+      params: { slug: d.slug },
+      props: {
+        blog: d,
+        allBlogs: blogs.data.filter((b) => b.slug !== d.slug),
+      },
+    }));
+  } catch (err) {
+    console.error("Error while fetching blogs for static paths", err);
+    return [];
+  }
+}
 
-    const { title, updated_at, created_at, content, sub_title, slug, metadata = {}, description, keywords, featured_image_url } = Astro.props
-    const blogContent = content.replace(/\n/g, "<br/>")
+const {
+  title,
+  updated_at,
+  created_at,
+  content,
+  sub_title,
+  slug,
+  metadata = {},
+  description,
+  keywords,
+  featured_image_url,
+} = Astro.props.blog;
+const blogContent = content.replace(/\n/g, "<br/>");
 
-    const parsedMetadata = metadata ? JSON.parse(metadata) : {}
+const wordCount = blogContent.replace(/[^\w ]/g, "").split(/\s+/).length;
+const readingTime = Math.floor(wordCount / AVERAGE_READ_TIME) + 1;
+
+const parsedMetadata = metadata ? JSON.parse(metadata) : {};
 ---
 
-<Mainlayout ogType="article" title={`${title}, Useful Articles`} keywords={keywords || SEO.articles.keywords} description={description ||
-    SEO.articles.description} url={`/blogs/${slug}`}>
-    <nav class="bg-site-gradient">
-        <div class="container mx-auto text-3xl font-bold p-4 flex justify-between items-center">
-            <a class="flex items-center" href="/">
-                <img alt="logo" src="/assets/images/logo-white-img.png" width="36" />
-                <span class="ml-2 hidden md:block">Gen Prose</span>
-                <span class="ml-2 md:hidden">GP</span>
-            </a>
-            <a class="text-lg rounded-full py-3 cta-btn px-5 cursor-pointer font-semibold" href="/#joinwaitlist">
-               Get Early Access 
-            </a>
+<Mainlayout
+  ogType="article"
+  title={`${title}, Useful Articles`}
+  keywords={keywords || SEO.articles.keywords}
+  description={description || SEO.articles.description}
+  url={`/blogs/${slug}`}
+>
+  <nav class="bg-site-gradient">
+    <div
+      class="container mx-auto text-3xl font-bold p-4 flex justify-between items-center"
+    >
+      <a class="flex items-center" href="/">
+        <img alt="logo" src="/assets/images/logo-white-img.png" width="36" />
+        <span class="ml-2 hidden md:block">Gen Prose</span>
+        <span class="ml-2 md:hidden">GP</span>
+      </a>
+      <a
+        class="text-lg rounded-full py-3 cta-btn px-5 cursor-pointer font-semibold"
+        href="/#joinwaitlist"
+      >
+        Get Early Access
+      </a>
+    </div>
+  </nav>
+  <section class="p-4 mx-auto container mt-3">
+    <h1 class="text-2xl font-semibold">{title}</h1>
+    <h2>{sub_title}</h2>
+    {
+      featured_image_url && (
+        <div class="my-5">
+          <Image
+            src={featured_image_url}
+            alt={(keywords || "").split(",")[0] || `${title} featured image`}
+          />
         </div>
-    </nav>
-    <section class="p-4 mx-auto container mt-3">
-        <h1 class="text-2xl font-semibold">{title}</h1>
-        <h2>{sub_title}</h2>
-        {featured_image_url && (
-            <div class="my-5 flex items-center justify-center">
-                <img src={featured_image_url} alt={(keywords || "").split(",")[0] || `${title} featured image`} />
-            </div>
-        )}
-        <div class="my-5 flex items-center rounded-md bg-gray-900 p-4">
-            <div class="border rounded-full w-12 h-12 flex items-center justify-center">
-                <img src="/assets/images/user-icon.svg" alt="genprose user icon" />
-            </div>
-            <div class="ml-2">
-                <div class="capitalize">{parsedMetadata.author || "Admin"}</div>
-                <div class="text-sm">{toLocaleDate(epochToLocaleDate(created_at))}</div>
-            </div>
+      )
+    }
+    <div class="my-5 flex items-center rounded-md bg-gray-900 p-4">
+      <div
+        class="border rounded-full w-12 h-12 flex items-center justify-center"
+      >
+        <img src="/assets/images/user-icon.svg" alt="genprose user icon" />
+      </div>
+      <div class="ml-2">
+        <div class="capitalize">
+          {parsedMetadata.author || "Admin"}
+          <span class="text-sm normal-case">{DOT} {readingTime} min read</span>
         </div>
-        <pre style="font-family: inherit;" class="mb-3 mt-5 break-words whitespace-pre-line"
-            set:html={blogContent.trim()}></pre>
-    </section>
+        <div class="text-sm">{toLocaleDate(epochToLocaleDate(created_at))}</div>
+      </div>
+    </div>
+    <pre
+      style="font-family: inherit;"
+      class="mb-3 mt-5 break-words whitespace-pre-line"
+      set:html={blogContent.trim()}
+    />
+    <div class="border-t border-gray-700 mt-10">
+      <h2 class="font-semibold text-2xl text-center underline mt-10">Related Articles</h2>
+      <div class="gap-4 mt-10 flex overflow-y-auto">
+        {
+          Astro.props.allBlogs.map((item: BlogProps) => {
+            return (
+              <div>
+                <a
+                href={`/blogs/${item.slug}`}
+                class="flex flex-col h-full bg-zinc-800 shadow-lg rounded-md w-96"
+              >
+                <BlogCard
+                  title={item.title}
+                  subTitle={item.sub_title}
+                  src={item.featured_image_url}
+                  alt={item.title + " article image"}
+                  titleClassName="!text-white"
+                />
+              </a>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
 </Mainlayout>

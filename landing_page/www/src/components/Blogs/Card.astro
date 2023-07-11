@@ -1,12 +1,14 @@
 ---
     import Image from "../Picture/Image.astro";
-
 ---
 
 <Image alt={Astro.props.alt} src={Astro.props.src} width={Astro.props.width} />
 <div class="flex items-center justify-center p-4 h-full">
     <div>
-        <div class="text-xl text-black font-semibold">{Astro.props.title}</div>
+        <div class={"text-xl font-semibold"} class:list={[
+            "text-xl font-semibold text-black",
+            Astro.props.titleClassName
+        ]}>{Astro.props.title}</div>
         <div class="text-lg text-gray-400 font-semibold">{Astro.props.subTitle}</div>
     </div>
 </div>
