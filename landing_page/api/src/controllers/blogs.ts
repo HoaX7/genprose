@@ -85,25 +85,37 @@ export const Blogs = {
             const featuredImage = content.featuredImage?.trim()
             const description = content.description?.trim();
             const keywords = content.keywords?.trim();
-            if (!title || !blogContent || !subTitle || !description || !keywords || !featuredImage) {
+            const slugText = content.slug?.trim();
+            const author = content.author?.trim() || "Admin";
+            const metadata = { author }
+            if (!title || !blogContent || !description || !keywords) {
                 return jsonError({
                     code: INVALID_BLOG_CONTENT_ERROR.code,
                     message: INVALID_BLOG_CONTENT_ERROR.error
                 }, { status: 422 })
             }
-            const slug = slugify(title, {
+            const slug = slugify(slugText || title, {
                 remove: /[*+~.()'"!:@]/g,
                 replacement: "-",
                 trim: true,
                 strict: true,
                 lower: true
             })
-            console.log("Blog Content:", content)
+            const valuesToinsert = [title, blogContent, slug, description, keywords, metadata]
+            let columnNames = "title, content, slug, description, keywords, metadata"
+            if (featuredImage) {
+                columnNames += ", featuredImage"
+                valuesToinsert.push(featuredImage)
+            }
+            if (subTitle) {
+                columnNames += ", sub_title"
+                valuesToinsert.push(subTitle)
+            }
             console.log("Slug:", slug)
             const { results } = await env.HVEC_MARKETING_DB.prepare(
-                "INSERT INTO blogs (title, content, slug, sub_title, featured_image_url, description, keywords) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *"
+                `INSERT INTO blogs (${columnNames}) VALUES (${valuesToinsert.map(() => "?").join(",")}) RETURNING *`
             )
-            .bind(title, blogContent, slug, subTitle, featuredImage, description, keywords)
+            .bind(valuesToinsert)
             .all()
             return jsonSuccess(results, { status: 201 })
         } catch (err) {
