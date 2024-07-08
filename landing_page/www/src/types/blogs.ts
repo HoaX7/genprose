@@ -9,4 +9,7 @@ export type BlogProps = {
     description: string;
     keywords: string;
     featured_image_url: string;
+    metadata?: {
+        author?: string;
+    }
 }

@@ -1,0 +1,91 @@
+<html lang="en">
+<body>
+    <style>
+        div {
+            margin: 10px 0;
+        }
+    </style>
+    <form id="blog-form">
+        <div>
+        <label>Title</label>
+        <input id="title" name="title" style="width:500px;" />
+    </div>
+    <div>
+        <label>Sub title</label>
+        <input id="subtitle" name="subtitle" style="width:500px;" />
+    </div>
+    <div>
+        <label>Slug Text (Uses title as default)</label>
+        <input id="slug-text" name="slug-text" style="width:500px;" />
+    </div>
+    <div>
+        <label>Featured image</label>
+        <input id="featured_image" name="featured_image" style="width:500px;" />
+    </div>
+    <div>
+        <label>Meta description</label>
+        <textarea id="description" name="description" style="width:500px;"></textarea>
+    </div>
+    <div>
+        <label>Meta keywords</label>
+        <textarea id="keywords" name="keywords" style="width:500px;"></textarea>
+    </div>
+    <div>
+        <label>Content</label>
+        <textarea id="content" name="content" style="height:300px;width:500px;"></textarea>
+    </div>
+    <div>
+        <label>Author</label>
+        <input id="author" name="author" style="width:500px;" />
+    </div>
+    <div>
+        <button type="submit">Create blog</button>
+    </div>
+    </form>
+    
+    <script>
+        const blogForm = document.getElementById("blog-form")
+
+        blogForm.onsubmit = async (e) => {
+            e.preventDefault()
+            const title = document.getElementById("title").value
+            const subTitle = document.getElementById("subtitle").value
+            const featuredImage = document.getElementById("featured_image").value
+            const keywords = document.getElementById("keywords").value
+            const description = document.getElementById("description").value
+            const content = document.getElementById("content").value
+            const author = document.getElementById("author").value || "Admin"
+            const slug = document.getElementById("slug-text").value || title
+
+            const base = "https://api.genprose.com/blogs"
+            const options = {
+                method: "POST",
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json",
+                    Authorization: `Basic ${btoa("274bcab1-44ac-4132-8110-f34836120f1d:7A7E28C4B11D5F9E9918566387664")}`
+                },
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify({
+                    title,
+                    subTitle,
+                    featuredImage,
+                    keywords,
+                    description,
+                    content,
+                    author,
+                    slug
+                })
+            }
+            if (!title || !keywords || !description || !content) {
+                alert("Please fill in all the details")
+                return
+            }
+            await fetch(base, options).then(() => {
+                alert("Blog created")
+                window.location.reload()
+            }).catch((err) => console.error(err))
+        }
+    </script>
+</body>
+</html>

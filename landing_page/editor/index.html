@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tiny.cloud/1/wf7wlfqglevh7dh4z62o2l5l31r619xftmwmp367oki921li/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+  <style>
+    div {
+      margin-top: .5rem;
+    }
+    ul,ol { margin: 0; }
+    p,h1,h2,h3,h4,h5,h6 {margin: 18px 0; }
+    li { margin: 10px 0; }
+  </style>
+    <button onclick="onClick()" style="margin-bottom:1rem;">Copy HTML to clipboard</button>
+    <button onclick="previewContent()" style="margin-bottom:1rem;">Preview</button>
+  <textarea id="editor">
+    Welcome to TinyMCE!
+  </textarea>
+  <div>
+    Preview:
+    <div id="preview"></div>
+  </div>
+  <script>
+    tinymce.init({
+      selector: '#editor',
+      extended_valid_elements: 'img[!src|alt],a[!href|target|width|height|title|rel=nofollow]',
+      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+    });
+
+    const dialog = document.getElementById("editor-dialog")
+    const preview = document.getElementById("preview")
+
+    const onClick = async function () {
+        const content = tinymce.get("editor").getContent()
+        await navigator.clipboard.writeText(content)
+        // alert("copied")
+    }
+
+    const previewContent = () => {
+      const cnt = tinymce.get("editor").getContent()
+      preview.innerHTML = cnt
+    }
+  </script>
+</body>
+</html>

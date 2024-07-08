@@ -1,0 +1,32 @@
+---
+    import { TWITTER_TWEET } from "../../helpers/constants"
+
+    const shareUrl = `https://genprose.com/${Astro.props.url}`
+---
+
+<section id="social-shares">
+    <div class:list={[
+        "bg-site-gradient rounded-md p-2 text-black flex gap-2 flex-col md:flex-row"
+    ]}>
+        <div class="cta-btn rounded-md shadow-lg bg-white w-8 h-8 items-center jsutify-center">
+            <a target="_blank" href={`${TWITTER_TWEET}?text=${encodeURIComponent(Astro.props.content)}&url=${shareUrl}`}
+            class=""
+        >
+            <img alt="tweet" src="/assets/images/twitter-ic.svg" width="32" />
+        </a>
+        </div>
+        <button id="copy-link" type="button" class="cta-btn rounded-md shadow-lg bg-white w-8 h-8 flex items-center justify-center">
+            <img alt="copy link" src="/assets/images/link.svg" width="20" />
+        </button>
+    </div>
+</section>
+
+<script type="text/javascript" define:vars={{ shareUrl }}>
+    const btn = document.getElementById("copy-link")
+    if (btn) {
+        btn.onclick = async () => {
+            await navigator.clipboard.writeText(shareUrl)
+            alert("URL copied")
+        }
+    }
+</script>

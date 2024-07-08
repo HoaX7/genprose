@@ -1,14 +1,34 @@
 ---
-    import Image from "../Picture/Image.astro";
+import { epochToLocaleDate, toLocaleDate } from "../../helpers";
+import { DOT } from "../../helpers/constants";
+import Image from "../Picture/Image.astro";
 ---
 
 <Image alt={Astro.props.alt} src={Astro.props.src} width={Astro.props.width} />
 <div class="flex items-center justify-center p-4 h-full">
-    <div>
-        <div class={"text-xl font-semibold"} class:list={[
-            "text-xl font-semibold text-black",
-            Astro.props.titleClassName
-        ]}>{Astro.props.title}</div>
-        <div class="text-lg text-gray-400 font-semibold">{Astro.props.subTitle}</div>
+  <div>
+    <div
+      class:list={[
+        "text-xl font-semibold text-black",
+        Astro.props.titleClassName,
+      ]}
+    >
+      {Astro.props.title}
     </div>
+    <div class="text-lg text-gray-400 font-semibold">
+      {Astro.props.subTitle}
+    </div>
+  </div>
 </div>
+<small class:list={[
+    "p-4 flex items-center justify-between text-black",
+    Astro.props.titleClassName
+]}>
+  <div>
+    By, <span class="font-semibold">{Astro.props.author}</span>
+  </div>
+  <div>
+    {DOT}
+    {toLocaleDate(epochToLocaleDate(Astro.props.created_at))}
+  </div>
+</small>

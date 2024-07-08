@@ -7,6 +7,7 @@ import { AVERAGE_READ_TIME, DOT } from "../../helpers/constants";
 import BlogCard from "../../components/Blogs/Card.astro";
 import { BlogProps } from "../../types/blogs";
 import Image from "../../components/Picture/Image.astro";
+import ShareContent from "../../components/Socials/ShareContent.astro";
 
 export async function getStaticPaths() {
   try {
@@ -28,7 +29,7 @@ const {
   title,
   updated_at,
   created_at,
-  content,
+  content: blogContent,
   sub_title,
   slug,
   metadata = {},
@@ -36,7 +37,7 @@ const {
   keywords,
   featured_image_url,
 } = Astro.props.blog;
-const blogContent = content.replace(/\n/g, "<br/>");
+// const blogContent = content.replace(/\n/g, "<br/>");
 
 const wordCount = blogContent.replace(/[^\w ]/g, "").split(/\s+/).length;
 const readingTime = Math.floor(wordCount / AVERAGE_READ_TIME) + 1;
@@ -50,6 +51,7 @@ const parsedMetadata = metadata ? JSON.parse(metadata) : {};
   keywords={keywords || SEO.articles.keywords}
   description={description || SEO.articles.description}
   url={`/blogs/${slug}`}
+  image={featured_image_url}
 >
   <nav class="bg-site-gradient">
     <div
@@ -69,8 +71,13 @@ const parsedMetadata = metadata ? JSON.parse(metadata) : {};
     </div>
   </nav>
   <section class="p-4 mx-auto container mt-3">
-    <h1 class="text-2xl font-semibold">{title}</h1>
-    <h2>{sub_title}</h2>
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-semibold">{title}</h1>
+        <h2>{sub_title}</h2>
+      </div>
+      <ShareContent content={`Checkout this awesome article i read about: ${title} - ${sub_title}`} url={`blogs/${slug}`} />
+    </div>
     {
       featured_image_url && (
         <div class="my-5">
@@ -95,30 +102,34 @@ const parsedMetadata = metadata ? JSON.parse(metadata) : {};
         <div class="text-sm">{toLocaleDate(epochToLocaleDate(created_at))}</div>
       </div>
     </div>
-    <pre
+    <div
       style="font-family: inherit;"
-      class="mb-3 mt-5 break-words whitespace-pre-line"
+      class="mb-3 mt-5 blog-content"
       set:html={blogContent.trim()}
     />
     <div class="border-t border-gray-700 mt-10">
-      <h2 class="font-semibold text-2xl text-center underline mt-10">Related Articles</h2>
-      <div class="gap-4 mt-10 flex overflow-y-auto">
+      <h2 class="font-semibold text-2xl text-center underline mt-10">
+        Related Articles
+      </h2>
+      <div class="blog-container gap-4 mt-10 flex overflow-y-auto">
         {
           Astro.props.allBlogs.map((item: BlogProps) => {
             return (
               <div>
                 <a
-                href={`/blogs/${item.slug}`}
-                class="flex flex-col h-full bg-zinc-800 shadow-lg rounded-md w-96"
-              >
-                <BlogCard
-                  title={item.title}
-                  subTitle={item.sub_title}
-                  src={item.featured_image_url}
-                  alt={item.title + " article image"}
-                  titleClassName="!text-white"
-                />
-              </a>
+                  href={`/blogs/${item.slug}`}
+                  class="flex flex-col h-full bg-zinc-800 shadow-lg rounded-md w-96"
+                >
+                  <BlogCard
+                    title={item.title}
+                    subTitle={item.sub_title}
+                    src={item.featured_image_url}
+                    alt={item.title + " article image"}
+                    titleClassName="!text-white"
+                    author={item.metadata?.author || "Admin"}
+                    created_at={item.created_at}
+                  />
+                </a>
               </div>
             );
           })
